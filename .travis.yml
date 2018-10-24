@@ -2,7 +2,7 @@ language: python
 services:
     - postgresql
 addons:
-  postgresql: "10"
+  postgresql: "9.6"
 python:
     - "3.6"
     - nightly
