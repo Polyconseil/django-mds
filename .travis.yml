@@ -2,7 +2,7 @@ language: python
 services:
     - postgresql
 python:
-    - 3.6
+    - "3.6"
     - nightly
 env:
 install:

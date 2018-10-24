@@ -24,8 +24,8 @@ class UnboundedCharField(models.TextField):
 class Query(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True)
     provider = UnboundedCharField()
-    endpoint = UnboundedCharField(default="")
+    endpoint = UnboundedCharField(default=str)
     method = UnboundedCharField(
         choices=[("POST", "POST"), ("PUT", "PUT"), ("DELETE", "DELETE")]
     )
-    content = pg_fields.JSONField(default={})
+    content = pg_fields.JSONField(default=dict)
