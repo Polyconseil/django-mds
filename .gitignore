@@ -1,0 +1,15 @@
+# Build & distribution
+__pycache__/
+*.mo
+*.py[cod]
+*.egg
+*.egg-info
+build/
+dist/
+
+# test
+.pytest_cache/
+
+# editors & OS
+.vscode/
+*.DS_Store

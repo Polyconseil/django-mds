@@ -1,0 +1,6 @@
+include LICENSE README.md
+
+global-exclude *.py[cod] __pycache__
+
+graft midas
+prune tests
