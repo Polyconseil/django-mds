@@ -1,9 +1,11 @@
 import json
 
+from django.contrib.gis.geos import MultiPolygon
 from django.contrib.gis.geos.geometry import GEOSGeometry
 from rest_framework import serializers
 
 from . import enums
+from . import models
 
 
 class GeometryField(serializers.Field):
@@ -28,7 +30,7 @@ class DeviceSerializer(serializers.Serializer):
     model = serializers.CharField()
     status = serializers.ChoiceField(choices=enums.DEVICE_STATUS_CHOICES)
     position = GeometryField()  # expects Point
-    battery = serializers.FloatField(min=0, max=1)
+    battery = serializers.FloatField(min_value=0, max_value=1)
     timestamp = serializers.DateTimeField()
 
 
@@ -39,7 +41,20 @@ class TripSerializer(serializers.Serializer):
 
 
 class ServiceAreaSerializer(serializers.Serializer):
-    unique_id = serializers.UUIDField()
+    unique_id = serializers.UUIDField(source="id", read_only=True)
     begin_date = serializers.DateTimeField()
     end_date = serializers.DateTimeField(required=False)
-    area = GeometryField()  # expects Feature of MultiPolygon
+    # TODO are should be a Feature of MultiPolygon.
+    # It is a single polygon for the moment
+    area = GeometryField(source="area.polygons")
+
+    def create(self, data):
+        area = models.Area.objects.create(
+            polygons=MultiPolygon([data['area']['polygons']]),
+        )
+        return models.Service.objects.create(
+            area=area,
+            provider="bluela",
+            begin_date=data["begin_date"],
+            end_date=data.get("end_date"),
+        )

@@ -2,6 +2,7 @@
 Django settings
 """
 import os
+from corsheaders.defaults import default_headers
 
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -18,6 +19,9 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+
+    "corsheaders",
+    "rest_framework",
 ]
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -27,6 +31,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
 ]
 ROOT_URLCONF = "midas.urls"
 TEMPLATES = [
@@ -47,7 +52,7 @@ TEMPLATES = [
 WSGI_APPLICATION = "midas.wsgi.application"
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.postgresql",
+        "ENGINE": "django.contrib.gis.db.backends.postgis",
         "NAME": os.environ.get("MIDAS_DB_NAME", "midas"),
         "USER": os.environ.get("MIDAS_DB_USER", "postgres"),
         "PASSWORD": os.environ.get("MIDAS_DB_PASSWORD", ""),
@@ -65,3 +70,7 @@ USE_I18N = True
 USE_L10N = True
 USE_TZ = True
 STATIC_URL = "/static/"
+
+CORS_ORIGIN_ALLOW_ALL = True
+CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_HEADERS = list(default_headers) + ['cache-control']

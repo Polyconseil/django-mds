@@ -56,7 +56,7 @@ class Area(UuidModel):
     polygons = gis_models.MultiPolygonField()
 
 
-class Service(models.Model):
+class Service(UuidModel):
     area = models.ForeignKey(Area, on_delete=models.CASCADE)
     provider = UnboundedCharField()
     begin_date = models.DateTimeField()
