@@ -1,4 +1,6 @@
 import * as L from "leaflet";
+import "leaflet-draw";
+import "leaflet-draw/dist/leaflet.draw.css";
 import "leaflet/dist/leaflet.css";
 import * as React from "react";
 
@@ -14,9 +16,9 @@ interface IProps {
   onMoveZoom: (latlng: LatLngLiteral, zoom: number) => void;
 }
 
-class Viewer extends React.Component<IProps> {
+class Map extends React.Component<IProps> {
+  public map: L.Map;
   private leafElementRef: React.RefObject<HTMLDivElement> = React.createRef();
-  private map: L.Map;
 
   public componentDidMount() {
     if (!this.leafElementRef.current) {
@@ -36,7 +38,6 @@ class Viewer extends React.Component<IProps> {
       id: 'mapbox.streets',
       maxZoom: 18,
     }).addTo(this.map);
-
     this.map.on("moveend", this.handleMoveZoom);
   }
 
@@ -71,4 +72,4 @@ class Viewer extends React.Component<IProps> {
   };
 }
 
-export default Viewer;
+export default Map;
