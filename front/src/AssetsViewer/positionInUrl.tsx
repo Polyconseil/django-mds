@@ -1,4 +1,4 @@
-import ILatLng from "../commons/ILatLng";
+import { LatLngLiteral } from "leaflet";
 
 const ZOOM_LEVEL_REGEX = /([0-9.]+)z/;
 
@@ -10,7 +10,7 @@ const ZOOM_LEVEL_REGEX = /([0-9.]+)z/;
  */
 export function parsePosition(
   urlMatch: string
-): { latlng: ILatLng; zoom?: number } | null {
+): { latlng: LatLngLiteral; zoom?: number } | null {
   if (!urlMatch) {
     return null;
   }
@@ -41,7 +41,7 @@ export function parsePosition(
 }
 
 export function stringifyPosition(
-  position: { latlng: ILatLng; zoom?: number } | null
+  position: { latlng: LatLngLiteral; zoom?: number } | null
 ): string {
   if (!position) {
     return "";

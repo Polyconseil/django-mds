@@ -2,16 +2,16 @@ import * as L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import * as React from "react";
 
-import ILatLng from "../commons/ILatLng";
+import { LatLngLiteral } from "leaflet"
 
 const DEFAULT_COORDINATES: [number, number] = [51.505, -0.09];
 const DEFAULT_ZOOM = 14;
 
 interface IProps {
   search: string;
-  latlng: ILatLng | null;
+  latlng: LatLngLiteral | null;
   zoom: number | null;
-  onMoveZoom: (latlng: ILatLng, zoom: number) => void;
+  onMoveZoom: (latlng: LatLngLiteral, zoom: number) => void;
 }
 
 class Viewer extends React.Component<IProps> {

@@ -1,7 +1,7 @@
 import * as React from "react";
 import { matchPath } from "react-router";
 
-import ILatLng from "src/commons/ILatLng";
+import { LatLngLiteral } from "leaflet";
 
 import { parsePosition, stringifyPosition } from "./positionInUrl";
 import Viewer from "./Viewer";
@@ -31,7 +31,7 @@ class AssetsViewer extends React.Component<IProps> {
     );
   }
 
-  private onMoveZoom = (latlng: ILatLng, zoom: number) => {
+  private onMoveZoom = (latlng: LatLngLiteral, zoom: number) => {
     const { match, history } = this.props;
     const { search } = this.parseUrl();
 
@@ -45,7 +45,7 @@ class AssetsViewer extends React.Component<IProps> {
 
   private parseUrl = (): {
     search: string;
-    latlng: ILatLng | null;
+    latlng: LatLngLiteral | null;
     zoom: number | null;
   } => {
     const { match, location } = this.props;
