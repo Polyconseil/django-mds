@@ -28,11 +28,13 @@ class Viewer extends React.Component<IProps> {
     const safeZoom = zoom || DEFAULT_ZOOM;
     this.map = L.map(this.leafElementRef.current).setView(center, safeZoom);
 
-    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-      attribution:
-        '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-      id: "OpenStreetMap.Mapnik",
-      maxZoom: 18
+    // TODO get a token from mapbox
+    L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
+      attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, ' +
+        '<a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
+        'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+      id: 'mapbox.streets',
+      maxZoom: 18,
     }).addTo(this.map);
 
     this.map.on("moveend", this.handleMoveZoom);
