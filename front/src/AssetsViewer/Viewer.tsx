@@ -40,6 +40,12 @@ class Viewer extends React.Component<IProps> {
     this.map.on("moveend", this.handleMoveZoom);
   }
 
+  public componentDidUpdate() {
+    if (this.props.latlng && this.props.zoom) {
+      this.map.setView(this.props.latlng, this.props.zoom)
+    }
+  }
+
   public componentWillUnmount() {
     this.map.remove();
   }
@@ -56,6 +62,11 @@ class Viewer extends React.Component<IProps> {
   private handleMoveZoom = () => {
     const latlng = this.map.getCenter();
     const zoom = this.map.getZoom();
+    if (this.props.latlng && this.props.zoom) {
+      if (latlng.lat === this.props.latlng.lat && latlng.lng === this.props.latlng.lng && zoom === this.props.zoom) {
+        return
+      }
+    }
     this.props.onMoveZoom(latlng, zoom);
   };
 }
