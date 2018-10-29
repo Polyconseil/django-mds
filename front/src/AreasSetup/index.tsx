@@ -75,10 +75,23 @@ class AreaSetup extends React.Component<IProps, IState> {
     });
     map.on(L.Draw.Event.DELETED, (event: L.DrawEvents.Deleted) => {
         const layers = event.layers;
-        layers.eachLayer((layer: L.Polygon) => {
-          drawnItems.removeLayer(layer)
-          // tslint:disable-next-line:no-console
-          console.log("deleting", layer)
+        layers.eachLayer(async (layer: L.Polygon) => {
+          drawnItems.removeLayer(layer);
+          const areaId = this.state.layerIdsToAreaIds[L.Util.stamp(layer)];
+          const request = new Request(
+            `http://127.0.0.1:8000/service_area/${areaId}/`, // TODO use true URL
+            {
+              headers: {
+                "Content-Type": "application/json",
+              },
+              method: "DELETE",
+              mode: "cors",
+            }
+          )
+          await fetch(request);
+          const layerIdsToAreaIds = Object.assign({}, this.state.layerIdsToAreaIds);
+          delete layerIdsToAreaIds[L.Util.stamp(layer)]
+          this.setState({layerIdsToAreaIds})
         })
     });
   };
