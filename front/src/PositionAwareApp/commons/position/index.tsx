@@ -2,15 +2,20 @@ import { LatLngLiteral } from "leaflet";
 
 const ZOOM_LEVEL_REGEX = /([0-9.]+)z/;
 
+export interface IPosition {
+  latlng: LatLngLiteral;
+  zoom?: number;
+}
+
+export type PositionChanger = (position: IPosition) => void;
+
 /**
  *
  * @param urlMatch coordinates as passed in the url "@48.8998564,2.4130346,15z"
  *
  * @returns null if unable to parse coordinates, or the coordinates object
  */
-export function parsePosition(
-  urlMatch: string
-): { latlng: LatLngLiteral; zoom?: number } | null {
+export function parsePosition(urlMatch: string): IPosition | null {
   if (!urlMatch) {
     return null;
   }
@@ -40,9 +45,7 @@ export function parsePosition(
   }
 }
 
-export function stringifyPosition(
-  position: { latlng: LatLngLiteral; zoom?: number } | null
-): string {
+export function stringifyPosition(position: IPosition | null): string {
   if (!position) {
     return "";
   }
@@ -53,4 +56,15 @@ export function stringifyPosition(
     str += `,${zoom}z`;
   }
   return str;
+}
+
+export function suffixPosition(
+  newPath: string,
+  oldLocation: { pathname: string }
+) {
+  const positionIndex = location.pathname.lastIndexOf("/@");
+  if (positionIndex !== -1) {
+    return newPath + location.pathname.substring(positionIndex);
+  }
+  return newPath;
 }

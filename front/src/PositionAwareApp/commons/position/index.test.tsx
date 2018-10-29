@@ -1,4 +1,4 @@
-import { parsePosition, stringifyPosition } from "./positionInUrl";
+import { parsePosition, stringifyPosition } from ".";
 
 it("parses position (when possible) from the URL", () => {
   expect(parsePosition("48.8821014,2.3354308,14z")).toEqual({
