@@ -5,7 +5,7 @@ export interface IServiceAreasRequest {
   begin_date: string;
 }
 
-export async function getServiceAreas(requestBody: IServiceAreasRequest) {
+export async function postServiceArea(requestBody: IServiceAreasRequest) {
   const request = new Request(buildUrl("service_area"), {
     body: JSON.stringify(requestBody),
     headers: {
@@ -15,4 +15,15 @@ export async function getServiceAreas(requestBody: IServiceAreasRequest) {
     mode: "cors"
   });
   return await (await fetch(request)).json();
+}
+
+export async function deleteServiceArea(areaId: string) {
+  const request = new Request(buildUrl("service_area/", areaId), {
+    headers: {
+      "Content-Type": "application/json"
+    },
+    method: "DELETE",
+    mode: "cors"
+  });
+  return await fetch(request);
 }

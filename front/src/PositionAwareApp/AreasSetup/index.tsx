@@ -6,7 +6,7 @@ import * as React from "react";
 
 import IPositionRouteProps from "../commons/IPositionRouteProps";
 
-import { getServiceAreas } from "src/api/areas";
+import { deleteServiceArea, postServiceArea } from "src/api/areas";
 
 import Map from "../commons/Map";
 
@@ -44,7 +44,7 @@ class AreaSetup extends React.Component<IPositionRouteProps, IState> {
       const layer = event.layer as L.Polygon;
       drawnItems.addLayer(layer);
 
-      const result = await getServiceAreas({
+      const result = await postServiceArea({
         area: layer.toGeoJSON().geometry,
         begin_date: "2012-01-01T00:00:00Z"
       });
@@ -62,11 +62,14 @@ class AreaSetup extends React.Component<IPositionRouteProps, IState> {
     });
     map.on(L.Draw.Event.DELETED, (event: L.DrawEvents.Deleted) => {
       const layers = event.layers;
-      layers.eachLayer((layer: L.Polygon) => {
+      layers.eachLayer(async (layer: L.Polygon) => {
         drawnItems.removeLayer(layer);
-        // tslint:disable-next-line:no-console
-        console.log("deleting", layer);
-      });
+        const areaId = this.state.layerIdsToAreaIds[L.Util.stamp(layer)];
+        await deleteServiceArea(areaId);
+        const layerIdsToAreaIds = { ...this.state.layerIdsToAreaIds };
+        delete layerIdsToAreaIds[L.Util.stamp(layer)]
+        this.setState({layerIdsToAreaIds})
+      })
     });
   }
 
@@ -76,7 +79,7 @@ class AreaSetup extends React.Component<IPositionRouteProps, IState> {
       <Map
         position={position}
         onPositionChange={onPositionChange}
-        onMapReady={this.handleMapReady}
+        onMapReady={this.handleMapReady.bind(this)}
       />
     );
   }
