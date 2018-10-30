@@ -3,14 +3,20 @@ Django settings
 """
 import os
 from corsheaders.defaults import default_headers
+import getconf
 
+CONFIG = getconf.ConfigGetter('midas')
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-SECRET_KEY = os.environ.get(
-    "MIDAS_SECRET_KEY", "@ul7nex9a)tf56l0$e$d^jp5y!)07n*l1pnja)lf^u^=-af-c+"
+SECRET_KEY = CONFIG.getstr(
+    "django.secret_key", "weak", doc="Secret key for signing data"
 )
-DEBUG = os.environ.get("MIDAS_DEBUG", False)
-ALLOWED_HOSTS = []
+DEBUG = CONFIG.getbool("dev.debug", False)
+
+ALLOWED_HOSTS = CONFIG.getlist(
+    'django.allowed_hosts', [], doc="Comma-separated list of allowed hosts"
+)
+
 INSTALLED_APPS = [
     "midas.apps.MidasConfig",
     "django.contrib.admin",
@@ -53,13 +59,15 @@ WSGI_APPLICATION = "midas.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.contrib.gis.db.backends.postgis",
-        "NAME": os.environ.get("MIDAS_DB_NAME", "midas"),
-        "USER": os.environ.get("MIDAS_DB_USER", "postgres"),
-        "PASSWORD": os.environ.get("MIDAS_DB_PASSWORD", ""),
-        "HOST": os.environ.get("MIDAS_DB_HOST", "127.0.0.1"),
-        "PORT": os.environ.get("MIDAS_DB_PORT", 5432),
+        "NAME": CONFIG.getstr("db.name", "midas"),
+        "USER": CONFIG.getstr("db.name", "postgres"),
+        "PASSWORD": CONFIG.getstr("db.password"),
+        "HOST": CONFIG.getstr("db.host"),
+        "PORT": CONFIG.getstr("db.port"),
+        "ATOMIC_REQUESTS": True,
     }
 }
+
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"}
