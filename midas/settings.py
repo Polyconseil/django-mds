@@ -62,8 +62,8 @@ DATABASES = {
         "NAME": CONFIG.getstr("db.name", "midas"),
         "USER": CONFIG.getstr("db.name", "postgres"),
         "PASSWORD": CONFIG.getstr("db.password"),
-        "HOST": CONFIG.getstr("db.host"),
-        "PORT": CONFIG.getstr("db.port"),
+        "HOST": CONFIG.getstr("db.host", "127.0.0.1"),
+        "PORT": CONFIG.getstr("db.port", "5432"),
         "ATOMIC_REQUESTS": True,
     }
 }
