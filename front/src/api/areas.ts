@@ -2,7 +2,7 @@ import { buildUrl } from "./commons";
 
 export interface IServiceAreasRequest {
   area: any;
-  begin_date: string;
+  begin_date?: string;
 }
 
 export async function getServiceAreas() {
@@ -11,6 +11,18 @@ export async function getServiceAreas() {
       "Content-Type": "application/json"
     },
     method: "GET",
+    mode: "cors"
+  });
+  return await (await fetch(request)).json();
+}
+
+export async function updateServiceArea(areaId: string, requestBody: IServiceAreasRequest) {
+  const request = new Request(buildUrl("service_area/", areaId), {
+    body: JSON.stringify(requestBody),
+    headers: {
+      "Content-Type": "application/json"
+    },
+    method: "PATCH",
     mode: "cors"
   });
   return await (await fetch(request)).json();

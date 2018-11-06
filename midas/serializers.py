@@ -58,3 +58,15 @@ class ServiceAreaSerializer(serializers.Serializer):
             begin_date=data["begin_date"],
             end_date=data.get("end_date"),
         )
+
+    def update(self, instance, validated_data):
+        if validated_data.get('area'):
+            area = models.Area.objects.get(pk=instance.area_id)
+            area.polygons = MultiPolygon([validated_data['area']['polygons']])
+            area.save()
+        if validated_data.get('begin_date'):
+            instance.end_data = validated_data['begin_date']
+        if validated_data.get('end_date'):
+            instance.end_data = validated_data['end_date']
+        instance.save()
+        return instance

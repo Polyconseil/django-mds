@@ -6,7 +6,7 @@ import * as React from "react";
 
 import IPositionRouteProps from "../commons/IPositionRouteProps";
 
-import { deleteServiceArea, getServiceAreas, postServiceArea } from "src/api/areas";
+import { deleteServiceArea, getServiceAreas, postServiceArea, updateServiceArea } from "src/api/areas";
 
 import Map from "../commons/Map";
 
@@ -74,9 +74,11 @@ class AreaSetup extends React.Component<IPositionRouteProps, IState> {
     });
     map.on(L.Draw.Event.EDITED, (event: L.DrawEvents.Edited) => {
       const layers = event.layers;
-      layers.eachLayer((layer: L.Polygon) => {
-        // tslint:disable-next-line:no-console
-        console.log("editing", layer.getLatLngs());
+      layers.eachLayer(async (layer: L.Polygon) => {
+        const id = this.state.layerIdsToAreaIds[L.Util.stamp(layer)];
+        await updateServiceArea(id, {
+          area: layer.toGeoJSON().geometry,
+        });
       });
     });
     map.on(L.Draw.Event.DELETED, (event: L.DrawEvents.Deleted) => {
