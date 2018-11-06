@@ -6,7 +6,7 @@ import * as React from "react";
 
 import IPositionRouteProps from "../commons/IPositionRouteProps";
 
-import { deleteServiceArea, postServiceArea } from "src/api/areas";
+import { deleteServiceArea, getServiceAreas, postServiceArea } from "src/api/areas";
 
 import Map from "../commons/Map";
 
@@ -44,6 +44,20 @@ class AreaSetup extends React.Component<IPositionRouteProps, IState> {
         }
       })
     );
+
+    getServiceAreas().then((areas) => {
+      areas.forEach((area: any) => {
+        const polygon = JSON.parse(area.area);
+        polygon.type = "Polygon";
+        polygon.coordinates = polygon.coordinates[0];
+        const layerIdsToAreaIds = { ...this.state.layerIdsToAreaIds };
+        L.geoJSON(polygon).eachLayer((l) => {
+          drawnItems.addLayer(l);
+          layerIdsToAreaIds[L.Util.stamp(l)] = area.unique_id;
+        })
+        this.setState({ layerIdsToAreaIds });
+      })
+    });
 
     map.on(L.Draw.Event.CREATED, async (event: L.DrawEvents.Created) => {
       const layer = event.layer as L.Polygon;

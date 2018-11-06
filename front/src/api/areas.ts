@@ -5,6 +5,17 @@ export interface IServiceAreasRequest {
   begin_date: string;
 }
 
+export async function getServiceAreas() {
+  const request = new Request(buildUrl("service_area"), {
+    headers: {
+      "Content-Type": "application/json"
+    },
+    method: "GET",
+    mode: "cors"
+  });
+  return await (await fetch(request)).json();
+}
+
 export async function postServiceArea(requestBody: IServiceAreasRequest) {
   const request = new Request(buildUrl("service_area"), {
     body: JSON.stringify(requestBody),
