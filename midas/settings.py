@@ -60,7 +60,7 @@ DATABASES = {
     "default": {
         "ENGINE": "django.contrib.gis.db.backends.postgis",
         "NAME": CONFIG.getstr("db.name", "midas"),
-        "USER": CONFIG.getstr("db.name", "postgres"),
+        "USER": CONFIG.getstr("db.user", "postgres"),
         "PASSWORD": CONFIG.getstr("db.password"),
         "HOST": CONFIG.getstr("db.host", "127.0.0.1"),
         "PORT": CONFIG.getstr("db.port", "5432"),
