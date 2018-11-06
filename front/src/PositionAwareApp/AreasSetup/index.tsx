@@ -19,6 +19,11 @@ class AreaSetup extends React.Component<IPositionRouteProps, IState> {
     layerIdsToAreaIds: {} // mapping of leafet layer id to backend area id
   };
 
+  constructor (props: IPositionRouteProps) {
+    super(props);
+    this.handleMapReady = this.handleMapReady.bind(this);
+  }
+
   public handleMapReady(map: L.Map) {
     const drawnItems = L.featureGroup().addTo(map);
     map.addControl(
@@ -79,7 +84,7 @@ class AreaSetup extends React.Component<IPositionRouteProps, IState> {
       <Map
         position={position}
         onPositionChange={onPositionChange}
-        onMapReady={this.handleMapReady.bind(this)}
+        onMapReady={this.handleMapReady}
       />
     );
   }
