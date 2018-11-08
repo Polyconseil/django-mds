@@ -26,6 +26,7 @@ interface IState {
   areasLayerGroup: L.FeatureGroup | null;
   isUserEditing: boolean;
   layerIdsToAreaIds: { [key: string]: string };
+  map: L.Map | null;
 }
 
 class AreaSetup extends React.Component<IPositionRouteProps, IState> {
@@ -33,7 +34,8 @@ class AreaSetup extends React.Component<IPositionRouteProps, IState> {
     activeArea: null,
     areasLayerGroup: null,
     isUserEditing: false,
-    layerIdsToAreaIds: {} // mapping of leafet layer id to backend area id
+    layerIdsToAreaIds: {}, // mapping of leafet layer id to backend area id
+    map: null
   };
 
   constructor(props: IPositionRouteProps) {
@@ -44,7 +46,7 @@ class AreaSetup extends React.Component<IPositionRouteProps, IState> {
 
   public handleMapReady(map: L.Map) {
     const drawnItems = L.featureGroup().addTo(map);
-    this.setState({ areasLayerGroup: drawnItems });
+    this.setState({ areasLayerGroup: drawnItems, map });
 
     const drawControl = new L.Control.Draw({
       draw: {
@@ -137,7 +139,7 @@ class AreaSetup extends React.Component<IPositionRouteProps, IState> {
             <>
               <Route
                 path={`${match.path}/details/:areaId`}
-                render={this.bindDetailView(height)}
+                children={this.bindDetailView(height)}
               />
               <Map
                 position={position}
@@ -154,14 +156,13 @@ class AreaSetup extends React.Component<IPositionRouteProps, IState> {
 
   private openDetail = (event: Event) => {
     const { match, location, history } = this.props;
-    const { isUserEditing } = this.state;
-    if (isUserEditing) {
+    const { activeArea, isUserEditing, map } = this.state;
+    if (isUserEditing || !map) {
       return;
     }
     const areaId = this.state.layerIdsToAreaIds[L.Util.stamp(event.target)];
     history.push(suffixPosition(`${match.url}/details/${areaId}`, location));
     const layer = (event.target as unknown) as L.GeoJSON;
-    const { activeArea } = this.state;
     if (activeArea) {
       activeArea.setStyle({ fillColor: DEFAULT_SHAPE_COLOR });
     }
@@ -207,9 +208,10 @@ class AreaSetup extends React.Component<IPositionRouteProps, IState> {
     return (subProps: RouteComponentProps<{ areaId: string }>) => {
       return (
         <AreaConfig
-          areaId={subProps.match.params.areaId}
+          areaId={subProps.match && subProps.match.params.areaId}
           height={height}
           width={300}
+          marginLeft={subProps.match ? 0 : -320}
           onAreaConfigMounted={this.onAreaConfigMounted}
         />
       );

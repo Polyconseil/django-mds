@@ -11,10 +11,12 @@ interface IProps {
   areaId: string;
   height: number;
   width: number;
+  marginLeft: number;
   onAreaConfigMounted: (areaId: string) => void;
 }
 
 interface IState {
+  areaId: string | null;
   policies: IPolicy[];
   policiesOptions: IPolicy[];
   showPolicySelector: boolean;
@@ -22,6 +24,7 @@ interface IState {
 
 class AreaConfig extends React.Component<IProps, IState> {
   public state: IState = {
+    areaId: null,
     policies: [] as IPolicy[],
     policiesOptions: [] as IPolicy[],
     showPolicySelector: false
@@ -49,14 +52,16 @@ class AreaConfig extends React.Component<IProps, IState> {
   }
 
   public render() {
-    const { height, width } = this.props;
+    const { height, marginLeft, width } = this.props;
     const { policies, showPolicySelector } = this.state;
     return (
       <div
         style={{
           height,
-          width,
-          padding: 10
+          marginLeft,
+          padding: 10,
+          transition: "margin 0.2s ease-in",
+          width
         }}
       >
         <h3 style={{ margin: 0 }}>
