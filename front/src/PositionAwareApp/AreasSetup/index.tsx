@@ -66,14 +66,12 @@ class AreaSetup extends React.Component<IPositionRouteProps, IState> {
 
     getServiceAreas().then(areas => {
       areas.forEach((area: any) => {
-        const polygon = JSON.parse(area.area);
-        polygon.type = "Polygon";
-        polygon.coordinates = polygon.coordinates[0];
+        const polygon = area.area;
         const layerIdsToAreaIds = { ...this.state.layerIdsToAreaIds };
         L.geoJSON(polygon).eachLayer(l => {
           drawnItems.addLayer(l);
           l.on("click", this.openDetail);
-          layerIdsToAreaIds[L.Util.stamp(l)] = area.unique_id;
+          layerIdsToAreaIds[L.Util.stamp(l)] = area.id;
         });
         this.setState({ layerIdsToAreaIds });
       });
@@ -90,7 +88,7 @@ class AreaSetup extends React.Component<IPositionRouteProps, IState> {
       });
 
       const layerIdsToAreaIds = { ...this.state.layerIdsToAreaIds };
-      layerIdsToAreaIds[L.Util.stamp(layer)] = result.unique_id;
+      layerIdsToAreaIds[L.Util.stamp(layer)] = result.id;
       this.setState({ layerIdsToAreaIds });
     });
     map.on(L.Draw.Event.EDITED, (event: L.DrawEvents.Edited) => {
