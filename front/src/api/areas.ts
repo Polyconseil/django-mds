@@ -16,7 +16,10 @@ export async function getServiceAreas() {
   return await (await fetch(request)).json();
 }
 
-export async function updateServiceArea(areaId: string, requestBody: IServiceAreasRequest) {
+export async function updateServiceArea(
+  areaId: string,
+  requestBody: IServiceAreasRequest
+) {
   const request = new Request(buildUrl("service_area/", areaId), {
     body: JSON.stringify(requestBody),
     headers: {
@@ -49,4 +52,46 @@ export async function deleteServiceArea(areaId: string) {
     mode: "cors"
   });
   return await fetch(request);
+}
+
+const pricingPoliciesStore = {};
+
+export interface IPolicy {
+  display: string;
+  id: string;
+}
+
+export function getAllPricingPolicies() {
+  return Promise.resolve([
+    {
+      display: "Pricing zone 1 scooters",
+      id: "1"
+    },
+    {
+      display: "Pricing zone 2 scooters",
+      id: "2"
+    },
+    {
+      display: "Pricing zone A cars",
+      id: "3"
+    }
+  ]);
+}
+
+export function getPricingPolicies(areaId: string) {
+  return Promise.resolve(pricingPoliciesStore[areaId] || ([] as IPolicy[]));
+}
+
+export function postPricingPolicy(areaId: string, policy: IPolicy) {
+  pricingPoliciesStore[areaId] = (pricingPoliciesStore[areaId] || []).concat([
+    policy
+  ]);
+  return Promise.resolve(policy);
+}
+
+export function removePricingPolicy(areaId: string, policyId: string) {
+  pricingPoliciesStore[areaId] = pricingPoliciesStore[areaId].filter(
+    (p: IPolicy) => p.id !== policyId
+  );
+  return Promise.resolve(null);
 }
