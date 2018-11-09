@@ -23,6 +23,21 @@ const SCOOTER_ICON = L.icon({
   popupAnchor: [20, -25]
 });
 
+const BIKE_ICON = L.icon({
+  iconUrl: "/bicycle_picto.png",
+
+  iconAnchor: [0, 25],
+  iconSize: [43, 25],
+  popupAnchor: [20, -25]
+});
+
+function capitalize(s: string) {
+  if (s.length > 0) {
+    return s[0].toUpperCase() + s.substr(1);
+  }
+  return "";
+}
+
 class AssetsViewer extends React.Component<IPositionRouteProps> {
   public render() {
     const { position, onPositionChange } = this.props;
@@ -47,15 +62,32 @@ class AssetsViewer extends React.Component<IPositionRouteProps> {
     const result = await getVehicles({});
     result.vehicles.forEach(vehicle => {
       const markerNode = L.marker(vehicle.current.position, {
-        icon: vehicle.type === "car" ? CAR_ICON : SCOOTER_ICON
+        icon:
+          vehicle.type === "car"
+            ? CAR_ICON
+            : vehicle.type === "scooter"
+            ? SCOOTER_ICON
+            : BIKE_ICON
       })
-        .bindPopup(`
+        .bindPopup(
+          `
           <table>
-            <tr><td style="text-align: right;">Provider:</td><td>${vehicle.provider_id}</td></tr>
-            <tr><td style="text-align: right;">Type:</td><td>${vehicle.type}</td></tr>
-            <tr><td style="text-align: right;">Status:</td><td>${vehicle.current.status}</td></tr>
+            <tr><td style="text-align: right;">Id:</td><td>${vehicle.unique_id.substring(
+              0,
+              4
+            )}</td></tr>
+            <tr><td style="text-align: right;">Provider:</td><td>${capitalize(
+              vehicle.provider_id
+            )}</td></tr>
+            <tr><td style="text-align: right;">Type:</td><td>${capitalize(
+              vehicle.type
+            )}</td></tr>
+            <tr><td style="text-align: right;">Status:</td><td>${capitalize(
+              vehicle.current.status
+            )}</td></tr>
           </table>
-        `)
+        `
+        )
         .addTo(map)
         .getElement();
       if (markerNode) {

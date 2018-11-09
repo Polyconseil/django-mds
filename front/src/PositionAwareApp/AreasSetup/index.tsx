@@ -27,6 +27,7 @@ interface IState {
   isUserEditing: boolean;
   layerIdsToAreaIds: { [key: string]: string };
   map: L.Map | null;
+  startupAreaId: string | null;
 }
 
 class AreaSetup extends React.Component<IPositionRouteProps, IState> {
@@ -35,7 +36,8 @@ class AreaSetup extends React.Component<IPositionRouteProps, IState> {
     areasLayerGroup: null,
     isUserEditing: false,
     layerIdsToAreaIds: {}, // mapping of leafet layer id to backend area id
-    map: null
+    map: null,
+    startupAreaId: null
   };
 
   constructor(props: IPositionRouteProps) {
@@ -70,10 +72,14 @@ class AreaSetup extends React.Component<IPositionRouteProps, IState> {
       areas.forEach((area: any) => {
         const polygon = area.area;
         const layerIdsToAreaIds = { ...this.state.layerIdsToAreaIds };
-        L.geoJSON(polygon).eachLayer(l => {
+        L.geoJSON(polygon).eachLayer((l: L.GeoJSON) => {
           drawnItems.addLayer(l);
           l.on("click", this.openDetail);
           layerIdsToAreaIds[L.Util.stamp(l)] = area.id;
+          if (area.id === this.state.startupAreaId) {
+            this.setState({ activeArea: l });
+            l.setStyle({ fillColor: "red" });
+          }
         });
         this.setState({ layerIdsToAreaIds });
       });
@@ -113,20 +119,22 @@ class AreaSetup extends React.Component<IPositionRouteProps, IState> {
         this.setState({ layerIdsToAreaIds });
       });
     });
-    map.on(L.Draw.Event.EDITSTART, (e: L.DrawEvents.EditStart) =>
-      this.setState({ isUserEditing: true })
-    );
+    map.on(L.Draw.Event.EDITSTART, (e: L.DrawEvents.EditStart) => {
+      this.closeDetail();
+      this.setState({ isUserEditing: true });
+    });
     map.on(L.Draw.Event.EDITSTOP, (e: L.DrawEvents.EditStart) =>
       this.setState({ isUserEditing: false })
     );
-    map.on(L.Draw.Event.DELETESTART, (e: L.DrawEvents.EditStart) =>
-      this.setState({ isUserEditing: true })
-    );
+    map.on(L.Draw.Event.DELETESTART, (e: L.DrawEvents.EditStart) => {
+      this.closeDetail();
+      this.setState({ isUserEditing: true });
+    });
     map.on(L.Draw.Event.DELETESTOP, (e: L.DrawEvents.EditStart) =>
       this.setState({ isUserEditing: false })
     );
     map.on("click", (event: L.LeafletMouseEvent) => {
-      this.closeDetail(event);
+      this.closeDetail();
     });
   }
 
@@ -173,7 +181,7 @@ class AreaSetup extends React.Component<IPositionRouteProps, IState> {
     L.DomEvent.stopPropagation(event);
   };
 
-  private closeDetail = (event: L.LeafletEvent) => {
+  private closeDetail = () => {
     const { match, location, history } = this.props;
     const { activeArea } = this.state;
     if (activeArea) {
@@ -186,22 +194,7 @@ class AreaSetup extends React.Component<IPositionRouteProps, IState> {
   };
 
   private onAreaConfigMounted(areaId: string) {
-    // TODO does not work no sé porqué
-    // During first load the area is not selected when the url path points to it
-    const { areasLayerGroup, layerIdsToAreaIds } = this.state;
-    let layerId: number | null = null;
-    for (const id of Object.keys(layerIdsToAreaIds)) {
-      if (layerIdsToAreaIds[id] === areaId) {
-        layerId = parseInt(id, 10);
-      }
-    }
-    if (!layerId || !areasLayerGroup) {
-      return;
-    }
-    const layer = areasLayerGroup.getLayer(layerId) as L.GeoJSON;
-    if (layer) {
-      this.setState({ activeArea: layer });
-    }
+    this.setState({ startupAreaId: areaId });
   }
 
   private bindDetailView = (height: number) => {

@@ -1,8 +1,6 @@
-import * as uuidv4 from "uuid/v4";
-
 export interface IVehicleResponse {
   unique_id: string;
-  type: "car" | "scooter";
+  type: "car" | "scooter" | "bicycle";
   provider_id: string;
   current: {
     position: { lat: number; lng: number };
@@ -12,7 +10,7 @@ export interface IVehicleResponse {
 
 export interface IVehicleDetailResponse {
   unique_id: string;
-  type: "car" | "scooter";
+  type: "car" | "scooter" | "bicycle";
   provider_id: string;
   current: {
     position: { lat: number; lng: number };
@@ -27,8 +25,8 @@ export interface IVehiclesResponse {
 const LADOT = [34.0513838, -118.245173];
 function randomPosition() {
   return {
-    lat: LADOT[0] + (0.5 - Math.random()) * 0.2,
-    lng: LADOT[1] + (0.5 - Math.random()) * 0.2
+    lat: LADOT[0] + (0.5 - Math.random()) * 0.15 + Math.random() * 0.05,
+    lng: LADOT[1] + (0.5 - Math.random()) * 0.15 + Math.random() * 0.05
   };
 }
 
@@ -37,22 +35,47 @@ function randomVehicle(): IVehicleResponse {
     return {
       current: {
         position: randomPosition(),
-        status: Math.random() > 0.3 ? "available" : Math.random() > 0.3 ? "reserved" : "unavailable",
+        status:
+          Math.random() > 0.3
+            ? "available"
+            : Math.random() > 0.3
+            ? "reserved"
+            : "unavailable"
       },
-      provider_id: "bluela",
+      provider_id: "BlueLA",
       type: "car",
-      unique_id: uuidv4(),
+      unique_id: `${Math.floor((Math.random() * 10 + Math.random()) * 1000)}`
     };
   }
-
+  if (Math.random() > 0.2) {
+    return {
+      current: {
+        position: randomPosition(),
+        status:
+          Math.random() > 0.3
+            ? "available"
+            : Math.random() > 0.3
+            ? "reserved"
+            : "unavailable"
+      },
+      provider_id: Math.random() > 0.5 ? "bird" : "lime",
+      type: "scooter",
+      unique_id: `${Math.floor((Math.random() * 10 + Math.random()) * 1000)}`
+    };
+  }
   return {
     current: {
       position: randomPosition(),
-      status: Math.random() > 0.3 ? "available" : Math.random() > 0.3 ? "reserved" : "unavailable",
+      status:
+        Math.random() > 0.3
+          ? "available"
+          : Math.random() > 0.3
+          ? "reserved"
+          : "unavailable"
     },
-    provider_id: Math.random() > 0.5 ? "bird" : "lime",
-    type: "scooter",
-    unique_id: uuidv4()
+    provider_id: "Metro Bike",
+    type: "bicycle",
+    unique_id: `${Math.floor((Math.random() * 10 + Math.random()) * 1000)}`
   };
 }
 
@@ -69,7 +92,9 @@ export async function getVehicles(requestBody: {}): Promise<IVehiclesResponse> {
     }
   }
 
-  return Promise.resolve({ vehicles: Object.keys(vehiclesStore).map(key => vehiclesStore[key]) });
+  return Promise.resolve({
+    vehicles: Object.keys(vehiclesStore).map(key => vehiclesStore[key])
+  });
 }
 
 export async function getVehicleDetail(

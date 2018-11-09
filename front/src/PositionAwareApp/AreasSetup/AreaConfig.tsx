@@ -44,8 +44,11 @@ class AreaConfig extends React.Component<IProps, IState> {
 
   public async componentDidUpdate(prevProps: IProps) {
     const { areaId } = this.props;
-    if (areaId === prevProps.areaId) {
+    if (!areaId || areaId === prevProps.areaId) {
       return;
+    }
+    if (!prevProps.areaId) {
+      this.setState({ showPolicySelector: false });
     }
     const policies = await getPricingPolicies(areaId);
     this.setState({ policies });
@@ -57,33 +60,43 @@ class AreaConfig extends React.Component<IProps, IState> {
     return (
       <div
         style={{
-          height,
-          marginLeft,
-          padding: 10,
-          transition: "margin 0.2s ease-in",
-          width
+          background: "#8eaebd"
         }}
       >
-        <h3 style={{ margin: 0 }}>
-          Area rate policies{" "}
-          <span
-            style={{ cursor: "pointer" }}
-            onClick={() => {
-              this.setState({ showPolicySelector: true });
-            }}
-          >
-            +
-          </span>
-        </h3>
-        <div>
-          {policies.length === 0 && !showPolicySelector ? (
-            <p>This area has no configured rate policy.</p>
-          ) : (
-            <ol style={{ paddingLeft: 20, paddingRight: 20 }}>
-              {policies.map((pol: IPolicy) => this.renderPolicy(pol))}
-              {showPolicySelector ? this.renderPolicyChoices() : ""}
-            </ol>
-          )}
+        <div
+          style={{
+            background: "#30415d",
+            color: "#fff",
+            height,
+            marginLeft,
+            marginTop: 10,
+            padding: "30px 10px 10px 10px",
+            transition: "margin 0.2s ease-in",
+            width
+          }}
+        >
+          <div>
+            <h3 style={{ margin: 0 }}>
+              Area policies{" "}
+              <i
+                className="fas fa-plus-circle"
+                style={{ cursor: "pointer" }}
+                onClick={() => {
+                  this.setState({ showPolicySelector: true });
+                }}
+              />
+            </h3>
+            <div>
+              {policies.length === 0 && !showPolicySelector ? (
+                <p>This area has no configured policy.</p>
+              ) : (
+                <ol style={{ paddingLeft: 20, paddingRight: 20 }}>
+                  {policies.map((pol: IPolicy) => this.renderPolicy(pol))}
+                  {showPolicySelector ? this.renderPolicyChoices() : ""}
+                </ol>
+              )}
+            </div>
+          </div>
         </div>
       </div>
     );
@@ -91,18 +104,17 @@ class AreaConfig extends React.Component<IProps, IState> {
 
   private renderPolicy(policy: IPolicy) {
     return (
-      <li key={policy.id} style={{ margin: 0 }}>
+      <li key={policy.id} style={{ marginBottom: 10 }}>
         {policy.display}
-        <span
+        <i
+          className="fas fa-minus-circle"
           onClick={() => this.removePolicy(policy)}
           style={{
             cursor: "pointer",
             display: "inline-block",
             float: "right"
           }}
-        >
-          -
-        </span>
+        />
       </li>
     );
   }
@@ -110,7 +122,7 @@ class AreaConfig extends React.Component<IProps, IState> {
   private renderPolicyChoices() {
     const { policiesOptions } = this.state;
     return (
-      <li style={{ margin: 0 }}>
+      <li style={{ marginBottom: 10 }}>
         <select
           onChange={e =>
             this.addPolicy(policiesOptions[e.target.selectedIndex - 1])
@@ -123,16 +135,15 @@ class AreaConfig extends React.Component<IProps, IState> {
             </option>
           ))}
         </select>
-        <span
+        <i
+          className="fas fa-minus-circle"
           onClick={() => this.removePolicy()}
           style={{
             cursor: "pointer",
             display: "inline-block",
             float: "right"
           }}
-        >
-          -
-        </span>
+        />
       </li>
     );
   }
