@@ -64,6 +64,7 @@ def ok_view(request):
 
 urlpatterns = [
     url(r"^", include(router.urls)),
+    url(r"^schema/$", views.swagger),
     path("admin/", admin.site.urls),
     path("selftest/ping/", ok_view),
 ]

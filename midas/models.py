@@ -37,6 +37,9 @@ class ProviderModel(models.Model):
 
 
 class Device(ProviderModel):
+    """A device
+    """
+
     identification_number = UnboundedCharField()
     model = UnboundedCharField(default=str)
     status = UnboundedCharField(choices=enums.DEVICE_STATUS_CHOICES)

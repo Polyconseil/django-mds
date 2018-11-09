@@ -5,7 +5,7 @@ import os
 from corsheaders.defaults import default_headers
 import getconf
 
-CONFIG = getconf.ConfigGetter('midas')
+CONFIG = getconf.ConfigGetter("midas")
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = CONFIG.getstr(
@@ -14,7 +14,7 @@ SECRET_KEY = CONFIG.getstr(
 DEBUG = CONFIG.getbool("dev.debug", False)
 
 ALLOWED_HOSTS = CONFIG.getlist(
-    'django.allowed_hosts', [], doc="Comma-separated list of allowed hosts"
+    "django.allowed_hosts", [], doc="Comma-separated list of allowed hosts"
 )
 
 INSTALLED_APPS = [
@@ -25,7 +25,6 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-
     "corsheaders",
     "rest_framework",
 ]
@@ -81,4 +80,6 @@ STATIC_URL = "/static/"
 
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_CREDENTIALS = True
-CORS_ALLOW_HEADERS = list(default_headers) + ['cache-control']
+CORS_ALLOW_HEADERS = list(default_headers) + ["cache-control"]
+
+SWAGGER_YAML_FILE = "midas/oas.yml"
