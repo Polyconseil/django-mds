@@ -304,23 +304,32 @@ export async function getVehicles(requestBody: {}): Promise<
     mode: "cors"
   });
   let serverData = await (await fetch(request)).json();
-  serverData = serverData.map((vehicle: any) => {
-    // TODO: map to old version of model to avoid rewriting the rendering logic
-    // To be cleaned up later.
-    const vehicleFormatted: IVehicleResponse = {
-      unique_id: vehicle.id,
-      type: "car",
-      provider_id: "BlueLA",
-      current: {
-        position: {
-          lat: vehicle.position.geometry.coordinates[1] as number,
-          lng: vehicle.position.geometry.coordinates[0] as number
-        },
-        status: vehicle.status as "available"
+  serverData = serverData
+    .map((vehicle: any) => {
+      if (
+        !vehicle.position ||
+        !vehicle.position.geometry ||
+        !vehicle.position.geometry.coordinates
+      ) {
+        return null;
       }
-    };
-    return vehicleFormatted;
-  });
+      // TODO: map to old version of model to avoid rewriting the rendering logic
+      // To be cleaned up later.
+      const vehicleFormatted: IVehicleResponse = {
+        unique_id: vehicle.id,
+        type: "car",
+        provider_id: "BlueLA",
+        current: {
+          position: {
+            lat: vehicle.position.geometry.coordinates[1] as number,
+            lng: vehicle.position.geometry.coordinates[0] as number
+          },
+          status: vehicle.status as "available"
+        }
+      };
+      return vehicleFormatted;
+    })
+    .filter((vehicle: any) => !!vehicle);
   return serverData.concat(mockData);
 }
 
