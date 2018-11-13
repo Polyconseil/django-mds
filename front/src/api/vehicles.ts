@@ -1,3 +1,5 @@
+import { buildUrl } from "./commons";
+
 export interface IVehicleResponse {
   unique_id: string;
   type: "car" | "scooter" | "bicycle" | "car station" | "bike station";
@@ -18,10 +20,6 @@ export interface IVehicleDetailResponse {
     status: "available" | "unavailable" | "reserved";
   };
   extra: any;
-}
-
-export interface IVehiclesResponse {
-  vehicles: IVehicleResponse[];
 }
 
 const BlueLAData = [
@@ -204,22 +202,6 @@ function uniqueId() {
 }
 
 function randomVehicle(): IVehicleResponse {
-  if (Math.random() > 0.9) {
-    return {
-      current: {
-        position: randomPosition([34.0638, -118.27483], 0.05),
-        status:
-          Math.random() > 0.3
-            ? "available"
-            : Math.random() > 0.3
-            ? "reserved"
-            : "unavailable"
-      },
-      provider_id: "BlueLA",
-      type: "car",
-      unique_id: `${Math.floor((Math.random() * 10 + Math.random()) * 1000)}`
-    };
-  }
   if (Math.random() > 0.2) {
     return {
       current: {
@@ -280,7 +262,9 @@ function randomVehicle(): IVehicleResponse {
 
 const vehiclesStore = {};
 
-export async function getVehicles(requestBody: {}): Promise<IVehiclesResponse> {
+export async function getVehicles(requestBody: {}): Promise<
+  IVehicleResponse[]
+> {
   // TODO
   // For now, mock data
 
@@ -310,10 +294,34 @@ export async function getVehicles(requestBody: {}): Promise<IVehiclesResponse> {
       vehiclesStore[stationObj.unique_id] = stationObj;
     }
   }
+  const mockData = Object.keys(vehiclesStore).map(key => vehiclesStore[key]);
 
-  return Promise.resolve({
-    vehicles: Object.keys(vehiclesStore).map(key => vehiclesStore[key])
+  const request = new Request(buildUrl("vehicle"), {
+    headers: {
+      "Content-Type": "application/json"
+    },
+    method: "GET",
+    mode: "cors"
   });
+  let serverData = await (await fetch(request)).json();
+  serverData = serverData.map((vehicle: any) => {
+    // TODO: map to old version of model to avoid rewriting the rendering logic
+    // To be cleaned up later.
+    const vehicleFormatted: IVehicleResponse = {
+      unique_id: vehicle.id,
+      type: "car",
+      provider_id: "BlueLA",
+      current: {
+        position: {
+          lat: vehicle.position.geometry.coordinates[1] as number,
+          lng: vehicle.position.geometry.coordinates[0] as number
+        },
+        status: vehicle.status as "available"
+      }
+    };
+    return vehicleFormatted;
+  });
+  return serverData.concat(mockData);
 }
 
 export async function getVehicleDetail(
