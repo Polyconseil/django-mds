@@ -122,29 +122,102 @@ class AreaConfig extends React.Component<IProps, IState> {
   private renderPolicyChoices() {
     const { policiesOptions } = this.state;
     return (
-      <li style={{ marginBottom: 10 }}>
-        <select
-          onChange={e =>
-            this.addPolicy(policiesOptions[e.target.selectedIndex - 1])
-          }
-        >
-          <option value="-">---</option>
-          {policiesOptions.map(opt => (
-            <option key={opt.id} value={opt.id}>
-              {opt.display}
-            </option>
-          ))}
-        </select>
-        <i
-          className="fas fa-minus-circle"
-          onClick={() => this.removePolicy()}
+      <div>
+        <div>
+          <table>
+            <tr>
+              <td>Type</td>
+              <td>
+                <select style={{ width: 135 }} id="select-policy">
+                  <option value="-">---------------------</option>
+                  {policiesOptions.map(opt => (
+                    <option key={opt.id} value={opt.id}>
+                      {opt.display}
+                    </option>
+                  ))}
+                </select>
+              </td>
+            </tr>
+            <tr>
+              <td>From</td>
+              <td>
+                <input
+                  type="text"
+                  placeholder="2018-11-01 1am"
+                  style={{ padding: 3, textAlign: "center" }}
+                />
+              </td>
+            </tr>
+            <tr>
+              <td>To</td>
+              <td>
+                <input
+                  type="text"
+                  placeholder="2018-12-01 5pm"
+                  style={{ padding: 3, textAlign: "center" }}
+                />
+              </td>
+            </tr>
+            <tr>
+              <td style={{ paddingRight: 20 }}>Fee ($)</td>
+              <td>
+                <input
+                  type="text"
+                  placeholder="135"
+                  style={{ padding: 3, textAlign: "center" }}
+                />
+              </td>
+            </tr>
+          </table>
+        </div>
+        <div
           style={{
-            cursor: "pointer",
-            display: "inline-block",
-            float: "right"
+            float: "right",
+            marginTop: 25
           }}
-        />
-      </li>
+        >
+          <button
+            style={{
+              marginRight: 10,
+              backgroundColor: "rgb(197, 55, 55)",
+              border: "none",
+              color: "white",
+              padding: "5px 10px",
+              textAlign: "center",
+              textDecoration: "none",
+              display: "inline-block",
+              cursor: "pointer",
+              fontSize: 12
+            }}
+            onClick={() => this.removePolicy()}
+          >
+            Cancel
+          </button>
+          <button
+            style={{
+              backgroundColor: "#4CAF50",
+              border: "none",
+              color: "white",
+              padding: "5px 10px",
+              textAlign: "center",
+              textDecoration: "none",
+              display: "inline-block",
+              cursor: "pointer",
+              fontSize: 12
+            }}
+            onClick={e => {
+              const selectPolicy = document.querySelector(
+                "#select-policy"
+              ) as HTMLSelectElement;
+              if (selectPolicy) {
+                this.addPolicy(policiesOptions[selectPolicy.selectedIndex - 1]);
+              }
+            }}
+          >
+            Add
+          </button>
+        </div>
+      </div>
     );
   }
 

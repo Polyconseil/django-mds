@@ -31,6 +31,22 @@ const BIKE_ICON = L.icon({
   popupAnchor: [20, -25]
 });
 
+const CARSTATION_ICON = L.icon({
+  iconUrl: "/carstation_picto.svg",
+
+  iconAnchor: [12, 30],
+  iconSize: [43, 43],
+  popupAnchor: [12, -24]
+});
+
+const BIKESTATION_ICON = L.icon({
+  iconUrl: "/bikestation_picto.svg",
+
+  iconAnchor: [12, 30],
+  iconSize: [43, 43],
+  popupAnchor: [12, -24]
+});
+
 function capitalize(s: string) {
   if (s.length > 0) {
     return s[0].toUpperCase() + s.substr(1);
@@ -61,16 +77,7 @@ class AssetsViewer extends React.Component<IPositionRouteProps> {
   private handleMapReady = async (map: L.Map) => {
     const result = await getVehicles({});
     result.vehicles.forEach(vehicle => {
-      const markerNode = L.marker(vehicle.current.position, {
-        icon:
-          vehicle.type === "car"
-            ? CAR_ICON
-            : vehicle.type === "scooter"
-            ? SCOOTER_ICON
-            : BIKE_ICON
-      })
-        .bindPopup(
-          `
+      let popupHTML = `
           <table>
             <tr><td style="text-align: right;">Id:</td><td>${vehicle.unique_id.substring(
               0,
@@ -85,9 +92,40 @@ class AssetsViewer extends React.Component<IPositionRouteProps> {
             <tr><td style="text-align: right;">Status:</td><td>${capitalize(
               vehicle.current.status
             )}</td></tr>
-          </table>
-        `
-        )
+        `;
+      if (
+        vehicle.extra &&
+        vehicle.extra.availability &&
+        vehicle.extra.capacity
+      ) {
+        popupHTML =
+          popupHTML +
+          `
+            <tr><td style="text-align: right;">${
+              vehicle.type === "car station" ? "Parking" : "Docks"
+            }:</td><td>${vehicle.extra.capacity -
+            vehicle.extra.availability}</td></tr>
+          ` +
+          `
+            <tr><td style="text-align: right;">${
+              vehicle.type === "car station" ? "Cars" : "Bikes"
+            }:</td><td>${vehicle.extra.availability}</td></tr>
+          `;
+      }
+      popupHTML += "</table>";
+      const markerNode = L.marker(vehicle.current.position, {
+        icon:
+          vehicle.type === "car"
+            ? CAR_ICON
+            : vehicle.type === "scooter"
+            ? SCOOTER_ICON
+            : vehicle.type === "bicycle"
+            ? BIKE_ICON
+            : vehicle.type === "car station"
+            ? CARSTATION_ICON
+            : BIKESTATION_ICON
+      })
+        .bindPopup(popupHTML)
         .addTo(map)
         .getElement();
       if (markerNode) {
