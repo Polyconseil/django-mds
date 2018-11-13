@@ -1,0 +1,1287 @@
+- model: midas.device
+  pk: 00bc887c-92df-452c-9752-e8b880391b78
+  fields:
+    provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
+    identification_number: '38'
+    model: bicycle-A
+    status: available
+    point: SRID=4326;POINT (-118.3382243481348 34.05588160995279)
+    properties: {}
+- model: midas.device
+  pk: 00e97566-c4f7-498c-9f9d-bea375d6c7d2
+  fields:
+    provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
+    identification_number: '63'
+    model: car-B
+    status: available
+    point: SRID=4326;POINT (-118.3617726896254 34.01122949707137)
+    properties: {}
+- model: midas.device
+  pk: 03d907c1-9f47-4dd1-96c7-d93453843f45
+  fields:
+    provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
+    identification_number: '86'
+    model: bicycle-A
+    status: available
+    point: SRID=4326;POINT (-118.3415001223982 34.05433366062722)
+    properties: {}
+- model: midas.device
+  pk: 04b60edf-a2e1-48a9-ac46-8f49f28907d2
+  fields:
+    provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
+    identification_number: '58'
+    model: bicycle-A
+    status: available
+    point: SRID=4326;POINT (-118.3040565217666 34.06794907495042)
+    properties: {}
+- model: midas.device
+  pk: 06b2646f-7d86-4dd1-89f4-f0e94a20a569
+  fields:
+    provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
+    identification_number: '92'
+    model: bicycle-A
+    status: available
+    point: SRID=4326;POINT (-118.3389408257989 34.0361403602471)
+    properties: {}
+- model: midas.device
+  pk: 089ad26b-bdf9-467c-bc34-178a85d3a2ee
+  fields:
+    provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
+    identification_number: '95'
+    model: car-B
+    status: available
+    point: SRID=4326;POINT (-118.3043441622054 34.06726620979247)
+    properties: {}
+- model: midas.device
+  pk: 091e286f-24c8-432a-b439-12758a6f9be7
+  fields:
+    provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
+    identification_number: '76'
+    model: bicycle-A
+    status: available
+    point: SRID=4326;POINT (-118.3012816481511 34.05977568101531)
+    properties: {}
+- model: midas.device
+  pk: 097d69c6-85c5-447b-b43a-582bcc708908
+  fields:
+    provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
+    identification_number: '68'
+    model: bicycle-A
+    status: available
+    point: SRID=4326;POINT (-118.2926445122391 34.05743617609163)
+    properties: {}
+- model: midas.device
+  pk: 0b78633d-f39a-4266-a189-a7174c373e72
+  fields:
+    provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
+    identification_number: '85'
+    model: car-B
+    status: available
+    point: SRID=4326;POINT (-118.3075237014617 34.07340352096229)
+    properties: {}
+- model: midas.device
+  pk: 0ca2a537-2246-4484-b46b-84acba5aac52
+  fields:
+    provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
+    identification_number: '24'
+    model: bicycle-A
+    status: available
+    point: SRID=4326;POINT (-118.3688313955472 34.02474211928521)
+    properties: {}
+- model: midas.device
+  pk: 0e45bbce-4bdd-446c-a2df-20e970b5b6d5
+  fields:
+    provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
+    identification_number: '16'
+    model: bicycle-A
+    status: available
+    point: SRID=4326;POINT (-118.3454971932835 34.04594666454092)
+    properties: {}
+- model: midas.device
+  pk: 0eef4c4b-8e14-4fc4-ac00-a5588d6b37a3
+  fields:
+    provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
+    identification_number: '44'
+    model: bicycle-A
+    status: available
+    point: SRID=4326;POINT (-118.3491232411356 34.03264599583665)
+    properties: {}
+- model: midas.device
+  pk: 0ef10be7-d390-4d99-981f-8bc5aae01889
+  fields:
+    provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
+    identification_number: '11'
+    model: car-B
+    status: available
+    point: SRID=4326;POINT (-118.3257771872959 34.04204423944844)
+    properties: {}
+- model: midas.device
+  pk: 0fd2b0e6-19ca-4696-91d2-c7b5ec20950e
+  fields:
+    provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
+    identification_number: '7'
+    model: car-B
+    status: available
+    point: SRID=4326;POINT (-118.3007442384249 34.07348849567247)
+    properties: {}
+- model: midas.device
+  pk: 1122b4de-1910-4eeb-ab64-660e92889f36
+  fields:
+    provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
+    identification_number: '57'
+    model: car-B
+    status: available
+    point: SRID=4326;POINT (-118.3734111803622 34.03866593475923)
+    properties: {}
+- model: midas.device
+  pk: 142b6420-37b7-4830-8257-d8788bb35ede
+  fields:
+    provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
+    identification_number: '54'
+    model: bicycle-A
+    status: available
+    point: SRID=4326;POINT (-118.3319727580966 34.0187223074569)
+    properties: {}
+- model: midas.device
+  pk: 150914e6-cf26-4c23-8daa-b0977bdc4f9d
+  fields:
+    provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
+    identification_number: '50'
+    model: bicycle-A
+    status: available
+    point: SRID=4326;POINT (-118.3332235900621 34.05098837827157)
+    properties: {}
+- model: midas.device
+  pk: 16ad99ac-e574-419a-84fe-cbf95cb0f734
+  fields:
+    provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
+    identification_number: '20'
+    model: bicycle-A
+    status: available
+    point: SRID=4326;POINT (-118.3669781520847 34.03905336778321)
+    properties: {}
+- model: midas.device
+  pk: 1825d162-883d-4ad7-876b-8da7136ea61f
+  fields:
+    provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
+    identification_number: '80'
+    model: bicycle-A
+    status: available
+    point: SRID=4326;POINT (-118.3611253686896 34.00888203794233)
+    properties: {}
+- model: midas.device
+  pk: 1ba7cc02-5eb3-4ef6-ac3b-298c9e7e0cc1
+  fields:
+    provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
+    identification_number: '49'
+    model: car-B
+    status: available
+    point: SRID=4326;POINT (-118.3774570268124 34.01967474137314)
+    properties: {}
+- model: midas.device
+  pk: 1c8ca2d7-e879-4a96-860f-350f0360f23a
+  fields:
+    provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
+    identification_number: '47'
+    model: car-B
+    status: available
+    point: SRID=4326;POINT (-118.3029302825759 34.0508211494408)
+    properties: {}
+- model: midas.device
+  pk: 1f821abb-f424-4617-bed7-609f7fef55da
+  fields:
+    provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
+    identification_number: '32'
+    model: bicycle-A
+    status: available
+    point: SRID=4326;POINT (-118.3468467244788 34.03040375546733)
+    properties: {}
+- model: midas.device
+  pk: 2078b603-be9d-4bf8-b31e-17e9889d6019
+  fields:
+    provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
+    identification_number: '72'
+    model: bicycle-A
+    status: available
+    point: SRID=4326;POINT (-118.3116224117672 34.04375445763927)
+    properties: {}
+- model: midas.device
+  pk: 26a5b437-354f-49cd-8209-3eded7dbe018
+  fields:
+    provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
+    identification_number: '13'
+    model: car-B
+    status: available
+    point: SRID=4326;POINT (-118.2891668254043 34.06043410229702)
+    properties: {}
+- model: midas.device
+  pk: 27f428be-c7e1-4795-bcc1-37bdb16b7477
+  fields:
+    provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
+    identification_number: '96'
+    model: bicycle-A
+    status: available
+    point: SRID=4326;POINT (-118.365269985117 34.02027388432874)
+    properties: {}
+- model: midas.device
+  pk: 2912c314-8216-4fab-8b52-ee3404f5cd70
+  fields:
+    provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
+    identification_number: '14'
+    model: bicycle-A
+    status: available
+    point: SRID=4326;POINT (-118.347389146384 34.04052046299613)
+    properties: {}
+- model: midas.device
+  pk: 2a0ada81-0276-4e4d-aecd-3ca04c66bf08
+  fields:
+    provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
+    identification_number: '37'
+    model: car-B
+    status: available
+    point: SRID=4326;POINT (-118.333827640789 34.04121130184902)
+    properties: {}
+- model: midas.device
+  pk: 2ceee134-73d8-4623-8061-d033b9bceb3e
+  fields:
+    provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
+    identification_number: '29'
+    model: car-B
+    status: available
+    point: SRID=4326;POINT (-118.308112282537 34.05034817743139)
+    properties: {}
+- model: midas.device
+  pk: 2f3fc2e3-3763-4f92-ada1-f1dafeabf837
+  fields:
+    provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
+    identification_number: '23'
+    model: car-B
+    status: available
+    point: SRID=4326;POINT (-118.306953402709 34.04262141245447)
+    properties: {}
+- model: midas.device
+  pk: 33bedf10-4eb0-4362-bad3-72d74224937e
+  fields:
+    provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
+    identification_number: '12'
+    model: bicycle-A
+    status: available
+    point: SRID=4326;POINT (-118.3038093760342 34.0377345421996)
+    properties: {}
+- model: midas.device
+  pk: 354b54e9-8969-4e8e-b26c-4bd3020c12fe
+  fields:
+    provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
+    identification_number: '98'
+    model: bicycle-A
+    status: available
+    point: SRID=4326;POINT (-118.3189153723076 34.02460567496542)
+    properties: {}
+- model: midas.device
+  pk: 3aa4eaea-101e-4f66-a499-ee8e08da2ee3
+  fields:
+    provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
+    identification_number: '82'
+    model: bicycle-A
+    status: available
+    point: SRID=4326;POINT (-118.3453890974113 34.01060479084069)
+    properties: {}
+- model: midas.device
+  pk: 3b8c8beb-3110-4318-b27a-2c1f5533f388
+  fields:
+    provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
+    identification_number: '79'
+    model: car-B
+    status: available
+    point: SRID=4326;POINT (-118.3660503140846 34.01484588955189)
+    properties: {}
+- model: midas.device
+  pk: 3bd865fa-d571-4ee5-919d-e2ed7dde8563
+  fields:
+    provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
+    identification_number: '0'
+    model: bicycle-A
+    status: available
+    point: SRID=4326;POINT (-118.3630821499491 34.03813293060611)
+    properties: {}
+- model: midas.device
+  pk: 3cb19d04-8846-4212-8d52-08fd6cd8157d
+  fields:
+    provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
+    identification_number: '77'
+    model: car-B
+    status: available
+    point: SRID=4326;POINT (-118.3605667469269 34.01958267380505)
+    properties: {}
+- model: midas.device
+  pk: 3cbd2ce9-5f5a-445d-846f-950f8455fc59
+  fields:
+    provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
+    identification_number: '78'
+    model: bicycle-A
+    status: available
+    point: SRID=4326;POINT (-118.3073895866832 34.06370984213969)
+    properties: {}
+- model: midas.device
+  pk: 42560c31-b26d-4558-9c1f-f4899f079b4f
+  fields:
+    provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
+    identification_number: '99'
+    model: car-B
+    status: available
+    point: SRID=4326;POINT (-118.3490632060796 34.014709685971)
+    properties: {}
+- model: midas.device
+  pk: 44307a24-ed1f-4b3f-8730-53382a113b1c
+  fields:
+    provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
+    identification_number: '53'
+    model: car-B
+    status: available
+    point: SRID=4326;POINT (-118.3706721614282 34.01655531720687)
+    properties: {}
+- model: midas.device
+  pk: 479f4d7f-f941-440b-a706-ae3c8d25c115
+  fields:
+    provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
+    identification_number: '26'
+    model: bicycle-A
+    status: available
+    point: SRID=4326;POINT (-118.3067852074754 34.0438545432953)
+    properties: {}
+- model: midas.device
+  pk: 49ff5963-348a-4c3f-a4ab-e52a2b6d2a58
+  fields:
+    provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
+    identification_number: '45'
+    model: car-B
+    status: available
+    point: SRID=4326;POINT (-118.3718880718382 34.02576335406125)
+    properties: {}
+- model: midas.device
+  pk: 4c94ce53-2697-4d8f-a672-5ef0e7f412b5
+  fields:
+    provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
+    identification_number: '48'
+    model: bicycle-A
+    status: available
+    point: SRID=4326;POINT (-118.3408952572128 34.01888780565285)
+    properties: {}
+- model: midas.device
+  pk: 4d033dec-a638-4070-96f6-3ae97706c945
+  fields:
+    provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
+    identification_number: '65'
+    model: car-B
+    status: available
+    point: SRID=4326;POINT (-118.327551842746 34.01316322435421)
+    properties: {}
+- model: midas.device
+  pk: 50c1b410-ec2b-4cdf-80d1-f09419290a50
+  fields:
+    provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
+    identification_number: '22'
+    model: bicycle-A
+    status: available
+    point: SRID=4326;POINT (-118.3612656130506 34.03110386770528)
+    properties: {}
+- model: midas.device
+  pk: 5506b5c9-3530-405e-aca1-ac2183a0e5aa
+  fields:
+    provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
+    identification_number: '62'
+    model: bicycle-A
+    status: available
+    point: SRID=4326;POINT (-118.3159624222783 34.03290958480127)
+    properties: {}
+- model: midas.device
+  pk: 551cd815-cd5b-4cdd-8f66-564fbb946e15
+  fields:
+    provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
+    identification_number: '17'
+    model: car-B
+    status: available
+    point: SRID=4326;POINT (-118.324522656731 34.012500599307)
+    properties: {}
+- model: midas.device
+  pk: 55451f2b-afd3-42a0-ab02-1ad33e77fb44
+  fields:
+    provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
+    identification_number: '69'
+    model: car-B
+    status: available
+    point: SRID=4326;POINT (-118.3089882449877 34.07649864484774)
+    properties: {}
+- model: midas.device
+  pk: 5648a5ab-4804-4c7a-b6f3-7e9746fa8893
+  fields:
+    provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
+    identification_number: '2'
+    model: bicycle-A
+    status: available
+    point: SRID=4326;POINT (-118.3516170878198 34.02952191744996)
+    properties: {}
+- model: midas.device
+  pk: 56f85932-6c53-434c-a742-b5105fb4edf6
+  fields:
+    provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
+    identification_number: '1'
+    model: car-B
+    status: available
+    point: SRID=4326;POINT (-118.3708696671141 34.04444585314872)
+    properties: {}
+- model: midas.device
+  pk: 59a08877-ea2b-4a54-836c-de88275df4a4
+  fields:
+    provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
+    identification_number: '27'
+    model: car-B
+    status: available
+    point: SRID=4326;POINT (-118.3712737498503 34.02203380301342)
+    properties: {}
+- model: midas.device
+  pk: 5f9ec925-ab6b-4f86-a7f6-81907276e193
+  fields:
+    provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
+    identification_number: '42'
+    model: bicycle-A
+    status: available
+    point: SRID=4326;POINT (-118.3276597167215 34.03947352775847)
+    properties: {}
+- model: midas.device
+  pk: 62c9b301-e075-40c8-88cb-3bc719ff0b6e
+  fields:
+    provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
+    identification_number: '30'
+    model: bicycle-A
+    status: available
+    point: SRID=4326;POINT (-118.3511876352247 34.0421445358879)
+    properties: {}
+- model: midas.device
+  pk: 72cc8ebe-aedb-4b3a-acfe-e41d6bf245ae
+  fields:
+    provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
+    identification_number: '46'
+    model: bicycle-A
+    status: available
+    point: SRID=4326;POINT (-118.3495205568407 34.05089742598034)
+    properties: {}
+- model: midas.device
+  pk: 746ac2ea-378a-40ab-a7c7-0a1e5e355c7c
+  fields:
+    provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
+    identification_number: '5'
+    model: car-B
+    status: available
+    point: SRID=4326;POINT (-118.386129847342 34.04591155171599)
+    properties: {}
+- model: midas.device
+  pk: 7965ce01-f536-4a6e-9f48-ac112e30dc20
+  fields:
+    provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
+    identification_number: '91'
+    model: car-B
+    status: available
+    point: SRID=4326;POINT (-118.380123562076 34.03993783849219)
+    properties: {}
+- model: midas.device
+  pk: 796aaeea-b2b8-4eba-af78-4f1b7e933c5c
+  fields:
+    provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
+    identification_number: '94'
+    model: bicycle-A
+    status: available
+    point: SRID=4326;POINT (-118.3247095724893 34.02219142589129)
+    properties: {}
+- model: midas.device
+  pk: 79d9c4ca-fa63-4f91-af32-62e4825b42c6
+  fields:
+    provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
+    identification_number: '74'
+    model: bicycle-A
+    status: available
+    point: SRID=4326;POINT (-118.3339233868114 34.04989206181944)
+    properties: {}
+- model: midas.device
+  pk: 7a221012-1523-49a1-997c-803f6f9d3917
+  fields:
+    provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
+    identification_number: '43'
+    model: car-B
+    status: available
+    point: SRID=4326;POINT (-118.3015084668265 34.03798812810293)
+    properties: {}
+- model: midas.device
+  pk: 7b393d30-eca0-4181-927d-8055baeded07
+  fields:
+    provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
+    identification_number: '36'
+    model: bicycle-A
+    status: available
+    point: SRID=4326;POINT (-118.3470230822079 34.02839181581771)
+    properties: {}
+- model: midas.device
+  pk: 7c46e834-21cf-4d91-b94f-664e620ff961
+  fields:
+    provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
+    identification_number: '55'
+    model: car-B
+    status: available
+    point: SRID=4326;POINT (-118.3209531025826 34.05392063686185)
+    properties: {}
+- model: midas.device
+  pk: 7cefde37-ebdb-40f2-8f88-fc131fe7171a
+  fields:
+    provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
+    identification_number: '87'
+    model: car-B
+    status: available
+    point: SRID=4326;POINT (-118.3373989869436 34.04945322139929)
+    properties: {}
+- model: midas.device
+  pk: 80da4b98-a3d0-4c5f-bfb9-a2adced5a67d
+  fields:
+    provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
+    identification_number: '25'
+    model: car-B
+    status: available
+    point: SRID=4326;POINT (-118.3041479903773 34.06790952618845)
+    properties: {}
+- model: midas.device
+  pk: 83b88b71-7c21-42f4-807f-3522933a6a48
+  fields:
+    provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
+    identification_number: '40'
+    model: bicycle-A
+    status: available
+    point: SRID=4326;POINT (-118.3027483021097 34.04946639124328)
+    properties: {}
+- model: midas.device
+  pk: 84c3f46c-8b3f-408f-8aa5-5185e647d20e
+  fields:
+    provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
+    identification_number: '89'
+    model: car-B
+    status: available
+    point: SRID=4326;POINT (-118.3525961827258 34.03393249909491)
+    properties: {}
+- model: midas.device
+  pk: 88f5eefd-67a3-4b40-af1f-97fb85d99670
+  fields:
+    provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
+    identification_number: '35'
+    model: car-B
+    status: available
+    point: SRID=4326;POINT (-118.3282923562319 34.01781347870732)
+    properties: {}
+- model: midas.device
+  pk: 8def34f1-df57-4050-aab8-4a12b6c30637
+  fields:
+    provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
+    identification_number: '15'
+    model: car-B
+    status: available
+    point: SRID=4326;POINT (-118.3141158574198 34.04157375950656)
+    properties: {}
+- model: midas.device
+  pk: 8ea3130c-83be-4b0d-8192-1786598e7ba3
+  fields:
+    provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
+    identification_number: '83'
+    model: car-B
+    status: available
+    point: SRID=4326;POINT (-118.3190656007602 34.00598846052209)
+    properties: {}
+- model: midas.device
+  pk: 910cb33e-4b3e-4bb0-868f-36ff84f90d81
+  fields:
+    provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
+    identification_number: '19'
+    model: car-B
+    status: available
+    point: SRID=4326;POINT (-118.3505256918486 34.04849279309531)
+    properties: {}
+- model: midas.device
+  pk: 95a3cc45-b25c-4959-9f18-451ab9ab1978
+  fields:
+    provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
+    identification_number: '71'
+    model: car-B
+    status: available
+    point: SRID=4326;POINT (-118.3042858852391 34.05039234605915)
+    properties: {}
+- model: midas.device
+  pk: 95a780ee-e452-4211-9fc6-2393171877f4
+  fields:
+    provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
+    identification_number: '88'
+    model: bicycle-A
+    status: available
+    point: SRID=4326;POINT (-118.3059945700021 34.0673096798697)
+    properties: {}
+- model: midas.device
+  pk: 9c3571f4-60cc-49a3-b1ff-ff07958b19b1
+  fields:
+    provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
+    identification_number: '97'
+    model: car-B
+    status: available
+    point: SRID=4326;POINT (-118.3669539872322 34.04939030170908)
+    properties: {}
+- model: midas.device
+  pk: 9fa28179-d788-4685-bc29-dac9d9836b2a
+  fields:
+    provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
+    identification_number: '93'
+    model: car-B
+    status: available
+    point: SRID=4326;POINT (-118.3495956029277 34.03715290372178)
+    properties: {}
+- model: midas.device
+  pk: a2a2a749-7d07-4c3f-9977-583acb4181ef
+  fields:
+    provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
+    identification_number: '52'
+    model: bicycle-A
+    status: available
+    point: SRID=4326;POINT (-118.3296511685222 34.05380824192501)
+    properties: {}
+- model: midas.device
+  pk: afd59888-6a32-41e6-9c48-aba3192c5e64
+  fields:
+    provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
+    identification_number: '70'
+    model: bicycle-A
+    status: available
+    point: SRID=4326;POINT (-118.3119181054427 34.04999727087394)
+    properties: {}
+- model: midas.device
+  pk: b268a556-fcd2-4648-8b0f-83f68036ef53
+  fields:
+    provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
+    identification_number: '39'
+    model: car-B
+    status: available
+    point: SRID=4326;POINT (-118.3776055311929 34.03314292929859)
+    properties: {}
+- model: midas.device
+  pk: b5442878-1361-4c2c-a138-79174d0ece5b
+  fields:
+    provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
+    identification_number: '8'
+    model: bicycle-A
+    status: available
+    point: SRID=4326;POINT (-118.3086621258699 34.05177406176522)
+    properties: {}
+- model: midas.device
+  pk: b6d8b81c-5465-42a4-939d-59d9dc584118
+  fields:
+    provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
+    identification_number: '75'
+    model: car-B
+    status: available
+    point: SRID=4326;POINT (-118.3646751353692 34.04518652992598)
+    properties: {}
+- model: midas.device
+  pk: b766a016-af48-4e80-89ef-3241bf2aabb7
+  fields:
+    provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
+    identification_number: '28'
+    model: bicycle-A
+    status: available
+    point: SRID=4326;POINT (-118.3228907281826 34.01882951981059)
+    properties: {}
+- model: midas.device
+  pk: bcf0e031-903a-43c8-8d09-91b9f0ba4237
+  fields:
+    provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
+    identification_number: '3'
+    model: car-B
+    status: available
+    point: SRID=4326;POINT (-118.3434596737377 34.04174807379387)
+    properties: {}
+- model: midas.device
+  pk: bf4e49eb-dc2a-4986-b39f-88d6dd26bb46
+  fields:
+    provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
+    identification_number: '21'
+    model: car-B
+    status: available
+    point: SRID=4326;POINT (-118.3531244292336 34.04496897376929)
+    properties: {}
+- model: midas.device
+  pk: c3b37e21-f58c-430b-a7ff-a7f1dea6e7e4
+  fields:
+    provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
+    identification_number: '73'
+    model: car-B
+    status: available
+    point: SRID=4326;POINT (-118.3464033827604 34.03470800342698)
+    properties: {}
+- model: midas.device
+  pk: c71c4928-9382-49e8-8db1-4fe7c90a9722
+  fields:
+    provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
+    identification_number: '41'
+    model: car-B
+    status: available
+    point: SRID=4326;POINT (-118.3738200538334 34.04941025870657)
+    properties: {}
+- model: midas.device
+  pk: c72832a7-38d4-48d8-9d01-41e1a34f49af
+  fields:
+    provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
+    identification_number: '4'
+    model: bicycle-A
+    status: available
+    point: SRID=4326;POINT (-118.2876059848029 34.06203317565792)
+    properties: {}
+- model: midas.device
+  pk: c838e560-02ca-4256-b9b5-f100b788d8c0
+  fields:
+    provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
+    identification_number: '90'
+    model: bicycle-A
+    status: available
+    point: SRID=4326;POINT (-118.306296866583 34.0745485702642)
+    properties: {}
+- model: midas.device
+  pk: cac1e47a-a0fe-4ddb-9f85-49276a300c99
+  fields:
+    provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
+    identification_number: '59'
+    model: car-B
+    status: available
+    point: SRID=4326;POINT (-118.336121898548 34.02278832282425)
+    properties: {}
+- model: midas.device
+  pk: cb12191f-ff05-4708-b7a8-9fe0bc0581fb
+  fields:
+    provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
+    identification_number: '84'
+    model: bicycle-A
+    status: available
+    point: SRID=4326;POINT (-118.3675177258697 34.03259787289283)
+    properties: {}
+- model: midas.device
+  pk: d04f26c4-0813-4f77-bdaa-91fee78e3a64
+  fields:
+    provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
+    identification_number: '34'
+    model: bicycle-A
+    status: available
+    point: SRID=4326;POINT (-118.3682161829568 34.04098510806242)
+    properties: {}
+- model: midas.device
+  pk: d41550b9-5649-4275-ba7f-7a8bda19a436
+  fields:
+    provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
+    identification_number: '51'
+    model: car-B
+    status: available
+    point: SRID=4326;POINT (-118.3344708040427 34.02632029070389)
+    properties: {}
+- model: midas.device
+  pk: d54469d1-751b-45fb-9823-a1b48f85446b
+  fields:
+    provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
+    identification_number: '81'
+    model: car-B
+    status: available
+    point: SRID=4326;POINT (-118.3296564212264 34.01256144147293)
+    properties: {}
+- model: midas.device
+  pk: d5af94f5-ad64-4f1b-b580-24478cf4231d
+  fields:
+    provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
+    identification_number: '9'
+    model: car-B
+    status: available
+    point: SRID=4326;POINT (-118.3756794033454 34.04344544261917)
+    properties: {}
+- model: midas.device
+  pk: da1a7667-f18d-4425-bffb-b25d95e2b1e5
+  fields:
+    provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
+    identification_number: '10'
+    model: bicycle-A
+    status: available
+    point: SRID=4326;POINT (-118.3531114218658 34.04524716958083)
+    properties: {}
+- model: midas.device
+  pk: dd6c83c2-8460-464f-ba50-8da544d3e454
+  fields:
+    provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
+    identification_number: '67'
+    model: car-B
+    status: available
+    point: SRID=4326;POINT (-118.3675530482759 34.03847260701899)
+    properties: {}
+- model: midas.device
+  pk: e53a0188-34b8-4f3a-a443-b73007b9b3aa
+  fields:
+    provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
+    identification_number: '66'
+    model: bicycle-A
+    status: available
+    point: SRID=4326;POINT (-118.3368289964467 34.031069080443)
+    properties: {}
+- model: midas.device
+  pk: e60b5df5-0c2d-49a6-bde8-5203b12068d6
+  fields:
+    provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
+    identification_number: '56'
+    model: bicycle-A
+    status: available
+    point: SRID=4326;POINT (-118.3860827008448 34.04442068262153)
+    properties: {}
+- model: midas.device
+  pk: e7053e00-61dd-4639-96b9-6fb7b6a9afde
+  fields:
+    provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
+    identification_number: '60'
+    model: bicycle-A
+    status: available
+    point: SRID=4326;POINT (-118.3303790522831 34.01351419350657)
+    properties: {}
+- model: midas.device
+  pk: ecd5275e-c303-4d35-94b8-0a5ccfc744d5
+  fields:
+    provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
+    identification_number: '31'
+    model: car-B
+    status: available
+    point: SRID=4326;POINT (-118.3425747771524 34.03837717640891)
+    properties: {}
+- model: midas.device
+  pk: f025c249-8895-4bbe-a1ab-8308cebc70a7
+  fields:
+    provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
+    identification_number: '64'
+    model: bicycle-A
+    status: available
+    point: SRID=4326;POINT (-118.364946360478 34.01127836222786)
+    properties: {}
+- model: midas.device
+  pk: f198749f-f005-4250-8b92-fba173a57767
+  fields:
+    provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
+    identification_number: '33'
+    model: car-B
+    status: available
+    point: SRID=4326;POINT (-118.3573735881009 34.03318592387966)
+    properties: {}
+- model: midas.device
+  pk: f562c003-1901-477f-aeed-035d212851ae
+  fields:
+    provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
+    identification_number: '6'
+    model: bicycle-A
+    status: available
+    point: SRID=4326;POINT (-118.3527398428119 34.04523214011096)
+    properties: {}
+- model: midas.device
+  pk: f71255f6-92bc-41ff-90ef-fbf553beb59b
+  fields:
+    provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
+    identification_number: '18'
+    model: bicycle-A
+    status: available
+    point: SRID=4326;POINT (-118.3248462654243 34.03523748456562)
+    properties: {}
+- model: midas.device
+  pk: fe567579-3b42-4c5b-8181-a4630b350c9e
+  fields:
+    provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
+    identification_number: '61'
+    model: car-B
+    status: available
+    point: SRID=4326;POINT (-118.3620279994324 34.04582121449525)
+    properties: {}
+- model: midas.area
+  pk: 6441b544-0be1-4ec1-aa70-729fe1cebe97
+  fields:
+    provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
+    begin_date: 2018-08-01T00:00:00Z
+    end_date: null
+    polygon: SRID=4326;POLYGON ((-118.2843063056015 34.06371498771665, -118.2842040002129
+      34.06370000073153, -118.2841039999419 34.06367000044555, -118.2839099990901
+      34.06358299998553, -118.2830799995123 34.06321499943402, -118.2822939998328
+      34.06286500032705, -118.2832839999346 34.06134900053578, -118.2842000004736
+      34.05994599974497, -118.2842080007944 34.0608029999119, -118.2878279998729 34.06078400072908,
+      -118.2878180002675 34.05978800017664, -118.2890850008437 34.05978100011807,
+      -118.291265004147 34.05977469666946, -118.2912550797562 34.05880579710119, -118.2912537611431
+      34.05858696257194, -118.2912496416617 34.05816066540414, -118.2911614218578
+      34.05816087812449, -118.2911579892051 34.05760717220491, -118.2911568301976
+      34.05688229699995, -118.2912105973955 34.0567174089237, -118.2912082605247 34.05634540401373,
+      -118.2912645677282 34.05634523126267, -118.2912601191182 34.05597900846453,
+      -118.2912287880714 34.05580884788949, -118.2912265468233 34.05557385837395,
+      -118.2912251652898 34.05543648458251, -118.2912227618155 34.05543649037847,
+      -118.2912223658937 34.05529910068818, -118.2912221255613 34.05521605492178,
+      -118.2912216860011 34.05506550568789, -118.2909713941998 34.05490100799702,
+      -118.2909664027869 34.05338762516346, -118.2909644504227 34.0525474948793, -118.2908877784756
+      34.05226214397737, -118.2917756409846 34.05225731277024, -118.2927569362366
+      34.05225220619298, -118.2936044816436 34.05224842841803, -118.2938028981004
+      34.05224743828524, -118.2961159457588 34.05223706642464, -118.2999873436386
+      34.05221794521744, -118.2999759994425 34.05087099918974, -118.2999710000002
+      34.04906300077812, -118.2999669989191 34.04722800009382, -118.3001684584944
+      34.04684929007531, -118.3002182206483 34.0466857115785, -118.3002479040408 34.04653894785983,
+      -118.30026221177 34.04631678045067, -118.300259038338 34.04543245405662, -118.3002739994725
+      34.04456099974234, -118.3002740005318 34.04442699978889, -118.3002748762768
+      34.04423374454176, -118.3002943085905 34.04403671171261, -118.3003288602246
+      34.04384383159355, -118.3003935139708 34.0436215389647, -118.300557972284 34.04315172061875,
+      -118.3006275993937 34.04291265152354, -118.3006922828354 34.04269874200294,
+      -118.3007266511683 34.04245556943611, -118.3007439993888 34.04149800042323,
+      -118.3007280009353 34.04130700048493, -118.3006949993748 34.04111700031688,
+      -118.3006469997176 34.04092900011987, -118.3006090004415 34.04081399990273,
+      -118.3004079998389 34.04021100014474, -118.3003670007082 34.04006200068038,
+      -118.3003489997439 34.03996900027634, -118.300322999638 34.03978200003009, -118.3003120001726
+      34.03959400053833, -118.3003080005041 34.03906100029999, -118.3002850000004
+      34.03814899967644, -118.3002739997443 34.03755600019285, -118.3002730001919
+      34.03730400053502, -118.3002730004222 34.03715799945854, -118.3002720007685
+      34.03704599939113, -118.3002720001734 34.03693900033443, -118.3038750003608
+      34.03696700021981, -118.3088269997357 34.03702699971146, -118.3089849992179
+      34.03701800028093, -118.3089840001108 34.03683100010457, -118.3089829997392
+      34.0365850001518, -118.3089810000944 34.03632000029371, -118.3089689996276 34.03472599933495,
+      -118.3089529992265 34.03269400009677, -118.3089399988506 34.03086199975178,
+      -118.3089329993056 34.029949999664, -118.3089260004037 34.02908799939922, -118.3089170004035
+      34.02824500044258, -118.3089070002393 34.02739500009498, -118.3089059990406
+      34.02727599975024, -118.3088970005476 34.02648199994714, -118.3088870004932
+      34.02555300038919, -118.3119009998161 34.02554900044633, -118.3120080000249
+      34.02554900072072, -118.3138200004139 34.02554699956931, -118.3151319998713
+      34.02554499908053, -118.315569000081 34.02554399909098, -118.317641000224 34.02554100012431,
+      -118.3176359996151 34.02363400051895, -118.3176390004298 34.0228730000123, -118.3176440000682
+      34.02186100012585, -118.3176520002761 34.02029000037939, -118.3176590000359
+      34.01912699989359, -118.3176930003969 34.01887999933604, -118.3178279990598
+      34.01872900008447, -118.3182359997306 34.0182739993182, -118.3182340004791 34.0164419998867,
+      -118.3182309996664 34.01459200064218, -118.318225000236 34.01082100008151, -118.3182220003252
+      34.00901100052661, -118.3182189999617 34.00724100023609, -118.318216000278 34.00547199993341,
+      -118.3182120003398 34.0036889999093, -118.3192680006116 34.0036850003027, -118.3203450008208
+      34.00368100062899, -118.3213849998198 34.00367699972659, -118.3224739996025
+      34.00367199978957, -118.3235629999102 34.00366799973777, -118.3246530003585
+      34.0036639997907, -118.3257409996857 34.00365900011161, -118.3268970006112 34.00365500008304,
+      -118.3281180001304 34.00365000001186, -118.3293390006357 34.00364500020655,
+      -118.3306340000624 34.00363999991432, -118.3308000000829 34.00363600022672,
+      -118.3319420002699 34.00363399975826, -118.332065362865 34.00376077068966, -118.3322180450239
+      34.00390370726257, -118.3324108113979 34.00405986958097, -118.3326195771396
+      34.00421265364554, -118.3328283370123 34.00436376953861, -118.3330692674555
+      34.00455147053167, -118.3332581268143 34.00473097929479, -118.3334149220123
+      34.00490057477634, -118.3335436624508 34.00506191204722, -118.3340752046096
+      34.00579654829728, -118.3344078257688 34.00628286442704, -118.3345984870429
+      34.00656591136377, -118.3347407885441 34.00685391442402, -118.3348608902256
+      34.00711527559876, -118.3349464010094 34.00738295051174, -118.3350110488765
+      34.00762494459695, -118.3350560841751 34.00787486165284, -118.3350852405524
+      34.00815816136372, -118.3350944079412 34.00844818428693, -118.3350923274991
+      34.01092860516975, -118.3352045543292 34.01096163304215, -118.3353127913015
+      34.01099800485183, -118.335421095166 34.01105104657479, -118.3355209573476 34.01110977688337,
+      -118.3376686814637 34.01246168437465, -118.3391529221808 34.01086411318086,
+      -118.3393553458056 34.01071475746359, -118.3396141623542 34.01052635433429,
+      -118.33993051066 34.01036146101902, -118.3402144159888 34.01027950445481, -118.3405147812165
+      34.01025160432824, -118.3408083594993 34.01018404175835, -118.3410905729038
+      34.01005385152493, -118.3413659400295 34.0098704707694, -118.3416574655748 34.00966675470577,
+      -118.3419975234574 34.00941555836764, -118.3422401816885 34.0091781647473, -118.3424260214358
+      34.00894769332577, -118.342587470205 34.0087105302758, -118.3432302362488 34.00900627768655,
+      -118.343596480076 34.00920136358124, -118.3438831087074 34.0093915040507, -118.344163793687
+      34.00960254654893, -118.3444842723181 34.00983455892714, -118.3448523528014
+      34.01002426538061, -118.3452897513586 34.01019746194901, -118.3489824123674
+      34.01156312029553, -118.3492609316819 34.01166827430887, -118.3494538215708
+      34.0117443353067, -118.3496102248292 34.01179377490526, -118.3497558633272 34.01182720816485,
+      -118.3498757745404 34.01184824314868, -118.3500448822938 34.01186557069821,
+      -118.350209674538 34.01187400250691, -118.3504292997623 34.01187679089813, -118.3508434217929
+      34.01186206222462, -118.3510870275408 34.0118545906123, -118.3513712949813 34.01186052671472,
+      -118.3517611383401 34.01191601367718, -118.3517848051676 34.01183035336927,
+      -118.3518895247822 34.01165664137757, -118.3519779131991 34.01140850146208,
+      -118.3521589849647 34.01145743849592, -118.3522472267647 34.01149163932031,
+      -118.3523501644104 34.01152913374717, -118.3539891898538 34.01213237191124,
+      -118.3541482099432 34.01217414487058, -118.3542390465865 34.01219055123002,
+      -118.3544166695728 34.01221226246566, -118.3545168123364 34.01221974949148,
+      -118.355194762794 34.01221984793386, -118.355522272386 34.01221888372295, -118.3556033639716
+      34.01206482293409, -118.3556589725674 34.01195794758137, -118.355727871309 34.01183769308305,
+      -118.355778215975 34.01174861949283, -118.3558498595819 34.01164614133494, -118.3559162121666
+      34.01155479731727, -118.3560012507145 34.01146339634873, -118.3561553853698
+      34.01129842847911, -118.3564225378652 34.01102974908557, -118.356683047858 34.01076886984258,
+      -118.3568744401655 34.01057711284603, -118.3570498058043 34.01038317978075,
+      -118.3571772418835 34.010218288679, -118.3573125153149 34.0100133579911, -118.3574183387194
+      34.00978850578779, -118.357510803279 34.00956146898609, -118.3575845616293 34.00933004298881,
+      -118.3576237877928 34.00913873461803, -118.3577959998203 34.00913000047608,
+      -118.3577960081954 34.00912993373796, -118.3584762005974 34.00906937096543,
+      -118.3586152719659 34.00905698911825, -118.3614362453875 34.00833237857606,
+      -118.3614330993931 34.00828370532778, -118.3614046578823 34.00784389390277,
+      -118.361404469204 34.0078405606065, -118.3614042695051 34.00783567761165, -118.3614041758304
+      34.00783077987493, -118.3614041915522 34.00782589623504, -118.3614042948914
+      34.00782099700682, -118.3614045141377 34.00781611546211, -118.3614048297162
+      34.00781123092437, -118.361405248153 34.00780635058633, -118.3614057716209 34.00780147624451,
+      -118.3614063947269 34.00779661242267, -118.3614071217893 34.00779175640337,
+      -118.3614079463636 34.00778691992573, -118.3614088791776 34.00778208041939,
+      -118.3614099095424 34.00777726946992, -118.3614110384666 34.00777246994522,
+      -118.361412264887 34.00776768635613, -118.3614135963968 34.00776292228607, -118.3614150297407
+      34.00775817594165, -118.3614165584469 34.0077534527514, -118.3614181846998 34.00774875721661,
+      -118.3614199106063 34.00774407580781, -118.3614217384323 34.0077394319581, -118.3614236518469
+      34.00773480407963, -118.3614256812576 34.00773021461962, -118.3614277897695
+      34.00772564295333, -118.361429998036 34.00772110885254, -118.3614323049744 34.00771661232056,
+      -118.3614346997598 34.00771215338978, -118.3614371942529 34.00770772120626,
+      -118.3614397787541 34.00770332571594, -118.3614424457245 34.00769897595665,
+      -118.3614452156619 34.0076946556395, -118.3614476551043 34.00769101246016, -118.3614480756501
+      34.00769038193222, -118.361448947095 34.00768913070227, -118.3614510191745 34.00768615034666,
+      -118.3614540592136 34.00768195813934, -118.3614571784939 34.00767781618035,
+      -118.3614603834637 34.00767371363199, -118.3614636763777 34.00766967122279,
+      -118.3614670592878 34.00766566280215, -118.361470508484 34.00766171278242, -118.3614740531474
+      34.00765781025774, -118.3614776770519 34.00765395798142, -118.3614813780753
+      34.00765016587658, -118.3614851658941 34.0076464185882, -118.3614890276038 34.00764273598868,
+      -118.3614929653148 34.0076391054501, -118.3614969779603 34.00763553058194, -118.3615010666499
+      34.00763201769149, -118.3615052237984 34.00762856499845, -118.3615094591483
+      34.00762517247359, -118.3615137629688 34.00762184285065, -118.361518134181 34.00761857703444,
+      -118.361522570628 34.00761537683438, -118.3615270787657 34.00761223321587, -118.3615316510945
+      34.00760916423197, -118.3615362767075 34.00760615098322, -118.3615409762931
+      34.00760322135506, -118.3615453987979 34.00760055309911, -118.361545737823 34.00760034743607,
+      -118.3615470346889 34.0075995952807, -118.3615505570801 34.00759755538329, -118.3615554285389
+      34.00759481906887, -118.3615603696208 34.00759216188042, -118.3615653467252
+      34.00758957400171, -118.361570382612 34.00758706167533, -118.3615754772812 34.00758462490116,
+      -118.3615806177389 34.00758226281673, -118.3615858115509 34.00757997269469,
+      -118.3615910479117 34.0075777590751, -118.361596334387 34.0075756192306, -118.3616016591238
+      34.00757356581827, -118.3616070339636 34.00757158347653, -118.3616124448454
+      34.00756967495209, -118.3616178972285 34.00756785104697, -118.3616233759461
+      34.007566109102, -118.3616289058374 34.00756443551979, -118.361634453446 34.00756285384039,
+      -118.361640051177 34.00756134773918, -118.3616456720302 34.00755993172152, -118.361651310511
+      34.00755858687167, -118.3619819182356 34.00748271914826, -118.3619745684956
+      34.00736920239203, -118.3619738836339 34.00735727268484, -118.3619732371557
+      34.0073407008801, -118.3619729370377 34.00732411811975, -118.361972982248 34.00730753612687,
+      -118.3619732499904 34.00729635363646, -118.3619733814347 34.00729095217083,
+      -118.3619736270049 34.0072854070195, -118.3619741151942 34.00727438524208, -118.3619752073221
+      34.00725783076149, -118.3619766404981 34.00724128878104, -118.3619784202123
+      34.00722477731486, -118.3619805529365 34.00720829093441, -118.3619830192084
+      34.00719183510709, -118.3619858352968 34.00717541699646, -118.3619889980084
+      34.00715904923342, -118.3619925007819 34.00714271651167, -118.3619963470127
+      34.00712645307907, -118.3620005366068 34.00711023729924, -118.3620050577387
+      34.00709408813966, -118.3620099234292 34.00707801277352, -118.3620145384343
+      34.00706379621423, -118.3620151195862 34.00706200673545, -118.3620157194175
+      34.00706028120933, -118.3620206473153 34.00704607543118, -118.3620265174844
+      34.007030228745, -118.362032708447 34.00701446764324, -118.3620392332554 34.0069988065112,
+      -118.3620460907879 34.00698323633691, -118.3620532735216 34.00696776976432,
+      -118.3620607728273 34.00695241403148, -118.3620609875189 34.00695199507714,
+      -118.3620685994949 34.00693716099222, -118.3620767341327 34.00692203234132,
+      -118.3620851918528 34.0069070181166, -118.3620939629749 34.0068921327715, -118.3621030453026
+      34.00687736910035, -118.3621124292025 34.00686275237474, -118.3621198914417
+      34.00685159517868, -118.3621221200051 34.00684826364656, -118.3621243771345
+      34.00684502939404, -118.3621321253853 34.00683392543091, -118.3621424149978
+      34.00681972970499, -118.3621530105316 34.00680568541904, -118.3621638903522
+      34.00679179624392, -118.3621750631545 34.00677807026725, -118.3621865224436
+      34.00676450750851, -118.3621982585548 34.00675112602715, -118.36220860686 34.0067397419942,
+      -118.3622102800388 34.0067379005546, -118.3622117175189 34.0067363762597, -118.3622225751012
+      34.00672485727059, -118.3622351361255 34.0067119871826, -118.3622479740535 34.00669931730352,
+      -118.3622610758018 34.00668682603594, -118.3622744317017 34.00667453053773,
+      -118.3622880493271 34.00666242988471, -118.3623019091966 34.00665052503665,
+      -118.3623160189581 34.0066388321981, -118.3623303818082 34.00662733963952, -118.3623449707354
+      34.00661605916179, -118.362359800871 34.00660498531025, -118.3623748549577 34.00659413256105,
+      -118.3623901319715 34.00658351444017, -118.3624056383098 34.00657310839006,
+      -118.3624213653674 34.00656292705789, -118.3624372850109 34.00655297323263,
+      -118.3624534265539 34.00654326665988, -118.3624697617265 34.00653377857547,
+      -118.3624862906887 34.00652454594157, -118.3624876050446 34.00652383880009,
+      -118.3625030176576 34.00651554260108, -118.3625238461269 34.00650475813541,
+      -118.3625277276386 34.0065026711527, -118.3625315602112 34.00650053202803, -118.3625353492221
+      34.00649833263154, -118.3625390892823 34.00649607838864, -118.3625427804073
+      34.00649377290532, -118.3625464269232 34.00649141526709, -118.3625500179815
+      34.00648900009737, -118.3625535655407 34.00648653908012, -118.3625570522454
+      34.00648402415373, -118.3625604932312 34.00648145076509, -118.3625638680361
+      34.00647884331696, -118.3625672046917 34.00647617558074, -118.3625704751312
+      34.00647346567144, -118.3625736923134 34.00647070633786, -118.3625768421891
+      34.00646790303134, -118.3625799377289 34.00646505120527, -118.3625829800347
+      34.00646215536412, -118.3625859539321 34.00645921104564, -118.3625888594757
+      34.00645623087128, -118.3625917096087 34.00645320398368, -118.3625945032954
+      34.00645014120434, -118.3625972210353 34.00644703898575, -118.3625998768734
+      34.00644389097501, -118.3626024730217 34.0064407079838, -118.3626049856808 34.00643749368982,
+      -118.3626074462001 34.006434238082, -118.3626098350832 34.00643093851433, -118.3626121502625
+      34.00642761753131, -118.3626144057715 34.00642426607549, -118.3626165788308
+      34.00642087339693, -118.3626186824852 34.00641745207781, -118.3626207188918
+      34.00641400030872, -118.3626226783121 34.00641051902035, -118.3626245607578
+      34.00640701091727, -118.3626263781363 34.00640347596374, -118.3626281153084
+      34.00639991781136, -118.3626297754942 34.00639633013975, -118.3626313706245
+      34.00639271832223, -118.3626328758411 34.00638909144887, -118.3626343159789
+      34.00638543502043, -118.3626353742859 34.00638259652618, -118.3626356856839
+      34.00638176257608, -118.3626369621926 34.00637806697195, -118.3626381671939
+      34.00637435715811, -118.3626392920278 34.00637063316068, -118.3626403420679
+      34.00636688594813, -118.3626413108855 34.00636313086584, -118.3626422059917
+      34.00635935256521, -118.3626430220521 34.00635556909292, -118.3626437438845
+      34.00635177418386, -118.3626443996572 34.00634797316253, -118.3626449720268
+      34.00634416067192, -118.3626454685553 34.00634033308314, -118.3626458784528
+      34.00633649854241, -118.3626462115204 34.00633267054325, -118.3626464622753
+      34.00632883287459, -118.3626466469901 34.00632499360125, -118.3626467467789
+      34.00631929202041, -118.3650266877004 34.00555472801109, -118.3662300119281
+      34.00635162500868, -118.3666790792489 34.00688239742243, -118.3668431597659
+      34.00707633111752, -118.3671727863314 34.00708849295528, -118.3667188230574
+      34.01562187649294, -118.3667190071337 34.01562188314598, -118.3679944770519
+      34.01566869906998, -118.3726494008886 34.01583944492214, -118.3728421111205
+      34.01221494795868, -118.3728577468989 34.01192086696782, -118.3728678014997
+      34.01192052758441, -118.3731658665252 34.01191049016467, -118.3731752900789
+      34.01191017344177, -118.3731978296976 34.01198258778782, -118.3731981928712
+      34.01198367301041, -118.3732219019175 34.01205467464293, -118.3732474686714
+      34.01212639355496, -118.3732745450748 34.0121977345594, -118.3733030995836 34.01226866349452,
+      -118.3733331440774 34.01233917311042, -118.3733557021555 34.01238969908869,
+      -118.3738238297508 34.01341821664241, -118.3738346754287 34.01344225214334,
+      -118.3738640670783 34.01350989318001, -118.3738763876829 34.01353983455021,
+      -118.3738920662043 34.01357794240957, -118.3739186165091 34.01364640000732,
+      -118.3739437178244 34.01371522901204, -118.3739673862891 34.01378440773776,
+      -118.3739896002118 34.01385392813876, -118.3740103615892 34.01392375324691,
+      -118.3740192821666 34.01395619246445, -118.3740205378223 34.01396075753594,
+      -118.3740296454942 34.013993877731, -118.3740474582736 34.01406426911687, -118.3740637944184
+      34.014134906687, -118.3740786527617 34.01420577241506, -118.3740920158898 34.01427684652175,
+      -118.3741038988182 34.01434809830899, -118.3741142874252 34.01441951790418,
+      -118.3741231534063 34.01449107113714, -118.3741305410878 34.01456274524939,
+      -118.3741364167925 34.01463451510272, -118.3741407858247 34.01470635724102,
+      -118.3741436589341 34.01477825540356, -118.3741450089309 34.01485018262881,
+      -118.3741448627876 34.01492211899949, -118.3741432106722 34.01499404561387,
+      -118.3741400448737 34.01506593364675, -118.3741353761135 34.01513776052654,
+      -118.3741292064845 34.01520951092044, -118.374121528328 34.01528116772293, -118.3741123501399
+      34.01535269484607, -118.3741016838049 34.01542408774501, -118.3740895161104
+      34.01549529777756, -118.3740758481957 34.01556633846273, -118.3740607047155
+      34.01563715563168, -118.3740440629069 34.01570774394514, -118.3740259605574
+      34.01577808074719, -118.3740063846114 34.01584815255451, -118.3739853489745
+      34.01591792236061, -118.3739628373394 34.01598737579067, -118.3739388918 34.01605648476598,
+      -118.3739134895819 34.01612524124237, -118.3738866576668 34.01619362710481,
+      -118.3738583872255 34.01626160541674, -118.3738287020121 34.0163291625807, -118.3737975943488
+      34.01639627698265, -118.3737651052758 34.01646292685754, -118.3737312195248
+      34.01652908791026, -118.3736959349401 34.01659476285081, -118.3734479434803
+      34.01704583823961, -118.373182388209 34.01752886001184, -118.3729859615254 34.01788613292547,
+      -118.3728946117695 34.01805228438357, -118.372859332362 34.01811795455778, -118.3728254485051
+      34.01818412256476, -118.3727929439257 34.01825078034216, -118.372761836883 34.018317894478,
+      -118.3727436516615 34.01835929398091, -118.3744153412662 34.01844568091231,
+      -118.375791971187 34.01851680185955, -118.3759145825859 34.01808295542956, -118.3761823673264
+      34.01807838345771, -118.3775545073221 34.01805493839587, -118.3775605915325
+      34.01805438024974, -118.3775655355519 34.01805402941589, -118.3779729310097
+      34.01801839798069, -118.3783987037993 34.0184024617647, -118.3785875852872 34.01857395215544,
+      -118.3787598829451 34.01872935867047, -118.378842041249 34.01878169893838, -118.3788972228485
+      34.01881685137671, -118.3794797196421 34.01918975964551, -118.3795325445217
+      34.01922389776876, -118.3795470537788 34.01923327406148, -118.3797164928277
+      34.01934185452348, -118.3798093601008 34.01940136639812, -118.3801636969865
+      34.01962843329241, -118.3802403239106 34.01967753640719, -118.3805127644891
+      34.01986342220284, -118.3805782764312 34.01990812009513, -118.3808906149751
+      34.0201212281321, -118.3813186017371 34.02057054568716, -118.3813812069947 34.02084035591431,
+      -118.3805115976848 34.02097755919574, -118.3790713501881 34.02120478061984,
+      -118.3779489000981 34.02138178103927, -118.377949629817 34.02190518038345, -118.3779514367223
+      34.02203342218711, -118.3779515715589 34.0220429013759, -118.3778041367002 34.02214398650067,
+      -118.3776337830651 34.02226078562752, -118.3769563908768 34.02374639835742,
+      -118.3769554709733 34.02374841525293, -118.3769231195901 34.02377431090849,
+      -118.3768375561373 34.02384279878073, -118.3768368827175 34.02384665583472,
+      -118.3764762341991 34.02591102066197, -118.3767380019606 34.02606299755597,
+      -118.3769330742652 34.02617625307857, -118.3770868208143 34.02623394251206,
+      -118.3770214845029 34.02660795345492, -118.3770138569988 34.02664847411037,
+      -118.3770115401141 34.02666078816453, -118.3770005002838 34.0267134577078, -118.3769883411852
+      34.02676596125724, -118.3769751006438 34.02681828336841, -118.3769607688154
+      34.0268704024348, -118.3769453392219 34.02692232298399, -118.3769288115933 34.02697398551516,
+      -118.3769251318572 34.02697364360341, -118.3768789559661 34.02696937115758,
+      -118.3768767038654 34.02697612074904, -118.3768646162314 34.02701085666274,
+      -118.3768590748142 34.02702678059897, -118.3768403921949 34.02707719941982,
+      -118.3768208998767 34.02712671021743, -118.3762257938149 34.02859464190855,
+      -118.3750179617512 34.02951663862989, -118.3749588130244 34.02956178808429,
+      -118.3748108011442 34.02965844030346, -118.3737907469116 34.03032452128613,
+      -118.3736461354524 34.03041894647975, -118.3736429979232 34.03042099635802,
+      -118.3736426956146 34.03042119382774, -118.371898797836 34.02992810670256, -118.371879663656
+      34.02997056471102, -118.3702270285808 34.0336377173769, -118.3701843473623 34.033732419912,
+      -118.3698406883281 34.03449494174556, -118.3695771091853 34.03507977156287,
+      -118.3704341023239 34.03471821356175, -118.3705307916137 34.03467742092447,
+      -118.3724519582663 34.03386686116527, -118.3728141039868 34.03371406418744,
+      -118.3759191079584 34.03241701882381, -118.3772016869778 34.03207239781097,
+      -118.3789055694145 34.0316145506252, -118.3812861544817 34.03098555088687, -118.3823694631467
+      34.0306992994942, -118.3823786940395 34.030696885704, -118.3825267749154 34.0306578120716,
+      -118.3842056052728 34.03021416935631, -118.3842058018093 34.03021405243311,
+      -118.384486218433 34.03004643654534, -118.3854153399149 34.02949105433237, -118.385769144244
+      34.02927946238172, -118.3863957922862 34.02890469168651, -118.3864573848719
+      34.0289746932943, -118.3866617490366 34.0292069580585, -118.3866618905074 34.02920687646746,
+      -118.3867844803893 34.0291372667908, -118.3867986517779 34.02912921938232, -118.3868634042195
+      34.02917620534621, -118.3871714562909 34.02939974007317, -118.3871714921483
+      34.02939976700417, -118.3876487256054 34.02912889451962, -118.3876783182383
+      34.02911219957085, -118.3877609507754 34.02906483901774, -118.3900976936151
+      34.030755777613, -118.3904509234069 34.03099567594204, -118.3906666617327 34.03111549858158,
+      -118.3909135777865 34.03120916197933, -118.3896516181833 34.03336365668129,
+      -118.3887950300215 34.03680929325675, -118.3876009939065 34.04114041667957,
+      -118.3860332237926 34.04673616682528, -118.3855393626981 34.04661140010649,
+      -118.3831446683459 34.04570302712991, -118.3768189998242 34.0445320001871, -118.3768009996896
+      34.0447119996891, -118.3767720004387 34.04485399962552, -118.3761220002662 34.04710000008747,
+      -118.3761360000193 34.04819699996825, -118.3761349996808 34.04904199952252,
+      -118.3761339994885 34.04988799981339, -118.3761329997315 34.05069699940015,
+      -118.3761320005822 34.05154299975575, -118.376131999873 34.0523879999399, -118.3761309997288
+      34.05332100016324, -118.3751900001426 34.05314199970335, -118.3741119999371
+      34.05293599988613, -118.3737920009167 34.0528749995522, -118.3730499998867 34.05273399974237,
+      -118.3720730004051 34.05254699948923, -118.3710329997185 34.05234700000634,
+      -118.3699130003659 34.05213199984711, -118.3689540000807 34.05194700001105,
+      -118.3668145944974 34.05153388624066, -118.3666357320395 34.05195749822018,
+      -118.3672031869992 34.05205919073996, -118.3643537629408 34.05825001037839,
+      -118.3638179993877 34.05818299993253, -118.3630179998957 34.05804899987778,
+      -118.3627870004721 34.05789399920331, -118.3618950004827 34.05729300063548,
+      -118.3609659999573 34.05666800003517, -118.3600450003427 34.05604899975214,
+      -118.3597260002818 34.05583499962592, -118.3595109995281 34.05570400069067,
+      -118.3592870001176 34.05558699920672, -118.3590959992129 34.05550099938189,
+      -118.358949000335 34.05544199921589, -118.3581200002708 34.05514099984745, -118.3572330000099
+      34.05482000000161, -118.3563279999308 34.05449299929443, -118.355508000833 34.05419599978299,
+      -118.3547460004134 34.05392100027274, -118.3538710003546 34.05359700067773,
+      -118.3529470005417 34.05326199954899, -118.3518969996853 34.05288599988884,
+      -118.3509639996311 34.05255299955386, -118.3508810002816 34.0527620005707, -118.350570000401
+      34.05354499970856, -118.3502230007104 34.05441999931077, -118.3500569999043
+      34.05483600069168, -118.3490829990949 34.05728799994108, -118.3481419997779
+      34.05726600073552, -118.3479250007921 34.05726100052632, -118.3471070007429
+      34.05724199975636, -118.3466840002853 34.05723300042251, -118.3458929987916
+      34.05721400047167, -118.3448430003409 34.05719000051429, -118.3437829997028
+      34.05716500026923, -118.3425389998835 34.05713600057644, -118.341277999592 34.05710699915215,
+      -118.3400270000285 34.05707800058161, -118.3393930000363 34.05706299924038,
+      -118.3384060000246 34.0570399995641, -118.3373000005219 34.05701800039284, -118.3361269998607
+      34.05699400039334, -118.33495399959 34.05697100052093, -118.3338850007478 34.05694899997665,
+      -118.3337280004004 34.05690500010406, -118.3325220007938 34.05656300016855,
+      -118.3313589999143 34.05623400016675, -118.3307759995314 34.05606799993578,
+      -118.3300739998569 34.05586900066797, -118.3298069990055 34.05579699991877,
+      -118.328940999858 34.05554800021698, -118.3288429990168 34.05552100027008, -118.3279100003918
+      34.05525600032448, -118.3269100005209 34.05513599940819, -118.3257020005195
+      34.05499699984781, -118.324289999155 34.05483400009842, -118.3229550008108 34.05468100042553,
+      -118.3218490004855 34.05426599926796, -118.3207040002255 34.05383599995093,
+      -118.319593000354 34.05341799930095, -118.3186109998979 34.05305500044208, -118.3175670001196
+      34.05271000070089, -118.3173060000338 34.052623999986, -118.3171410005308 34.05257800002439,
+      -118.3169300000587 34.05253300046823, -118.316714999818 34.05250400060106, -118.3164940002757
+      34.05249100023231, -118.3163870002564 34.0524910002371, -118.3150320006256 34.05254199928209,
+      -118.3145150008293 34.05256200047431, -118.3132940006117 34.0526099993744, -118.3128660002319
+      34.05262599958571, -118.312172000859 34.05263399903011, -118.3111480007404 34.05263400027476,
+      -118.3101140004861 34.05263199998787, -118.3096117049883 34.05263430936715,
+      -118.3096084055433 34.05398000966007, -118.3096183364514 34.05435603106338,
+      -118.3096177204244 34.05452059101223, -118.3096118678933 34.05491590870497,
+      -118.3096228946445 34.05576419287539, -118.3096235058993 34.05592935822257,
+      -118.3096089993386 34.05672899993934, -118.3096307084156 34.05814678235824,
+      -118.3096362986267 34.05967036128879, -118.3101500007573 34.05967199927936,
+      -118.3111729999372 34.0596730000814, -118.3121970000477 34.0596740004491, -118.3131080003466
+      34.0596870005545, -118.3131959998555 34.05971199994618, -118.3132909993009 34.05975499913313,
+      -118.3134059995614 34.05982299991755, -118.3135030001814 34.05986000036106,
+      -118.3136649990643 34.05988100013, -118.3143490000747 34.05988200024641, -118.3143519997616
+      34.06067799921287, -118.3143520002555 34.060759999859, -118.3143520006639 34.06092500005109,
+      -118.3143440006353 34.06108400063702, -118.3143139988239 34.06128899965616,
+      -118.3142779999905 34.06143600068805, -118.3141919997835 34.06169500020503,
+      -118.3141359994179 34.06186899911968, -118.3140819993953 34.06206200070908,
+      -118.3140569997351 34.0622170003154, -118.31404299968 34.06234300058331, -118.3140269988884
+      34.06253999990032, -118.3140309999473 34.06331699927444, -118.3137309994894
+      34.0634190002519, -118.3135660001376 34.06346199999038, -118.3133630000432 34.06349799944051,
+      -118.3131570000434 34.06351600002686, -118.3128079989719 34.06351800069424,
+      -118.3115780002692 34.06351700058025, -118.310339000928 34.06351599934774, -118.3097192822368
+      34.06350987663016, -118.3097256938793 34.06524190877307, -118.3097285629306
+      34.06723244554257, -118.3097318048872 34.06896525510385, -118.3091424500601
+      34.0689608247688, -118.3091576028666 34.07624837672209, -118.3091640005162 34.0793239998768,
+      -118.3091630001249 34.07987700072786, -118.3091628910747 34.07988062066036,
+      -118.3085188304659 34.07988124764408, -118.3085105572407 34.07769444651483,
+      -118.3085093345678 34.07752833596267, -118.3085031224314 34.07624300902575,
+      -118.3067270001353 34.07625900045903, -118.3060570002057 34.07626199899224,
+      -118.3055160007838 34.07626400047555, -118.3053639993893 34.07626500056896,
+      -118.3044559998893 34.07626900003144, -118.3043050006309 34.07626999897101,
+      -118.3034950001266 34.0762739994265, -118.3029529995305 34.07627600005996, -118.3023100002389
+      34.07627900024257, -118.3018959994665 34.07628099937516, -118.301191999964 34.07628499979594,
+      -118.300410000802 34.07628800009613, -118.3004019999084 34.07528200019141, -118.3003909998293
+      34.07374400014091, -118.3003939997149 34.07325499984869, -118.300383999957 34.0727620002432,
+      -118.3003739999924 34.07119400028996, -118.3003591828454 34.06954152354702,
+      -118.299749908893 34.06954166586895, -118.2997484643972 34.06933536828895, -118.2992533737189
+      34.06933718372063, -118.2989888917984 34.06944010758321, -118.2980163714453
+      34.06944427441198, -118.2977522591795 34.06951613417161, -118.2972564501816
+      34.06951792876163, -118.2972564297901 34.06951219056129, -118.29677234961 34.06951510285026,
+      -118.2965392708962 34.06951567530366, -118.2960131172433 34.06951696591054,
+      -118.2960122567217 34.06946818883492, -118.295396882819 34.06947037874064, -118.2942696969462
+      34.06947365845844, -118.2940400620823 34.06950747069996, -118.293546311345 34.06950985899282,
+      -118.2935463613566 34.06952411028595, -118.2930520606813 34.06952694956208,
+      -118.2927864242285 34.06943049788716, -118.2916620865963 34.06943678723387,
+      -118.2916560001748 34.06737300022023, -118.2916489997661 34.06542199990542,
+      -118.2916439996757 34.0636829999813, -118.2899140004886 34.0636910001795, -118.2884280007477
+      34.06369800008099, -118.2870419999632 34.06370500011529, -118.2856550000805
+      34.06371100033154, -118.2843063056015 34.06371498771665))
+    properties: {}
