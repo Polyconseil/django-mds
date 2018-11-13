@@ -77,7 +77,6 @@ class AssetsViewer extends React.Component<IPositionRouteProps> {
   private handleMapReady = async (map: L.Map) => {
     const result = await getVehicles({});
     result.forEach(vehicle => {
-      console.log(vehicle);
       let popupHTML = `
           <table>
             <tr><td style="text-align: right;">Id:</td><td>${vehicle.unique_id.substring(
