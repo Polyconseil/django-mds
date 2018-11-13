@@ -123,7 +123,7 @@ class Point(serializers.Serializer):
 
     type = serializers.ChoiceField(choices=[("Feature", "Feature")], default="Feature")
     geometry = GeometryField(source="point")
-    properties = PointProperties()
+    properties = PointProperties(required=False)
 
 
 class Device(BaseModelSerializer):

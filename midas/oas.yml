@@ -37,7 +37,7 @@ components:
           coordinates: {$ref: "#/components/schemas/position"}
         example:
           type: Point
-          coordinate: [-118.2843063056015, 34.06371498771665]
+          coordinates: [-118.2843063056015, 34.06371498771665]
         externalDocs:
           description: "GeoJSON Point (RFC 7946)"
           url: "https://tools.ietf.org/html/rfc7946#section-3.1.2"
@@ -63,7 +63,7 @@ components:
           url: "https://tools.ietf.org/html/rfc7946#section-3.1.6"
       example:
         type: Polygon
-        coordinate: [[
+        coordinates: [[
           [-118.2843063056015, 34.06371498771665],
           [-118.2842040002129, 34.06370000073153],
           [-118.2841039999419, 34.06367000044555],
