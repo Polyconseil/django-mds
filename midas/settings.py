@@ -81,5 +81,3 @@ STATIC_URL = "/static/"
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_HEADERS = list(default_headers) + ["cache-control"]
-
-SWAGGER_YAML_FILE = "midas/oas.yml"
