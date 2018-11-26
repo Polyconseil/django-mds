@@ -9,7 +9,6 @@ addons:
 python:
     - "3.6"
     - nightly
-env:
 install:
     - "pip install -e .[dev]"
 before_script:
