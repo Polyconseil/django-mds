@@ -14,7 +14,7 @@ install:
 before_script:
     - psql -U postgres -c 'create database midas;'
     - psql -U postgres -c 'create extension postgis;'
-    - python midas/manage.py migrate
+    - python manage.py migrate
 script:
     - black --check midas
     - flake8

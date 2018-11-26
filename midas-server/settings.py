@@ -18,7 +18,7 @@ ALLOWED_HOSTS = CONFIG.getlist(
 )
 
 INSTALLED_APPS = [
-    "midas.apps.MidasConfig",
+    "midas.apps.Config",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",

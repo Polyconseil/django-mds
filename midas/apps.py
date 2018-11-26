@@ -1,5 +1,5 @@
 from django.apps import AppConfig
 
 
-class MidasConfig(AppConfig):
+class Config(AppConfig):
     name = "midas"
