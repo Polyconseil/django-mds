@@ -7,6 +7,8 @@ addons:
 python:
     - "3.6"
     - nightly
+before_install:
+    - pip install --upgrade pytest
 install:
     - "pip install -e .[dev]"
 before_script:
