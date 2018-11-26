@@ -176,7 +176,7 @@ class DeviceTelemetry(Device):
         timestamp = instance.properties.get("gps", {}).get("timestamp")
         timestamp = timestamp or instance.properties.get("gsm", {}).get("timestamp")
         models.Telemetry.objects.create(
-            device=instance.id,
+            device=instance,
             provider=instance.provider,
             status=instance.status,
             point=instance.point,
