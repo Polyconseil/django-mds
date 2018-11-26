@@ -171,6 +171,20 @@ class DeviceTelemetry(Device):
         model = models.Device
         fields = ("id", "provider", "status", "position")
 
+    def update(self, instance, validated_data):
+        instance = super().update(instance, validated_data)
+        timestamp = instance.properties.get("gps", {}).get("timestamp")
+        timestamp = timestamp or instance.properties.get("gsm", {}).get("timestamp")
+        models.Telemetry.objects.create(
+            device=instance.id,
+            provider=instance.provider,
+            status=instance.status,
+            point=instance.point,
+            properties=instance.properties,
+            timestamp=timestamp,
+        )
+        return instance
+
 
 class ServiceAreaSerializer(BaseModelSerializer):
     """A service area

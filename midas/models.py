@@ -52,3 +52,14 @@ class Area(ProviderModel):
     end_date = models.DateTimeField(null=True)
     polygon = gis_models.PolygonField()
     properties = pg_fields.JSONField(default=dict, encoder=encoders.JSONEncoder)
+
+
+class Telemetry(models.Model):
+    device = models.ForeignKey(
+        Device, related_name="telemetries", on_delete=models.CASCADE
+    )
+    provider = models.UUIDField()
+    timestamp = models.DateTimeField(db_index=True)
+    status = UnboundedCharField(choices=enums.DEVICE_STATUS_CHOICES)
+    point = gis_models.PointField(null=True)
+    properties = pg_fields.JSONField(default=dict, encoder=encoders.JSONEncoder)
