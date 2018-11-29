@@ -54,7 +54,7 @@ TEMPLATES = [
         },
     }
 ]
-WSGI_APPLICATION = "mds_server.wsgi.application"
+WSGI_APPLICATION = "mds.server.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.contrib.gis.db.backends.postgis",

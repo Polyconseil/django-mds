@@ -12,8 +12,8 @@ A [City of LA MDS Specification](https://github.com/CityOfLosAngeles/mobility-da
 ### Goals
 
 * Ultimately MDS compliance
-* A way to test MDS ideas on a real implementation as we believe it is hard to specify a quality API without a
-reference implementation alongside
+* A way to test MDS ideas on a real implementation as we believe
+  it is hard to specify a quality API without a reference implementation alongside
 * Developer-friendly to be able for all stakeholders to contribute
 
 ### Non-goals

@@ -1,7 +1,8 @@
-include LICENSE README.md
-
-global-exclude *.py[cod] __pycache__
+include LICENSE README.md screenshot.png CHANGELOG.rst
+exclude  manage.py
 
 graft mds
-graft mds_server
+prune front
 prune tests
+
+global-exclude *.py[cod] __pycache__
