@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand
-from midas import factories
+from mds import factories
 
 
 class Command(BaseCommand):

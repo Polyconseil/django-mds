@@ -1,4 +1,4 @@
-# MIDAS Frontend
+# MDS Frontend
 
 ## Tech & requirements
 
@@ -10,4 +10,3 @@
 
 * yarn start
 * yarn test
-

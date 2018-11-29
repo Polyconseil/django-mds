@@ -1,6 +1,6 @@
 import pytest
 
-from midas import admin  # noqa: F401
+from mds import admin  # noqa: F401
 
 
 @pytest.mark.django_db

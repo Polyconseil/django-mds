@@ -1,8 +1,8 @@
-# MIDAS - MDS compliant mobility data service
+# django-mds - MDS compliant mobility data service
 
-[![Build Status](https://travis-ci.org/Polyconseil/midas.svg?branch=master)](https://travis-ci.org/Polyconseil/midas)
+[![Build Status](https://travis-ci.org/Polyconseil/django-mds.svg?branch=master)](https://travis-ci.org/Polyconseil/django-mds)
 
-A [City of LA MDS Specification](https://github.com/CityOfLosAngeles/mobility-data-specification) (Mobility Data Specification) compliant implementation of the Agency API.
+A [City of LA MDS Specification](https://github.com/CityOfLosAngeles/mobility-data-specification) (Mobility Data Specification) compliant implementation of the Agency API for Python/Django
 
 ![Screenshot UI](screenshot.png)
 
@@ -12,7 +12,7 @@ A [City of LA MDS Specification](https://github.com/CityOfLosAngeles/mobility-da
 ### Goals
 
 * Ultimately MDS compliance
-* A way to test MDS ideas on a real implementation as we believe it is hard to specify a quality API without a 
+* A way to test MDS ideas on a real implementation as we believe it is hard to specify a quality API without a
 reference implementation alongside
 * Developer-friendly to be able for all stakeholders to contribute
 
@@ -33,15 +33,14 @@ reference implementation alongside
 ### Backend
 
 * Install and configure requirements (see above)
-* In `midas/`, run `pip install .[dev]` to install dependencies
-* You need following env variables: MIDAS_DB_NAME, MIDAS_DB_USER and MIDAS_DB_PASSWORD
+* Run `pip install .[dev]` to install dependencies
+* You need following env variables: MDS_DB_NAME, MDS_DB_USER and MDS_DB_PASSWORD
 * To initialize the database, run `python manage.py migrate`
 * To start the backend, run `python manage.py runserver`
 
 ### Frontend
 
 See dedicated README in [front/README.md](front/README.md)
-
 
 ## TODO
 

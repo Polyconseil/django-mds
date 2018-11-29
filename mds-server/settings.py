@@ -5,7 +5,7 @@ import os
 from corsheaders.defaults import default_headers
 import getconf
 
-CONFIG = getconf.ConfigGetter("midas")
+CONFIG = getconf.ConfigGetter("mds")
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = CONFIG.getstr(
@@ -18,7 +18,7 @@ ALLOWED_HOSTS = CONFIG.getlist(
 )
 
 INSTALLED_APPS = [
-    "midas.apps.Config",
+    "mds.apps.Config",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -38,7 +38,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "corsheaders.middleware.CorsMiddleware",
 ]
-ROOT_URLCONF = "midas.urls"
+ROOT_URLCONF = "mds.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
@@ -54,11 +54,11 @@ TEMPLATES = [
         },
     }
 ]
-WSGI_APPLICATION = "midas.wsgi.application"
+WSGI_APPLICATION = "mds.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.contrib.gis.db.backends.postgis",
-        "NAME": CONFIG.getstr("db.name", "midas"),
+        "NAME": CONFIG.getstr("db.name", "mds"),
         "USER": CONFIG.getstr("db.user", "postgres"),
         "PASSWORD": CONFIG.getstr("db.password"),
         "HOST": CONFIG.getstr("db.host", "127.0.0.1"),

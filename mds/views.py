@@ -134,5 +134,5 @@ class AreaViewSet(viewsets.ModelViewSet):
 
 
 def swagger(request):
-    spec = json.dumps(yaml.load(open("midas/oas.yml")))
+    spec = json.dumps(yaml.load(open("mds/oas.yml")))
     return render(request, template_name="swagger.html", context={"data": spec})

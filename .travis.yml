@@ -11,10 +11,10 @@ python:
 install:
     - "pip install -e .[dev]"
 before_script:
-    - psql -U postgres -c 'create database midas;'
+    - psql -U postgres -c 'create database mds;'
     - psql -U postgres -c 'create extension postgis;'
     - python manage.py migrate
 script:
-    - black --check midas
+    - black --check mds mds-server
     - flake8
     - pytest

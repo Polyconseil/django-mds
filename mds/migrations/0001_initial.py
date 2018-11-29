@@ -5,7 +5,7 @@ import django.contrib.postgres.fields.jsonb
 import django.contrib.postgres.operations
 from django.db import migrations, models
 import django.db.models.deletion
-import midas.models
+import mds.models
 import rest_framework.utils.encoders
 import uuid
 
@@ -53,11 +53,11 @@ class Migration(migrations.Migration):
                     ),
                 ),
                 ("provider", models.UUIDField()),
-                ("identification_number", midas.models.UnboundedCharField()),
-                ("model", midas.models.UnboundedCharField(default=str)),
+                ("identification_number", mds.models.UnboundedCharField()),
+                ("model", mds.models.UnboundedCharField(default=str)),
                 (
                     "status",
-                    midas.models.UnboundedCharField(
+                    mds.models.UnboundedCharField(
                         choices=[
                             ("available", "Available"),
                             ("reserved", "Reserved"),
@@ -97,7 +97,7 @@ class Migration(migrations.Migration):
                 ("timestamp", models.DateTimeField(db_index=True)),
                 (
                     "status",
-                    midas.models.UnboundedCharField(
+                    mds.models.UnboundedCharField(
                         choices=[
                             ("available", "Available"),
                             ("reserved", "Reserved"),
@@ -123,7 +123,7 @@ class Migration(migrations.Migration):
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.CASCADE,
                         related_name="telemetries",
-                        to="midas.Device",
+                        to="mds.Device",
                     ),
                 ),
             ],
