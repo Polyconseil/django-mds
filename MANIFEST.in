@@ -3,5 +3,5 @@ include LICENSE README.md
 global-exclude *.py[cod] __pycache__
 
 graft mds
-graft mds-server
+graft mds_server
 prune tests

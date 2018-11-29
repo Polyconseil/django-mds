@@ -13,3 +13,10 @@ class AreaAdmin(admin.ModelAdmin):
     list_display = ["provider", "begin_date", "end_date"]
     list_filter = ["provider"]
     ordering = ["-begin_date"]
+
+
+@admin.register(models.Telemetry)
+class TelemetryAdmin(admin.ModelAdmin):
+    list_display = ["device", "timestamp", "provider", "status"]
+    list_filter = ["provider", "status"]
+    ordering = ["-timestamp"]

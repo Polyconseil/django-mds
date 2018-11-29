@@ -19,13 +19,13 @@ ALLOWED_HOSTS = CONFIG.getlist(
 
 INSTALLED_APPS = [
     "mds.apps.Config",
+    "corsheaders",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
-    "django.contrib.sessions",
     "django.contrib.messages",
+    "django.contrib.sessions",
     "django.contrib.staticfiles",
-    "corsheaders",
     "rest_framework",
 ]
 MIDDLEWARE = [
@@ -54,7 +54,7 @@ TEMPLATES = [
         },
     }
 ]
-WSGI_APPLICATION = "mds.wsgi.application"
+WSGI_APPLICATION = "mds_server.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.contrib.gis.db.backends.postgis",

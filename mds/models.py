@@ -63,3 +63,6 @@ class Telemetry(models.Model):
     status = UnboundedCharField(choices=enums.DEVICE_STATUS_CHOICES)
     point = gis_models.PointField(null=True)
     properties = pg_fields.JSONField(default=dict, encoder=encoders.JSONEncoder)
+
+    class Meta:
+        verbose_name_plural = "telemetries"
