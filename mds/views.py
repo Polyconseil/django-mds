@@ -1,4 +1,5 @@
 import json
+import os.path
 import yaml
 import warnings
 
@@ -134,5 +135,6 @@ class AreaViewSet(viewsets.ModelViewSet):
 
 
 def swagger(request):
-    spec = json.dumps(yaml.load(open("mds/oas.yml")))
+    oas_file_path = os.path.join(os.path.dirname(__file__), "oas.yml")
+    spec = json.dumps(yaml.load(open(oas_file_path)))
     return render(request, template_name="swagger.html", context={"data": spec})
