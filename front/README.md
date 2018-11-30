@@ -1,5 +1,7 @@
 # MDS Frontend
 
+![Screenshot UI](screenshot.png)
+
 ## Tech & requirements
 
 * Recent Node with Yarn

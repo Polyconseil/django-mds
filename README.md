@@ -4,9 +4,6 @@
 
 A [City of LA MDS Specification](https://github.com/CityOfLosAngeles/mobility-data-specification) (Mobility Data Specification) compliant implementation of the Agency API for Python/Django
 
-![Screenshot UI](screenshot.png)
-
-
 ## Goals & non-goals
 
 ### Goals
@@ -34,19 +31,10 @@ A [City of LA MDS Specification](https://github.com/CityOfLosAngeles/mobility-da
 
 * Install and configure requirements (see above)
 * Run `pip install .[dev]` to install dependencies
-* You need following env variables: MDS_DB_NAME, MDS_DB_USER and MDS_DB_PASSWORD
+* You need following env variables: `MDS_DB_NAME`, `MDS_DB_USER` and `MDS_DB_PASSWORD`
 * To initialize the database, run `python manage.py migrate`
-* To start the backend, run `python manage.py runserver`
+* To start the backend locally, run `MDS_DEV_DEBUG=1 python manage.py runserver`
 
 ### Frontend
 
-See dedicated README in [front/README.md](front/README.md)
-
-## TODO
-
-- [ ] API: Testing a more restful approach
-  - [ ] Add trips
-  - [ ] Add multiple mobility modes
-- [ ] Authentication
-- [ ] Clarify if service_areas should be integrated in this app or in another one that would focus on zoning
-- [ ] ...
+See dedicated README in [front/README.md](https://github.com/Polyconseil/django-mds/blob/master/front/README.md)
