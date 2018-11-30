@@ -1,4 +1,4 @@
-include LICENSE README.md screenshot.png CHANGELOG.rst
+include LICENSE README.md CHANGELOG.rst
 exclude  manage.py
 
 graft mds
