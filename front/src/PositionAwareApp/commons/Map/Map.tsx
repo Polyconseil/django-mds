@@ -8,6 +8,18 @@ import { IPosition, PositionChanger } from "../position";
 
 const DEFAULT_ZOOM = 14;
 
+function areSame(p1: IPosition, p2: IPosition) {
+  const threshold = 0.00001;
+  if (
+    Math.abs(p1.latlng.lat - p2.latlng.lat) < threshold &&
+    Math.abs(p1.latlng.lng - p2.latlng.lng) < threshold &&
+    p1.zoom === p2.zoom
+  ) {
+    return true;
+  }
+  return false;
+}
+
 export interface IProps {
   width?: number;
   height?: number;
@@ -18,6 +30,7 @@ export interface IProps {
 
 class Map extends React.Component<IProps> {
   public map: L.Map;
+  private updateSource: "url" | "map" | null = null; // not linked with render => keep outside of state
   private leafElementRef: React.RefObject<HTMLDivElement> = React.createRef();
 
   public componentDidMount() {
@@ -27,7 +40,7 @@ class Map extends React.Component<IProps> {
     const { position } = this.props;
 
     this.map = L.map(this.leafElementRef.current, {
-      zoomControl: false
+      zoomControl: false,
     }).setView(position.latlng, position.zoom || DEFAULT_ZOOM);
 
     L.control.zoom({ position: "bottomright" }).addTo(this.map);
@@ -41,7 +54,7 @@ class Map extends React.Component<IProps> {
           '<a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
           'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
         id: "mapbox.streets",
-        maxZoom: 18
+        maxZoom: 18,
       }
     ).addTo(this.map);
     this.map.on("moveend", this.handleMoveZoom);
@@ -53,7 +66,13 @@ class Map extends React.Component<IProps> {
 
   public componentDidUpdate(prevProps: IProps) {
     const { position } = this.props;
-    this.map.setView(position.latlng, position.zoom || DEFAULT_ZOOM);
+    const prevPosition = prevProps.position;
+    if (this.updateSource !== "map" && !areSame(prevPosition, position)) {
+      this.updateSource = "url";
+      this.map.setView(position.latlng, position.zoom || DEFAULT_ZOOM);
+    } else {
+      this.updateSource = null;
+    }
 
     const prevSize = this.getSize(prevProps);
     const newSize = this.getSize(this.props);
@@ -89,19 +108,24 @@ class Map extends React.Component<IProps> {
     if (!onPositionChange) {
       return;
     }
-
     const latlng = this.map.getCenter();
     const zoom = this.map.getZoom();
 
-    if (
-      latlng.lat === position.latlng.lat &&
-      latlng.lng === position.latlng.lng &&
-      zoom === position.zoom
-    ) {
+    if (areSame(position, { latlng, zoom })) {
       return;
     }
 
-    onPositionChange({ latlng, zoom });
+    this.updateSource = this.updateSource || "map";
+    if (this.updateSource === "map") {
+      // The map was updated through the user dragging the map.
+      // Propage this change in parent components in order to
+      // e.g. update the URL
+      onPositionChange({ latlng, zoom });
+    } else {
+      // The map was updated through props, the parent components
+      // are already aware of it and don't need to be notified
+      this.updateSource = null;
+    }
   };
 }
 

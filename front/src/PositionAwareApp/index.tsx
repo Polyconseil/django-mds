@@ -6,7 +6,7 @@ import NoMatch from "./commons/NoMatch";
 import {
   IPosition,
   parsePosition,
-  stringifyPosition
+  stringifyPosition,
 } from "./commons/position";
 
 import AreasSetup from "./AreasSetup";
@@ -27,7 +27,7 @@ export default class PositionAwareApp extends React.Component<
           flexDirection: "column",
           height: "100%",
           position: "absolute",
-          width: "100%"
+          width: "100%",
         }}
       >
         <Menu />
@@ -77,7 +77,7 @@ export default class PositionAwareApp extends React.Component<
     // Default position (TODO: could be fetched from server as current city center)
     return {
       latlng: { lat: 34.0513838, lng: -118.2451737 },
-      zoom: 14
+      zoom: 14,
     };
   }
 
