@@ -4,6 +4,7 @@ import yaml
 import warnings
 
 from django.shortcuts import render
+from django.db.models import OuterRef, Subquery, Prefetch
 
 from rest_framework import mixins
 from rest_framework import serializers as drf_serializers
@@ -116,7 +117,21 @@ class DeviceViewSet(
     UpdateOnlyModelMixin,
     MultiSerializerViewSet,
 ):
-    queryset = models.Device.objects.all()
+
+    queryset = models.Device.objects.prefetch_related(
+        Prefetch(
+            "telemetries",
+            queryset=models.Telemetry.objects.filter(
+                id__in=Subquery(
+                    models.Telemetry.objects.filter(device_id=OuterRef("device_id"))
+                    .order_by("-timestamp")
+                    .values_list("id", flat=True)[:1]
+                )
+            ),
+            to_attr="_latest_telemetry",
+        )
+    )
+
     lookup_field = "id"
     serializers_map = {
         "list": serializers.Device,

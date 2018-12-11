@@ -7,6 +7,7 @@ from django import forms, utils
 from django.contrib.gis.db import models as gis_models
 from django.contrib.postgres import fields as pg_fields
 from django.db import models
+from django.utils import timezone
 
 from rest_framework.utils import encoders
 
@@ -42,9 +43,15 @@ class Device(ProviderModel):
 
     identification_number = UnboundedCharField()
     model = UnboundedCharField(default=str)
-    status = UnboundedCharField(choices=enums.DEVICE_STATUS_CHOICES)
-    point = gis_models.PointField(null=True)
+    category = UnboundedCharField(choices=enums.DEVICE_CATEGORY_CHOICES)
+    propulsion = UnboundedCharField(choices=enums.DEVICE_PROPULSION_CHOICES)
+    registration_date = models.DateTimeField(default=timezone.now)
     properties = pg_fields.JSONField(default=dict, encoder=encoders.JSONEncoder)
+
+    @property
+    def latest_telemetry(self):
+        telemetries = getattr(self, "_latest_telemetry", None)
+        return telemetries[0] if telemetries else None
 
 
 class Polygon(models.Model):

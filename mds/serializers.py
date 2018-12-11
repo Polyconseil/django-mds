@@ -138,14 +138,26 @@ class Device(BaseModelSerializer):
         help_text="VIN (Vehicle Identification Number"
     )
     model = serializers.CharField(help_text="Vehicle model")
-    status = serializers.ChoiceField(
-        enums.DEVICE_STATUS_CHOICES, help_text="Service status"
+    category = serializers.ChoiceField(
+        enums.DEVICE_CATEGORY_CHOICES, help_text="Device type"
+    )
+    propulsion = serializers.ChoiceField(
+        enums.DEVICE_PROPULSION_CHOICES, help_text="Propulsion type"
+    )
+    registration_date = serializers.DateTimeField(help_text="Device registration date")
+    last_telemetry_date = serializers.DateTimeField(
+        source="latest_telemetry.timestamp",
+        help_text="Device registration date",
+        allow_null=True,
     )
     position = Point(
-        required=False,
+        source="latest_telemetry", help_text="Latest GPS position and telemetry"
+    )
+    status = serializers.ChoiceField(
+        enums.DEVICE_STATUS_CHOICES,
+        source="latest_telemetry.status",
+        help_text="Latest status",
         allow_null=True,
-        source="*",
-        help_text="GPS position and telemetry",
     )
 
     class Meta:
@@ -157,6 +169,10 @@ class Device(BaseModelSerializer):
             "model",
             "status",
             "position",
+            "category",
+            "propulsion",
+            "registration_date",
+            "last_telemetry_date",
         )
 
 

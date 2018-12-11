@@ -4,8 +4,8 @@ from . import models
 
 @admin.register(models.Device)
 class DeviceAdmin(admin.ModelAdmin):
-    list_display = ["id", "provider", "identification_number", "model", "status"]
-    list_filter = ["provider", "model", "status"]
+    list_display = ["id", "provider", "identification_number", "model"]
+    list_filter = ["provider", "model"]
 
 
 @admin.register(models.Area)
