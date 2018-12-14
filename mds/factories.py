@@ -9,6 +9,7 @@ from django.contrib.gis.geos.point import Point
 import pytz
 
 from . import models
+from . import enums
 
 
 district10 = GEOSGeometry(
@@ -561,15 +562,26 @@ def get_random_point():
     return point
 
 
+class Provider(factory.DjangoModelFactory):
+    class Meta:
+        model = models.Provider
+
+    name = factory.Iterator(
+        ["Lime", "BlueLA", "Metro Bike", "LongProviderNameCompanyLtdSarlGmoLgbtq"]
+    )
+
+
 class Device(factory.DjangoModelFactory):
     class Meta:
         model = models.Device
 
-    provider = uuid.UUID("a19cdb1e-1342-413b-8e89-db802b2f83f6")
+    provider = factory.SubFactory(Provider)
     identification_number = factory.Sequence(str)
     model = factory.Iterator(["bicycle-A", "car-B"])
-    status = "available"
-    point = factory.LazyAttribute(lambda a: get_random_point())
+    category = factory.Iterator(choice[0] for choice in enums.DEVICE_CATEGORY_CHOICES)
+    propulsion = factory.Iterator(
+        choice[0] for choice in enums.DEVICE_PROPULSION_CHOICES
+    )
     properties = {}
 
 
@@ -582,3 +594,45 @@ class Area(factory.DjangoModelFactory):
     end_date = None
     polygon = district10
     properties = {}
+
+
+class Telemetry(factory.DjangoModelFactory):
+    class Meta:
+        model = models.Telemetry
+
+    device = factory.Iterator(models.Device.objects.all())
+    provider = uuid.UUID("a19cdb1e-1342-413b-8e89-db802b2f83f6")
+    timestamp = datetime.datetime(2018, 8, 1, tzinfo=pytz.utc)
+    status = factory.Iterator(choice[0] for choice in enums.DEVICE_STATUS_CHOICES)
+    point = Point(
+        random.uniform(-118.39091357778655, -118.28229399983276),
+        random.uniform(34.00363399975826, 34.07988124764408),
+    )
+    properties = factory.Dict(
+        {
+            "gsm": factory.Dict(
+                {
+                    "timestamp": datetime.datetime(2018, 8, 1, tzinfo=pytz.utc),
+                    "operator": "operator_test",
+                    "signal": 0.5,
+                }
+            ),
+            "gps": factory.Dict(
+                {
+                    "timestamp": datetime.datetime(2018, 8, 1, tzinfo=pytz.utc),
+                    "accuracy": 1,
+                    "course": 235.62,
+                    "speed": 119.15,
+                }
+            ),
+            "vehicle_state": factory.Dict(
+                {
+                    "speed": 1.0,
+                    "acceleration": [1.0, 1.0, 1.0],
+                    "odometer": 5000,
+                    "driver_present": True,
+                }
+            ),
+            "energy": factory.Dict({"cruise_range": 12000, "autonomy": 0.69}),
+        }
+    )
