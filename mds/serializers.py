@@ -131,8 +131,8 @@ class Device(BaseModelSerializer):
     """
 
     id = serializers.UUIDField(help_text="Unique device identifier (UUID)")
-    provider = serializers.UUIDField(
-        help_text="A unique ID identifying the service provider (UUID)"
+    provider = serializers.CharField(
+        source="provider.name", help_text="Name of the service provider of the device"
     )
     identification_number = serializers.CharField(
         help_text="VIN (Vehicle Identification Number"

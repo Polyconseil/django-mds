@@ -37,10 +37,19 @@ class ProviderModel(models.Model):
         abstract = True
 
 
-class Device(ProviderModel):
+class Provider(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4)
+    name = UnboundedCharField(default=str)
+
+
+class Device(models.Model):
     """A device
     """
 
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4)
+    provider = models.ForeignKey(
+        Provider, related_name="devices", on_delete=models.CASCADE
+    )
     identification_number = UnboundedCharField()
     model = UnboundedCharField(default=str)
     category = UnboundedCharField(choices=enums.DEVICE_CATEGORY_CHOICES)

@@ -130,7 +130,7 @@ class DeviceViewSet(
             ),
             to_attr="_latest_telemetry",
         )
-    )
+    ).select_related("provider")
 
     lookup_field = "id"
     serializers_map = {

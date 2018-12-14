@@ -2,6 +2,12 @@ from django.contrib import admin
 from . import models
 
 
+@admin.register(models.Provider)
+class ProviderAdmin(admin.ModelAdmin):
+    list_display = ["id", "name"]
+    ordering = ["name"]
+
+
 @admin.register(models.Device)
 class DeviceAdmin(admin.ModelAdmin):
     list_display = ["id", "provider", "identification_number", "model"]

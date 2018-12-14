@@ -1,902 +1,706 @@
+- model: mds.provider
+  pk: a19cdb1e-1342-413b-8e89-db802b2f83f6
+  fields:
+    name: provider-A
 - model: mds.device
   pk: 00bc887c-92df-452c-9752-e8b880391b78
   fields:
     provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
-    identification_number: '38'
+    identification_number: "38"
     model: bicycle-A
-    status: available
-    point: SRID=4326;POINT (-118.3382243481348 34.05588160995279)
     properties: {}
 - model: mds.device
   pk: 00e97566-c4f7-498c-9f9d-bea375d6c7d2
   fields:
     provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
-    identification_number: '63'
+    identification_number: "63"
     model: car-B
-    status: available
-    point: SRID=4326;POINT (-118.3617726896254 34.01122949707137)
     properties: {}
 - model: mds.device
   pk: 03d907c1-9f47-4dd1-96c7-d93453843f45
   fields:
     provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
-    identification_number: '86'
+    identification_number: "86"
     model: bicycle-A
-    status: available
-    point: SRID=4326;POINT (-118.3415001223982 34.05433366062722)
     properties: {}
 - model: mds.device
   pk: 04b60edf-a2e1-48a9-ac46-8f49f28907d2
   fields:
     provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
-    identification_number: '58'
+    identification_number: "58"
     model: bicycle-A
-    status: available
-    point: SRID=4326;POINT (-118.3040565217666 34.06794907495042)
     properties: {}
 - model: mds.device
   pk: 06b2646f-7d86-4dd1-89f4-f0e94a20a569
   fields:
     provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
-    identification_number: '92'
+    identification_number: "92"
     model: bicycle-A
-    status: available
-    point: SRID=4326;POINT (-118.3389408257989 34.0361403602471)
     properties: {}
 - model: mds.device
   pk: 089ad26b-bdf9-467c-bc34-178a85d3a2ee
   fields:
     provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
-    identification_number: '95'
+    identification_number: "95"
     model: car-B
-    status: available
-    point: SRID=4326;POINT (-118.3043441622054 34.06726620979247)
     properties: {}
 - model: mds.device
   pk: 091e286f-24c8-432a-b439-12758a6f9be7
   fields:
     provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
-    identification_number: '76'
+    identification_number: "76"
     model: bicycle-A
-    status: available
-    point: SRID=4326;POINT (-118.3012816481511 34.05977568101531)
     properties: {}
 - model: mds.device
   pk: 097d69c6-85c5-447b-b43a-582bcc708908
   fields:
     provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
-    identification_number: '68'
+    identification_number: "68"
     model: bicycle-A
-    status: available
-    point: SRID=4326;POINT (-118.2926445122391 34.05743617609163)
     properties: {}
 - model: mds.device
   pk: 0b78633d-f39a-4266-a189-a7174c373e72
   fields:
     provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
-    identification_number: '85'
+    identification_number: "85"
     model: car-B
-    status: available
-    point: SRID=4326;POINT (-118.3075237014617 34.07340352096229)
     properties: {}
 - model: mds.device
   pk: 0ca2a537-2246-4484-b46b-84acba5aac52
   fields:
     provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
-    identification_number: '24'
+    identification_number: "24"
     model: bicycle-A
-    status: available
-    point: SRID=4326;POINT (-118.3688313955472 34.02474211928521)
     properties: {}
 - model: mds.device
   pk: 0e45bbce-4bdd-446c-a2df-20e970b5b6d5
   fields:
     provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
-    identification_number: '16'
+    identification_number: "16"
     model: bicycle-A
-    status: available
-    point: SRID=4326;POINT (-118.3454971932835 34.04594666454092)
     properties: {}
 - model: mds.device
   pk: 0eef4c4b-8e14-4fc4-ac00-a5588d6b37a3
   fields:
     provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
-    identification_number: '44'
+    identification_number: "44"
     model: bicycle-A
-    status: available
-    point: SRID=4326;POINT (-118.3491232411356 34.03264599583665)
     properties: {}
 - model: mds.device
   pk: 0ef10be7-d390-4d99-981f-8bc5aae01889
   fields:
     provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
-    identification_number: '11'
+    identification_number: "11"
     model: car-B
-    status: available
-    point: SRID=4326;POINT (-118.3257771872959 34.04204423944844)
     properties: {}
 - model: mds.device
   pk: 0fd2b0e6-19ca-4696-91d2-c7b5ec20950e
   fields:
     provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
-    identification_number: '7'
+    identification_number: "7"
     model: car-B
-    status: available
-    point: SRID=4326;POINT (-118.3007442384249 34.07348849567247)
     properties: {}
 - model: mds.device
   pk: 1122b4de-1910-4eeb-ab64-660e92889f36
   fields:
     provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
-    identification_number: '57'
+    identification_number: "57"
     model: car-B
-    status: available
-    point: SRID=4326;POINT (-118.3734111803622 34.03866593475923)
     properties: {}
 - model: mds.device
   pk: 142b6420-37b7-4830-8257-d8788bb35ede
   fields:
     provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
-    identification_number: '54'
+    identification_number: "54"
     model: bicycle-A
-    status: available
-    point: SRID=4326;POINT (-118.3319727580966 34.0187223074569)
     properties: {}
 - model: mds.device
   pk: 150914e6-cf26-4c23-8daa-b0977bdc4f9d
   fields:
     provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
-    identification_number: '50'
+    identification_number: "50"
     model: bicycle-A
-    status: available
-    point: SRID=4326;POINT (-118.3332235900621 34.05098837827157)
     properties: {}
 - model: mds.device
   pk: 16ad99ac-e574-419a-84fe-cbf95cb0f734
   fields:
     provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
-    identification_number: '20'
+    identification_number: "20"
     model: bicycle-A
-    status: available
-    point: SRID=4326;POINT (-118.3669781520847 34.03905336778321)
     properties: {}
 - model: mds.device
   pk: 1825d162-883d-4ad7-876b-8da7136ea61f
   fields:
     provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
-    identification_number: '80'
+    identification_number: "80"
     model: bicycle-A
-    status: available
-    point: SRID=4326;POINT (-118.3611253686896 34.00888203794233)
     properties: {}
 - model: mds.device
   pk: 1ba7cc02-5eb3-4ef6-ac3b-298c9e7e0cc1
   fields:
     provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
-    identification_number: '49'
+    identification_number: "49"
     model: car-B
-    status: available
-    point: SRID=4326;POINT (-118.3774570268124 34.01967474137314)
     properties: {}
 - model: mds.device
   pk: 1c8ca2d7-e879-4a96-860f-350f0360f23a
   fields:
     provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
-    identification_number: '47'
+    identification_number: "47"
     model: car-B
-    status: available
-    point: SRID=4326;POINT (-118.3029302825759 34.0508211494408)
     properties: {}
 - model: mds.device
   pk: 1f821abb-f424-4617-bed7-609f7fef55da
   fields:
     provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
-    identification_number: '32'
+    identification_number: "32"
     model: bicycle-A
-    status: available
-    point: SRID=4326;POINT (-118.3468467244788 34.03040375546733)
     properties: {}
 - model: mds.device
   pk: 2078b603-be9d-4bf8-b31e-17e9889d6019
   fields:
     provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
-    identification_number: '72'
+    identification_number: "72"
     model: bicycle-A
-    status: available
-    point: SRID=4326;POINT (-118.3116224117672 34.04375445763927)
     properties: {}
 - model: mds.device
   pk: 26a5b437-354f-49cd-8209-3eded7dbe018
   fields:
     provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
-    identification_number: '13'
+    identification_number: "13"
     model: car-B
-    status: available
-    point: SRID=4326;POINT (-118.2891668254043 34.06043410229702)
     properties: {}
 - model: mds.device
   pk: 27f428be-c7e1-4795-bcc1-37bdb16b7477
   fields:
     provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
-    identification_number: '96'
+    identification_number: "96"
     model: bicycle-A
-    status: available
-    point: SRID=4326;POINT (-118.365269985117 34.02027388432874)
     properties: {}
 - model: mds.device
   pk: 2912c314-8216-4fab-8b52-ee3404f5cd70
   fields:
     provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
-    identification_number: '14'
+    identification_number: "14"
     model: bicycle-A
-    status: available
-    point: SRID=4326;POINT (-118.347389146384 34.04052046299613)
     properties: {}
 - model: mds.device
   pk: 2a0ada81-0276-4e4d-aecd-3ca04c66bf08
   fields:
     provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
-    identification_number: '37'
+    identification_number: "37"
     model: car-B
-    status: available
-    point: SRID=4326;POINT (-118.333827640789 34.04121130184902)
     properties: {}
 - model: mds.device
   pk: 2ceee134-73d8-4623-8061-d033b9bceb3e
   fields:
     provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
-    identification_number: '29'
+    identification_number: "29"
     model: car-B
-    status: available
-    point: SRID=4326;POINT (-118.308112282537 34.05034817743139)
     properties: {}
 - model: mds.device
   pk: 2f3fc2e3-3763-4f92-ada1-f1dafeabf837
   fields:
     provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
-    identification_number: '23'
+    identification_number: "23"
     model: car-B
-    status: available
-    point: SRID=4326;POINT (-118.306953402709 34.04262141245447)
     properties: {}
 - model: mds.device
   pk: 33bedf10-4eb0-4362-bad3-72d74224937e
   fields:
     provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
-    identification_number: '12'
+    identification_number: "12"
     model: bicycle-A
-    status: available
-    point: SRID=4326;POINT (-118.3038093760342 34.0377345421996)
     properties: {}
 - model: mds.device
   pk: 354b54e9-8969-4e8e-b26c-4bd3020c12fe
   fields:
     provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
-    identification_number: '98'
+    identification_number: "98"
     model: bicycle-A
-    status: available
-    point: SRID=4326;POINT (-118.3189153723076 34.02460567496542)
     properties: {}
 - model: mds.device
   pk: 3aa4eaea-101e-4f66-a499-ee8e08da2ee3
   fields:
     provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
-    identification_number: '82'
+    identification_number: "82"
     model: bicycle-A
-    status: available
-    point: SRID=4326;POINT (-118.3453890974113 34.01060479084069)
     properties: {}
 - model: mds.device
   pk: 3b8c8beb-3110-4318-b27a-2c1f5533f388
   fields:
     provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
-    identification_number: '79'
+    identification_number: "79"
     model: car-B
-    status: available
-    point: SRID=4326;POINT (-118.3660503140846 34.01484588955189)
     properties: {}
 - model: mds.device
   pk: 3bd865fa-d571-4ee5-919d-e2ed7dde8563
   fields:
     provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
-    identification_number: '0'
+    identification_number: "0"
     model: bicycle-A
-    status: available
-    point: SRID=4326;POINT (-118.3630821499491 34.03813293060611)
     properties: {}
 - model: mds.device
   pk: 3cb19d04-8846-4212-8d52-08fd6cd8157d
   fields:
     provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
-    identification_number: '77'
+    identification_number: "77"
     model: car-B
-    status: available
-    point: SRID=4326;POINT (-118.3605667469269 34.01958267380505)
     properties: {}
 - model: mds.device
   pk: 3cbd2ce9-5f5a-445d-846f-950f8455fc59
   fields:
     provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
-    identification_number: '78'
+    identification_number: "78"
     model: bicycle-A
-    status: available
-    point: SRID=4326;POINT (-118.3073895866832 34.06370984213969)
     properties: {}
 - model: mds.device
   pk: 42560c31-b26d-4558-9c1f-f4899f079b4f
   fields:
     provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
-    identification_number: '99'
+    identification_number: "99"
     model: car-B
-    status: available
-    point: SRID=4326;POINT (-118.3490632060796 34.014709685971)
     properties: {}
 - model: mds.device
   pk: 44307a24-ed1f-4b3f-8730-53382a113b1c
   fields:
     provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
-    identification_number: '53'
+    identification_number: "53"
     model: car-B
-    status: available
-    point: SRID=4326;POINT (-118.3706721614282 34.01655531720687)
     properties: {}
 - model: mds.device
   pk: 479f4d7f-f941-440b-a706-ae3c8d25c115
   fields:
     provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
-    identification_number: '26'
+    identification_number: "26"
     model: bicycle-A
-    status: available
-    point: SRID=4326;POINT (-118.3067852074754 34.0438545432953)
     properties: {}
 - model: mds.device
   pk: 49ff5963-348a-4c3f-a4ab-e52a2b6d2a58
   fields:
     provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
-    identification_number: '45'
+    identification_number: "45"
     model: car-B
-    status: available
-    point: SRID=4326;POINT (-118.3718880718382 34.02576335406125)
     properties: {}
 - model: mds.device
   pk: 4c94ce53-2697-4d8f-a672-5ef0e7f412b5
   fields:
     provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
-    identification_number: '48'
+    identification_number: "48"
     model: bicycle-A
-    status: available
-    point: SRID=4326;POINT (-118.3408952572128 34.01888780565285)
     properties: {}
 - model: mds.device
   pk: 4d033dec-a638-4070-96f6-3ae97706c945
   fields:
     provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
-    identification_number: '65'
+    identification_number: "65"
     model: car-B
-    status: available
-    point: SRID=4326;POINT (-118.327551842746 34.01316322435421)
     properties: {}
 - model: mds.device
   pk: 50c1b410-ec2b-4cdf-80d1-f09419290a50
   fields:
     provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
-    identification_number: '22'
+    identification_number: "22"
     model: bicycle-A
-    status: available
-    point: SRID=4326;POINT (-118.3612656130506 34.03110386770528)
     properties: {}
 - model: mds.device
   pk: 5506b5c9-3530-405e-aca1-ac2183a0e5aa
   fields:
     provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
-    identification_number: '62'
+    identification_number: "62"
     model: bicycle-A
-    status: available
-    point: SRID=4326;POINT (-118.3159624222783 34.03290958480127)
     properties: {}
 - model: mds.device
   pk: 551cd815-cd5b-4cdd-8f66-564fbb946e15
   fields:
     provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
-    identification_number: '17'
+    identification_number: "17"
     model: car-B
-    status: available
-    point: SRID=4326;POINT (-118.324522656731 34.012500599307)
     properties: {}
 - model: mds.device
   pk: 55451f2b-afd3-42a0-ab02-1ad33e77fb44
   fields:
     provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
-    identification_number: '69'
+    identification_number: "69"
     model: car-B
-    status: available
-    point: SRID=4326;POINT (-118.3089882449877 34.07649864484774)
     properties: {}
 - model: mds.device
   pk: 5648a5ab-4804-4c7a-b6f3-7e9746fa8893
   fields:
     provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
-    identification_number: '2'
+    identification_number: "2"
     model: bicycle-A
-    status: available
-    point: SRID=4326;POINT (-118.3516170878198 34.02952191744996)
     properties: {}
 - model: mds.device
   pk: 56f85932-6c53-434c-a742-b5105fb4edf6
   fields:
     provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
-    identification_number: '1'
+    identification_number: "1"
     model: car-B
-    status: available
-    point: SRID=4326;POINT (-118.3708696671141 34.04444585314872)
     properties: {}
 - model: mds.device
   pk: 59a08877-ea2b-4a54-836c-de88275df4a4
   fields:
     provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
-    identification_number: '27'
+    identification_number: "27"
     model: car-B
-    status: available
-    point: SRID=4326;POINT (-118.3712737498503 34.02203380301342)
     properties: {}
 - model: mds.device
   pk: 5f9ec925-ab6b-4f86-a7f6-81907276e193
   fields:
     provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
-    identification_number: '42'
+    identification_number: "42"
     model: bicycle-A
-    status: available
-    point: SRID=4326;POINT (-118.3276597167215 34.03947352775847)
     properties: {}
 - model: mds.device
   pk: 62c9b301-e075-40c8-88cb-3bc719ff0b6e
   fields:
     provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
-    identification_number: '30'
+    identification_number: "30"
     model: bicycle-A
-    status: available
-    point: SRID=4326;POINT (-118.3511876352247 34.0421445358879)
     properties: {}
 - model: mds.device
   pk: 72cc8ebe-aedb-4b3a-acfe-e41d6bf245ae
   fields:
     provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
-    identification_number: '46'
+    identification_number: "46"
     model: bicycle-A
-    status: available
-    point: SRID=4326;POINT (-118.3495205568407 34.05089742598034)
     properties: {}
 - model: mds.device
   pk: 746ac2ea-378a-40ab-a7c7-0a1e5e355c7c
   fields:
     provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
-    identification_number: '5'
+    identification_number: "5"
     model: car-B
-    status: available
-    point: SRID=4326;POINT (-118.386129847342 34.04591155171599)
     properties: {}
 - model: mds.device
   pk: 7965ce01-f536-4a6e-9f48-ac112e30dc20
   fields:
     provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
-    identification_number: '91'
+    identification_number: "91"
     model: car-B
-    status: available
-    point: SRID=4326;POINT (-118.380123562076 34.03993783849219)
     properties: {}
 - model: mds.device
   pk: 796aaeea-b2b8-4eba-af78-4f1b7e933c5c
   fields:
     provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
-    identification_number: '94'
+    identification_number: "94"
     model: bicycle-A
-    status: available
-    point: SRID=4326;POINT (-118.3247095724893 34.02219142589129)
     properties: {}
 - model: mds.device
   pk: 79d9c4ca-fa63-4f91-af32-62e4825b42c6
   fields:
     provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
-    identification_number: '74'
+    identification_number: "74"
     model: bicycle-A
-    status: available
-    point: SRID=4326;POINT (-118.3339233868114 34.04989206181944)
     properties: {}
 - model: mds.device
   pk: 7a221012-1523-49a1-997c-803f6f9d3917
   fields:
     provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
-    identification_number: '43'
+    identification_number: "43"
     model: car-B
-    status: available
-    point: SRID=4326;POINT (-118.3015084668265 34.03798812810293)
     properties: {}
 - model: mds.device
   pk: 7b393d30-eca0-4181-927d-8055baeded07
   fields:
     provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
-    identification_number: '36'
+    identification_number: "36"
     model: bicycle-A
-    status: available
-    point: SRID=4326;POINT (-118.3470230822079 34.02839181581771)
     properties: {}
 - model: mds.device
   pk: 7c46e834-21cf-4d91-b94f-664e620ff961
   fields:
     provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
-    identification_number: '55'
+    identification_number: "55"
     model: car-B
-    status: available
-    point: SRID=4326;POINT (-118.3209531025826 34.05392063686185)
     properties: {}
 - model: mds.device
   pk: 7cefde37-ebdb-40f2-8f88-fc131fe7171a
   fields:
     provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
-    identification_number: '87'
+    identification_number: "87"
     model: car-B
-    status: available
-    point: SRID=4326;POINT (-118.3373989869436 34.04945322139929)
     properties: {}
 - model: mds.device
   pk: 80da4b98-a3d0-4c5f-bfb9-a2adced5a67d
   fields:
     provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
-    identification_number: '25'
+    identification_number: "25"
     model: car-B
-    status: available
-    point: SRID=4326;POINT (-118.3041479903773 34.06790952618845)
     properties: {}
 - model: mds.device
   pk: 83b88b71-7c21-42f4-807f-3522933a6a48
   fields:
     provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
-    identification_number: '40'
+    identification_number: "40"
     model: bicycle-A
-    status: available
-    point: SRID=4326;POINT (-118.3027483021097 34.04946639124328)
     properties: {}
 - model: mds.device
   pk: 84c3f46c-8b3f-408f-8aa5-5185e647d20e
   fields:
     provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
-    identification_number: '89'
+    identification_number: "89"
     model: car-B
-    status: available
-    point: SRID=4326;POINT (-118.3525961827258 34.03393249909491)
     properties: {}
 - model: mds.device
   pk: 88f5eefd-67a3-4b40-af1f-97fb85d99670
   fields:
     provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
-    identification_number: '35'
+    identification_number: "35"
     model: car-B
-    status: available
-    point: SRID=4326;POINT (-118.3282923562319 34.01781347870732)
     properties: {}
 - model: mds.device
   pk: 8def34f1-df57-4050-aab8-4a12b6c30637
   fields:
     provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
-    identification_number: '15'
+    identification_number: "15"
     model: car-B
-    status: available
-    point: SRID=4326;POINT (-118.3141158574198 34.04157375950656)
     properties: {}
 - model: mds.device
   pk: 8ea3130c-83be-4b0d-8192-1786598e7ba3
   fields:
     provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
-    identification_number: '83'
+    identification_number: "83"
     model: car-B
-    status: available
-    point: SRID=4326;POINT (-118.3190656007602 34.00598846052209)
     properties: {}
 - model: mds.device
   pk: 910cb33e-4b3e-4bb0-868f-36ff84f90d81
   fields:
     provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
-    identification_number: '19'
+    identification_number: "19"
     model: car-B
-    status: available
-    point: SRID=4326;POINT (-118.3505256918486 34.04849279309531)
     properties: {}
 - model: mds.device
   pk: 95a3cc45-b25c-4959-9f18-451ab9ab1978
   fields:
     provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
-    identification_number: '71'
+    identification_number: "71"
     model: car-B
-    status: available
-    point: SRID=4326;POINT (-118.3042858852391 34.05039234605915)
     properties: {}
 - model: mds.device
   pk: 95a780ee-e452-4211-9fc6-2393171877f4
   fields:
     provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
-    identification_number: '88'
+    identification_number: "88"
     model: bicycle-A
-    status: available
-    point: SRID=4326;POINT (-118.3059945700021 34.0673096798697)
     properties: {}
 - model: mds.device
   pk: 9c3571f4-60cc-49a3-b1ff-ff07958b19b1
   fields:
     provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
-    identification_number: '97'
+    identification_number: "97"
     model: car-B
-    status: available
-    point: SRID=4326;POINT (-118.3669539872322 34.04939030170908)
     properties: {}
 - model: mds.device
   pk: 9fa28179-d788-4685-bc29-dac9d9836b2a
   fields:
     provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
-    identification_number: '93'
+    identification_number: "93"
     model: car-B
-    status: available
-    point: SRID=4326;POINT (-118.3495956029277 34.03715290372178)
     properties: {}
 - model: mds.device
   pk: a2a2a749-7d07-4c3f-9977-583acb4181ef
   fields:
     provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
-    identification_number: '52'
+    identification_number: "52"
     model: bicycle-A
-    status: available
-    point: SRID=4326;POINT (-118.3296511685222 34.05380824192501)
     properties: {}
 - model: mds.device
   pk: afd59888-6a32-41e6-9c48-aba3192c5e64
   fields:
     provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
-    identification_number: '70'
+    identification_number: "70"
     model: bicycle-A
-    status: available
-    point: SRID=4326;POINT (-118.3119181054427 34.04999727087394)
     properties: {}
 - model: mds.device
   pk: b268a556-fcd2-4648-8b0f-83f68036ef53
   fields:
     provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
-    identification_number: '39'
+    identification_number: "39"
     model: car-B
-    status: available
-    point: SRID=4326;POINT (-118.3776055311929 34.03314292929859)
     properties: {}
 - model: mds.device
   pk: b5442878-1361-4c2c-a138-79174d0ece5b
   fields:
     provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
-    identification_number: '8'
+    identification_number: "8"
     model: bicycle-A
-    status: available
-    point: SRID=4326;POINT (-118.3086621258699 34.05177406176522)
     properties: {}
 - model: mds.device
   pk: b6d8b81c-5465-42a4-939d-59d9dc584118
   fields:
     provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
-    identification_number: '75'
+    identification_number: "75"
     model: car-B
-    status: available
-    point: SRID=4326;POINT (-118.3646751353692 34.04518652992598)
     properties: {}
 - model: mds.device
   pk: b766a016-af48-4e80-89ef-3241bf2aabb7
   fields:
     provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
-    identification_number: '28'
+    identification_number: "28"
     model: bicycle-A
-    status: available
-    point: SRID=4326;POINT (-118.3228907281826 34.01882951981059)
     properties: {}
 - model: mds.device
   pk: bcf0e031-903a-43c8-8d09-91b9f0ba4237
   fields:
     provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
-    identification_number: '3'
+    identification_number: "3"
     model: car-B
-    status: available
-    point: SRID=4326;POINT (-118.3434596737377 34.04174807379387)
     properties: {}
 - model: mds.device
   pk: bf4e49eb-dc2a-4986-b39f-88d6dd26bb46
   fields:
     provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
-    identification_number: '21'
+    identification_number: "21"
     model: car-B
-    status: available
-    point: SRID=4326;POINT (-118.3531244292336 34.04496897376929)
     properties: {}
 - model: mds.device
   pk: c3b37e21-f58c-430b-a7ff-a7f1dea6e7e4
   fields:
     provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
-    identification_number: '73'
+    identification_number: "73"
     model: car-B
-    status: available
-    point: SRID=4326;POINT (-118.3464033827604 34.03470800342698)
     properties: {}
 - model: mds.device
   pk: c71c4928-9382-49e8-8db1-4fe7c90a9722
   fields:
     provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
-    identification_number: '41'
+    identification_number: "41"
     model: car-B
-    status: available
-    point: SRID=4326;POINT (-118.3738200538334 34.04941025870657)
     properties: {}
 - model: mds.device
   pk: c72832a7-38d4-48d8-9d01-41e1a34f49af
   fields:
     provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
-    identification_number: '4'
+    identification_number: "4"
     model: bicycle-A
-    status: available
-    point: SRID=4326;POINT (-118.2876059848029 34.06203317565792)
     properties: {}
 - model: mds.device
   pk: c838e560-02ca-4256-b9b5-f100b788d8c0
   fields:
     provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
-    identification_number: '90'
+    identification_number: "90"
     model: bicycle-A
-    status: available
-    point: SRID=4326;POINT (-118.306296866583 34.0745485702642)
     properties: {}
 - model: mds.device
   pk: cac1e47a-a0fe-4ddb-9f85-49276a300c99
   fields:
     provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
-    identification_number: '59'
+    identification_number: "59"
     model: car-B
-    status: available
-    point: SRID=4326;POINT (-118.336121898548 34.02278832282425)
     properties: {}
 - model: mds.device
   pk: cb12191f-ff05-4708-b7a8-9fe0bc0581fb
   fields:
     provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
-    identification_number: '84'
+    identification_number: "84"
     model: bicycle-A
-    status: available
-    point: SRID=4326;POINT (-118.3675177258697 34.03259787289283)
     properties: {}
 - model: mds.device
   pk: d04f26c4-0813-4f77-bdaa-91fee78e3a64
   fields:
     provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
-    identification_number: '34'
+    identification_number: "34"
     model: bicycle-A
-    status: available
-    point: SRID=4326;POINT (-118.3682161829568 34.04098510806242)
     properties: {}
 - model: mds.device
   pk: d41550b9-5649-4275-ba7f-7a8bda19a436
   fields:
     provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
-    identification_number: '51'
+    identification_number: "51"
     model: car-B
-    status: available
-    point: SRID=4326;POINT (-118.3344708040427 34.02632029070389)
     properties: {}
 - model: mds.device
   pk: d54469d1-751b-45fb-9823-a1b48f85446b
   fields:
     provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
-    identification_number: '81'
+    identification_number: "81"
     model: car-B
-    status: available
-    point: SRID=4326;POINT (-118.3296564212264 34.01256144147293)
     properties: {}
 - model: mds.device
   pk: d5af94f5-ad64-4f1b-b580-24478cf4231d
   fields:
     provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
-    identification_number: '9'
+    identification_number: "9"
     model: car-B
-    status: available
-    point: SRID=4326;POINT (-118.3756794033454 34.04344544261917)
     properties: {}
 - model: mds.device
   pk: da1a7667-f18d-4425-bffb-b25d95e2b1e5
   fields:
     provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
-    identification_number: '10'
+    identification_number: "10"
     model: bicycle-A
-    status: available
-    point: SRID=4326;POINT (-118.3531114218658 34.04524716958083)
     properties: {}
 - model: mds.device
   pk: dd6c83c2-8460-464f-ba50-8da544d3e454
   fields:
     provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
-    identification_number: '67'
+    identification_number: "67"
     model: car-B
-    status: available
-    point: SRID=4326;POINT (-118.3675530482759 34.03847260701899)
     properties: {}
 - model: mds.device
   pk: e53a0188-34b8-4f3a-a443-b73007b9b3aa
   fields:
     provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
-    identification_number: '66'
+    identification_number: "66"
     model: bicycle-A
-    status: available
-    point: SRID=4326;POINT (-118.3368289964467 34.031069080443)
     properties: {}
 - model: mds.device
   pk: e60b5df5-0c2d-49a6-bde8-5203b12068d6
   fields:
     provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
-    identification_number: '56'
+    identification_number: "56"
     model: bicycle-A
-    status: available
-    point: SRID=4326;POINT (-118.3860827008448 34.04442068262153)
     properties: {}
 - model: mds.device
   pk: e7053e00-61dd-4639-96b9-6fb7b6a9afde
   fields:
     provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
-    identification_number: '60'
+    identification_number: "60"
     model: bicycle-A
-    status: available
-    point: SRID=4326;POINT (-118.3303790522831 34.01351419350657)
     properties: {}
 - model: mds.device
   pk: ecd5275e-c303-4d35-94b8-0a5ccfc744d5
   fields:
     provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
-    identification_number: '31'
+    identification_number: "31"
     model: car-B
-    status: available
-    point: SRID=4326;POINT (-118.3425747771524 34.03837717640891)
     properties: {}
 - model: mds.device
   pk: f025c249-8895-4bbe-a1ab-8308cebc70a7
   fields:
     provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
-    identification_number: '64'
+    identification_number: "64"
     model: bicycle-A
-    status: available
-    point: SRID=4326;POINT (-118.364946360478 34.01127836222786)
     properties: {}
 - model: mds.device
   pk: f198749f-f005-4250-8b92-fba173a57767
   fields:
     provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
-    identification_number: '33'
+    identification_number: "33"
     model: car-B
-    status: available
-    point: SRID=4326;POINT (-118.3573735881009 34.03318592387966)
     properties: {}
 - model: mds.device
   pk: f562c003-1901-477f-aeed-035d212851ae
   fields:
     provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
-    identification_number: '6'
+    identification_number: "6"
     model: bicycle-A
-    status: available
-    point: SRID=4326;POINT (-118.3527398428119 34.04523214011096)
     properties: {}
 - model: mds.device
   pk: f71255f6-92bc-41ff-90ef-fbf553beb59b
   fields:
     provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
-    identification_number: '18'
+    identification_number: "18"
     model: bicycle-A
-    status: available
-    point: SRID=4326;POINT (-118.3248462654243 34.03523748456562)
     properties: {}
 - model: mds.device
   pk: fe567579-3b42-4c5b-8181-a4630b350c9e
   fields:
     provider: a19cdb1e-1342-413b-8e89-db802b2f83f6
-    identification_number: '61'
+    identification_number: "61"
     model: car-B
-    status: available
-    point: SRID=4326;POINT (-118.3620279994324 34.04582121449525)
     properties: {}
 - model: mds.area
   pk: 6441b544-0be1-4ec1-aa70-729fe1cebe97
@@ -910,7 +714,8 @@
     label: "test_polygon"
     creation_date: 2018-08-01T00:00:00Z
     deletion_date: null
-    geom: SRID=4326;POLYGON ((-118.2843063056015 34.06371498771665, -118.2842040002129
+    geom:
+      SRID=4326;POLYGON ((-118.2843063056015 34.06371498771665, -118.2842040002129
       34.06370000073153, -118.2841039999419 34.06367000044555, -118.2839099990901
       34.06358299998553, -118.2830799995123 34.06321499943402, -118.2822939998328
       34.06286500032705, -118.2832839999346 34.06134900053578, -118.2842000004736
