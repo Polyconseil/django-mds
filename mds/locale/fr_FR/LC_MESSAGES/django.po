@@ -17,14 +17,38 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+#: mds/enums.py:6
 msgid "Available"
 msgstr "Disponible"
 
+#: mds/enums.py:7
 msgid "Reserved"
 msgstr "Réservé"
 
+#: mds/enums.py:8
 msgid "Unavailable"
 msgstr "Indisponible"
 
+#: mds/enums.py:9
 msgid "Removed"
-msgstr "Retiré"
+msgstr "Supprimé"
+
+#: mds/enums.py:12
+msgid "Bike"
+msgstr "Vélo"
+
+#: mds/enums.py:13
+msgid "Scooter"
+msgstr "Scooter"
+
+#: mds/enums.py:14
+msgid "Car"
+msgstr "Voiture"
+
+#: mds/enums.py:17
+msgid "Electric"
+msgstr "Électrique"
+
+#: mds/enums.py:18
+msgid "Combustion"
+msgstr "Combustion"

@@ -14,61 +14,140 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='Area',
+            name="Area",
             fields=[
-                ('id', models.UUIDField(default=uuid.uuid4, primary_key=True, serialize=False)),
-                ('provider', models.UUIDField()),
-                ('begin_date', models.DateTimeField()),
-                ('end_date', models.DateTimeField(null=True)),
-                ('polygon', django.contrib.gis.db.models.fields.PolygonField(srid=4326)),
-                ('properties', django.contrib.postgres.fields.jsonb.JSONField(default=dict, encoder=rest_framework.utils.encoders.JSONEncoder)),
+                (
+                    "id",
+                    models.UUIDField(
+                        default=uuid.uuid4, primary_key=True, serialize=False
+                    ),
+                ),
+                ("provider", models.UUIDField()),
+                ("begin_date", models.DateTimeField()),
+                ("end_date", models.DateTimeField(null=True)),
+                (
+                    "polygon",
+                    django.contrib.gis.db.models.fields.PolygonField(srid=4326),
+                ),
+                (
+                    "properties",
+                    django.contrib.postgres.fields.jsonb.JSONField(
+                        default=dict, encoder=rest_framework.utils.encoders.JSONEncoder
+                    ),
+                ),
             ],
-            options={
-                'abstract': False,
-            },
+            options={"abstract": False},
         ),
         migrations.CreateModel(
-            name='Device',
+            name="Device",
             fields=[
-                ('id', models.UUIDField(default=uuid.uuid4, primary_key=True, serialize=False)),
-                ('identification_number', mds.models.UnboundedCharField()),
-                ('model', mds.models.UnboundedCharField(default=str)),
-                ('category', mds.models.UnboundedCharField(choices=[('bike', 'Bike'), ('scooter', 'Scooter'), ('car', 'Car')])),
-                ('propulsion', mds.models.UnboundedCharField(choices=[('electric', 'Electric'), ('combustion', 'Combustion')])),
-                ('registration_date', models.DateTimeField(default=django.utils.timezone.now)),
-                ('properties', django.contrib.postgres.fields.jsonb.JSONField(default=dict, encoder=rest_framework.utils.encoders.JSONEncoder)),
+                (
+                    "id",
+                    models.UUIDField(
+                        default=uuid.uuid4, primary_key=True, serialize=False
+                    ),
+                ),
+                ("identification_number", mds.models.UnboundedCharField()),
+                ("model", mds.models.UnboundedCharField(default=str)),
+                (
+                    "category",
+                    mds.models.UnboundedCharField(
+                        choices=[
+                            ("bike", "Bike"),
+                            ("scooter", "Scooter"),
+                            ("car", "Car"),
+                        ]
+                    ),
+                ),
+                (
+                    "propulsion",
+                    mds.models.UnboundedCharField(
+                        choices=[("electric", "Electric"), ("combustion", "Combustion")]
+                    ),
+                ),
+                (
+                    "registration_date",
+                    models.DateTimeField(default=django.utils.timezone.now),
+                ),
+                (
+                    "properties",
+                    django.contrib.postgres.fields.jsonb.JSONField(
+                        default=dict, encoder=rest_framework.utils.encoders.JSONEncoder
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='Provider',
+            name="Provider",
             fields=[
-                ('id', models.UUIDField(default=uuid.uuid4, primary_key=True, serialize=False)),
-                ('name', mds.models.UnboundedCharField(default=str)),
+                (
+                    "id",
+                    models.UUIDField(
+                        default=uuid.uuid4, primary_key=True, serialize=False
+                    ),
+                ),
+                ("name", mds.models.UnboundedCharField(default=str)),
             ],
         ),
         migrations.CreateModel(
-            name='Telemetry',
+            name="Telemetry",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('provider', models.UUIDField()),
-                ('timestamp', models.DateTimeField(db_index=True)),
-                ('status', mds.models.UnboundedCharField(choices=[('available', 'Available'), ('reserved', 'Reserved'), ('unavailable', 'Unavailable'), ('removed', 'Removed')])),
-                ('point', django.contrib.gis.db.models.fields.PointField(null=True, srid=4326)),
-                ('properties', django.contrib.postgres.fields.jsonb.JSONField(default=dict, encoder=rest_framework.utils.encoders.JSONEncoder)),
-                ('device', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='telemetries', to='mds.Device')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("provider", models.UUIDField()),
+                ("timestamp", models.DateTimeField(db_index=True)),
+                (
+                    "status",
+                    mds.models.UnboundedCharField(
+                        choices=[
+                            ("available", "Available"),
+                            ("reserved", "Reserved"),
+                            ("unavailable", "Unavailable"),
+                            ("removed", "Removed"),
+                        ]
+                    ),
+                ),
+                (
+                    "point",
+                    django.contrib.gis.db.models.fields.PointField(
+                        null=True, srid=4326
+                    ),
+                ),
+                (
+                    "properties",
+                    django.contrib.postgres.fields.jsonb.JSONField(
+                        default=dict, encoder=rest_framework.utils.encoders.JSONEncoder
+                    ),
+                ),
+                (
+                    "device",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="telemetries",
+                        to="mds.Device",
+                    ),
+                ),
             ],
-            options={
-                'verbose_name_plural': 'telemetries',
-            },
+            options={"verbose_name_plural": "telemetries"},
         ),
         migrations.AddField(
-            model_name='device',
-            name='provider',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='devices', to='mds.Provider'),
+            model_name="device",
+            name="provider",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="devices",
+                to="mds.Provider",
+            ),
         ),
     ]
