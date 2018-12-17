@@ -10,9 +10,16 @@ class DeviceAdmin(admin.ModelAdmin):
 
 @admin.register(models.Area)
 class AreaAdmin(admin.ModelAdmin):
-    list_display = ["provider", "begin_date", "end_date"]
-    list_filter = ["provider"]
-    ordering = ["-begin_date"]
+    list_display = ["id", "creation_date", "deletion_date", "label"]
+    list_filter = ["creation_date", "deletion_date"]
+    ordering = ["-creation_date"]
+
+
+@admin.register(models.Polygon)
+class PolygonAdmin(admin.ModelAdmin):
+    list_display = ["id", "creation_date", "deletion_date", "label"]
+    list_filter = ["creation_date", "deletion_date"]
+    ordering = ["-creation_date"]
 
 
 @admin.register(models.Telemetry)

@@ -131,7 +131,7 @@ class DeviceViewSet(
 class AreaViewSet(viewsets.ModelViewSet):
     queryset = models.Area.objects.all()
     lookup_field = "id"
-    serializer_class = serializers.ServiceAreaSerializer
+    serializer_class = serializers.AreaSerializer
 
 
 def swagger(request):

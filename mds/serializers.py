@@ -186,25 +186,40 @@ class DeviceTelemetry(Device):
         return instance
 
 
-class ServiceAreaSerializer(BaseModelSerializer):
+class PolygonSerializer(BaseModelSerializer):
+    """A service area
+    """
+
+    id = serializers.UUIDField(
+        required=False, help_text="Unique Polygon identifier (UUID)"
+    )
+    label = serializers.CharField(help_text="Name of the polygon")
+    creation_date = serializers.DateTimeField(help_text="Polygon creation date")
+    deletion_date = serializers.DateTimeField(
+        required=False, help_text="Polygon deletion date"
+    )
+    properties = serializers.JSONField(help_text="Properties of the Polygon")
+    geom = GeometryField(help_text="GeoJSON Polygon")
+
+    class Meta:
+        model = models.Polygon
+        fields = ("id", "label", "creation_date", "deletion_date", "geom", "properties")
+
+
+class AreaSerializer(BaseModelSerializer):
     """A service area
     """
 
     id = serializers.UUIDField(
         required=False, help_text="Unique Area identifier (UUID)"
     )
-    # TODO(lip) remove default
-    provider = serializers.UUIDField(
-        default="a19cdb1e-1342-413b-8e89-db802b2f83f6",
-        help_text="A unique ID identifying the service provider (UUID)",
+    label = serializers.CharField(help_text="Name of the Area")
+    creation_date = serializers.DateTimeField(help_text="Area creation date")
+    deletion_date = serializers.DateTimeField(
+        required=False, help_text="Area deletion date"
     )
-    # TODO(lip) use a FeatureCollection instead of these fields
-    begin_date = serializers.DateTimeField(help_text="Area availability date")
-    end_date = serializers.DateTimeField(
-        required=False, help_text="Area end of availability date"
-    )
-    area = GeometryField(source="polygon", help_text="GeoJSON Polygon of the area")
+    polygons = PolygonSerializer(required=False, many=True)
 
     class Meta:
         model = models.Area
-        fields = ("id", "provider", "begin_date", "end_date", "area")
+        fields = ("id", "label", "creation_date", "deletion_date", "polygons")

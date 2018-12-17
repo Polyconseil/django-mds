@@ -17,18 +17,8 @@ def test_service_area(client):
         "/service_area/",
         data={
             "id": "13b8c961-61fd-4cce-8113-81af1de90942",
-            "area": {
-                "type": "Polygon",
-                "coordinates": [
-                    [
-                        [-118.371956, 34.082898],
-                        [-118.345454, 34.047113],
-                        [-118.372, 34.054228],
-                        [-118.371956, 34.082898],
-                    ]
-                ],
-            },
-            "begin_date": "2012-01-01T00:00:00Z",
+            "creation_date": "2012-01-01T00:00:00Z",
+            "label": "test",
         },
         content_type="application/json",
     )
@@ -38,20 +28,10 @@ def test_service_area(client):
     assert response.data == [
         {
             "id": "13b8c961-61fd-4cce-8113-81af1de90942",
-            "provider": "a19cdb1e-1342-413b-8e89-db802b2f83f6",
-            "begin_date": "2012-01-01T00:00:00Z",
-            "end_date": None,
-            "area": {
-                "type": "Polygon",
-                "coordinates": [
-                    [
-                        [-118.371956, 34.082898],
-                        [-118.345454, 34.047113],
-                        [-118.372, 34.054228],
-                        [-118.371956, 34.082898],
-                    ]
-                ],
-            },
+            "label": "test",
+            "creation_date": "2012-01-01T00:00:00Z",
+            "deletion_date": None,
+            "polygons": [],
         }
     ]
 
