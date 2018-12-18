@@ -12,6 +12,7 @@ from rest_framework import viewsets
 from rest_framework.compat import coreapi, coreschema
 from rest_framework.response import Response
 from rest_framework.schemas import inspectors
+from rest_framework.pagination import LimitOffsetPagination
 
 from mds.access_control.permissions import require_scopes
 from mds.access_control.scopes import SCOPE_VEHICLE
@@ -110,6 +111,10 @@ class UpdateOnlyModelMixin(object):
         serializer.save()
 
 
+class DeviceLimitOffsetPagination(LimitOffsetPagination):
+    default_limit = 500
+
+
 class DeviceViewSet(
     mixins.CreateModelMixin,
     mixins.RetrieveModelMixin,
@@ -128,6 +133,7 @@ class DeviceViewSet(
     }
     serializer_class = serializers.Device
     schema = CustomViewSchema()
+    pagination_class = DeviceLimitOffsetPagination
 
     def get_queryset(self):
         queryset = models.Device.objects.prefetch_related(
