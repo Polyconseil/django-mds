@@ -123,20 +123,19 @@ class DeviceViewSet(
     UpdateOnlyModelMixin,
     MultiSerializerViewSet,
 ):
-    permission_classes = (require_scopes(SCOPE_VEHICLE),)
-    lookup_field = "id"
-    serializers_map = {
-        "list": serializers.Device,
-        "retrieve": serializers.Device,
-        "create": serializers.DeviceRegister,
-        "update": serializers.DeviceTelemetry,
-    }
-    serializer_class = serializers.Device
-    schema = CustomViewSchema()
-    pagination_class = DeviceLimitOffsetPagination
-
     def get_queryset(self):
-        queryset = models.Device.objects.prefetch_related(
+        queryset = models.Device.objects
+
+        categories = self.request.GET.getlist("category")
+        if categories:
+            queryset = queryset.filter(category__in=categories)
+
+        user = self.request.user
+        provider_id = getattr(self.request.user, "provider_id", None)
+        if provider_id:
+            queryset = queryset.filter(provider_id=user.provider_id)
+
+        return queryset.prefetch_related(
             Prefetch(
                 "telemetries",
                 queryset=models.Telemetry.objects.filter(
@@ -150,12 +149,17 @@ class DeviceViewSet(
             )
         ).select_related("provider")
 
-        user = self.request.user
-        provider_id = getattr(self.request.user, "provider_id", None)
-        if provider_id:
-            queryset = queryset.filter(provider_id=user.provider_id)
-
-        return queryset
+    permission_classes = (require_scopes(SCOPE_VEHICLE),)
+    lookup_field = "id"
+    serializers_map = {
+        "list": serializers.Device,
+        "retrieve": serializers.Device,
+        "create": serializers.DeviceRegister,
+        "update": serializers.DeviceTelemetry,
+    }
+    serializer_class = serializers.Device
+    schema = CustomViewSchema()
+    pagination_class = DeviceLimitOffsetPagination
 
 
 class AreaViewSet(viewsets.ModelViewSet):
