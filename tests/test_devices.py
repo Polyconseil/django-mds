@@ -88,13 +88,13 @@ def test_device_list_basic(client, django_assert_num_queries):
         "registration_date": format_timezone(today),
     }
 
-    with django_assert_num_queries(4):  # 2 actual queries + 2 savepoints
+    with django_assert_num_queries(5):  # 2 actual queries + 2 savepoints + 1 count
         response = client.get("/vehicle/", **auth_header(SCOPE_VEHICLE))
     assert response.status_code == 200
-    assert len(response.data) == 2
+    assert len(response.data["results"]) == 2
 
-    assert expected_device in response.data
-    assert expected_device2 in response.data
+    assert expected_device in response.data["results"]
+    assert expected_device2 in response.data["results"]
 
 
 @pytest.mark.django_db
@@ -152,11 +152,11 @@ def test_device_list_multiple_telemetries(client, django_assert_num_queries):
         "registration_date": format_timezone(today),
     }
 
-    with django_assert_num_queries(4):  # 2 actual queries + 2 savepoints
+    with django_assert_num_queries(5):  # 2 actual queries + 2 savepoints + 1 count
         response = client.get("/vehicle/", **auth_header(SCOPE_VEHICLE))
     assert response.status_code == 200
-    assert len(response.data) == 1
-    for (key, resp_val) in response.data[0].items():
+    assert len(response.data["results"]) == 1
+    for (key, resp_val) in response.data["results"][0].items():
         assert expected[key] == resp_val
 
 
