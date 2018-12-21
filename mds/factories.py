@@ -609,14 +609,11 @@ class Telemetry(factory.DjangoModelFactory):
     class Meta:
         model = models.Telemetry
 
-    device = factory.Iterator(models.Device.objects.all())
+    device = factory.SubFactory(Device)
     provider = uuid.UUID("a19cdb1e-1342-413b-8e89-db802b2f83f6")
     timestamp = datetime.datetime(2018, 8, 1, tzinfo=pytz.utc)
     status = factory.Iterator(choice[0] for choice in enums.DEVICE_STATUS_CHOICES)
-    point = Point(
-        random.uniform(-118.39091357778655, -118.28229399983276),
-        random.uniform(34.00363399975826, 34.07988124764408),
-    )
+    point = factory.LazyFunction(get_random_point)
     properties = factory.Dict(
         {
             "gsm": factory.Dict(
