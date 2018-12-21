@@ -1,6 +1,7 @@
 import json
 import os.path
 import warnings
+import dateutil.parser
 
 import yaml
 from django.db.models import OuterRef, Subquery, Prefetch
@@ -126,9 +127,25 @@ class DeviceViewSet(
     def get_queryset(self):
         queryset = models.Device.objects
 
-        categories = self.request.GET.getlist("category")
-        if categories:
-            queryset = queryset.filter(category__in=categories)
+        filters = {
+            "category": "category__in",
+            "status": "telemetries__status__in",
+            "provider": "provider__name__in",
+        }
+        time_filters = {
+            "registrationDateFrom": "registration_date__gte",
+            "registrationDateTo": "registration_date__lte",
+        }
+        for (req_field, db_field) in filters.items():
+            if self.request.GET.getlist(req_field):
+                queryset = queryset.filter(
+                    **{db_field: self.request.GET.getlist(req_field)}
+                )
+        for (req_field, db_field) in time_filters.items():
+            if req_field in self.request.GET:
+                queryset = queryset.filter(
+                    **{db_field: dateutil.parser.parse(self.request.GET[req_field])}
+                )
 
         user = self.request.user
         provider_id = getattr(self.request.user, "provider_id", None)
