@@ -589,10 +589,19 @@ class Area(factory.DjangoModelFactory):
     class Meta:
         model = models.Area
 
-    provider = uuid.UUID("a19cdb1e-1342-413b-8e89-db802b2f83f6")
-    begin_date = datetime.datetime(2018, 8, 1, tzinfo=pytz.utc)
-    end_date = None
-    polygon = district10
+    creation_date = datetime.datetime(2018, 8, 1, tzinfo=pytz.utc)
+    deletion_date = None
+    label = ""
+
+
+class Polygon(factory.DjangoModelFactory):
+    class Meta:
+        model = models.Polygon
+
+    creation_date = datetime.datetime(2018, 8, 1, tzinfo=pytz.utc)
+    deletion_date = None
+    label = ""
+    geom = district10
     properties = {}
 
 
