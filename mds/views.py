@@ -146,6 +146,8 @@ class DeviceViewSet(
                 queryset = queryset.filter(
                     **{db_field: dateutil.parser.parse(self.request.GET[req_field])}
                 )
+        if "id" in self.request.GET:
+            queryset = queryset.filter(id__icontains=self.request.GET["id"])
 
         user = self.request.user
         provider_id = getattr(self.request.user, "provider_id", None)
