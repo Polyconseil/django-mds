@@ -130,7 +130,7 @@ class DeviceViewSet(
         filters = {
             "category": "category__in",
             "status": "telemetries__status__in",
-            "provider": "provider__name__in",
+            "provider": "provider__id__in",
         }
         time_filters = {
             "registrationDateFrom": "registration_date__gte",
@@ -183,6 +183,12 @@ class AreaViewSet(viewsets.ModelViewSet):
     queryset = models.Area.objects.all()
     lookup_field = "id"
     serializer_class = serializers.AreaSerializer
+
+
+class ProviderViewSet(viewsets.ModelViewSet):
+    queryset = models.Provider.objects.all()
+    lookup_field = "id"
+    serializer_class = serializers.ProviderSerializer
 
 
 def swagger(request):

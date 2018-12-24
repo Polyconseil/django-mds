@@ -239,3 +239,14 @@ class AreaSerializer(BaseModelSerializer):
     class Meta:
         model = models.Area
         fields = ("id", "label", "creation_date", "deletion_date", "polygons")
+
+
+class ProviderSerializer(BaseModelSerializer):
+    id = serializers.UUIDField(
+        required=False, help_text="Unique Area identifier (UUID)"
+    )
+    name = serializers.CharField(help_text="Name of the Provider")
+
+    class Meta:
+        model = models.Provider
+        fields = ("id", "name")
