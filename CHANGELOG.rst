@@ -4,7 +4,8 @@ Changelog
 0.1.1 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Update Area model.
+- Add Polygon Django model
 
 
 0.1.0 (2018-11-29)
