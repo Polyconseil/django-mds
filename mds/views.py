@@ -117,12 +117,7 @@ class DeviceLimitOffsetPagination(LimitOffsetPagination):
 
 
 class DeviceViewSet(
-    mixins.CreateModelMixin,
-    mixins.RetrieveModelMixin,
-    mixins.DestroyModelMixin,
-    mixins.ListModelMixin,
-    UpdateOnlyModelMixin,
-    MultiSerializerViewSet,
+    viewsets.ModelViewSet, UpdateOnlyModelMixin, MultiSerializerViewSet
 ):
     def get_queryset(self):
         queryset = models.Device.objects
@@ -174,7 +169,8 @@ class DeviceViewSet(
         "list": serializers.Device,
         "retrieve": serializers.Device,
         "create": serializers.DeviceRegister,
-        "update": serializers.DeviceTelemetry,
+        "update": serializers.DeviceRegister,
+        "patch": serializers.DeviceRegister,
     }
     serializer_class = serializers.Device
     schema = CustomViewSchema()

@@ -160,62 +160,105 @@ def test_device_list_multiple_telemetries(client, django_assert_num_queries):
         assert expected[key] == resp_val
 
 
-@pytest.mark.skip(reason="Fix devices update behavior")
 @pytest.mark.django_db
-def test_device(client):
-    response = client.put(
-        "/vehicle/13b8c961-61fd-4cce-8113-81af1de90942/",
+def test_device_add(client):
+    client.post(
+        "/provider/",
+        data={"id": "aaaa0000-61fd-4cce-8113-81af1de90942", "name": "Test provider"},
+        content_type="application/json",
+    )
+
+    response = client.post(
+        "/vehicle/",
         data={
-            "provider": "27e84290-06b4-4c5d-88f2-60e6dcb09712",
+            "id": "bbbb0000-61fd-4cce-8113-81af1de90942",
+            "provider": "aaaa0000-61fd-4cce-8113-81af1de90942",
+            "category": "scooter",
             "identification_number": "foo",
-            "model": "bar",
+            "propulsion": "electric",
         },
         content_type="application/json",
+        **auth_header(SCOPE_VEHICLE),
     )
     assert response.status_code == 201
-    now = "2018-11-07T15:35:58.108099+02:00"
-    utcnow = "2018-11-07T13:35:58.108099Z"
-    response = client.post(
-        "/vehicle/13b8c961-61fd-4cce-8113-81af1de90942/",
-        data={
-            "provider": "27e84290-06b4-4c5d-88f2-60e6dcb09712",
-            "status": "available",
-            "position": {
-                "type": "Feature",
-                "geometry": {
-                    "type": "Point",
-                    "coordinates": [2.293117046356201, 48.85829170715186],
-                },
-                "properties": {"gsm": {"timestamp": now}, "gps": {"timestamp": now}},
-            },
-        },
-        content_type="application/json",
-    )
-    assert response.status_code == 200
+
     response = client.get("/vehicle/", **auth_header(SCOPE_VEHICLE))
     assert response.status_code == 200
-    assert response.data == [
-        {
-            "id": "13b8c961-61fd-4cce-8113-81af1de90942",
-            "provider": "27e84290-06b4-4c5d-88f2-60e6dcb09712",
-            "identification_number": "foo",
-            "model": "bar",
-            "status": "available",
-            "position": {
-                "type": "Feature",
-                "geometry": {
-                    "type": "Point",
-                    "coordinates": [2.293117046356201, 48.85829170715186],
-                },
-                "properties": {
-                    "gsm": {"timestamp": utcnow, "operator": None, "signal": None},
-                    "gps": {
-                        "timestamp": utcnow,
-                        "accuracy": None,
-                        "course": None,
-                        "speed": None,
-                    },
-                },
-            },
-        }
-    ]
+    assert len(response.data["results"]) == 1
+
+    expected_results = {
+        "id": "bbbb0000-61fd-4cce-8113-81af1de90942",
+        "provider": "Test provider",
+        "identification_number": "foo",
+        "model": "",
+        "status": None,
+        "position": None,
+        "propulsion": "electric",
+        "category": "scooter",
+        "last_telemetry_date": None,
+    }
+    for (key, resp_val) in expected_results.items():
+        assert response.data["results"][0][key] == resp_val
+
+
+@pytest.mark.django_db
+def test_device_update(client):
+    provider = factories.Provider(
+        id="aaaa0000-61fd-4cce-8113-81af1de90942", name="Test provider"
+    )
+    factories.Device(
+        id=uuid.UUID("bbbb0000-61fd-4cce-8113-81af1de90942"),
+        provider=provider,
+        identification_number="1AAAAA",
+        model="",
+        category="car",
+        propulsion="combustion",
+        registration_date=timezone.now(),
+    )
+
+    # Full update with POST
+    response = client.post(
+        "/vehicle/bbbb0000-61fd-4cce-8113-81af1de90942/",
+        data={
+            "provider": "aaaa0000-61fd-4cce-8113-81af1de90942",
+            "category": "scooter",
+            "identification_number": "8DDDDD",
+            "propulsion": "combustion",
+        },
+        content_type="application/json",
+        **auth_header(SCOPE_VEHICLE),
+    )
+    assert response.status_code == 200
+
+    response = client.get("/vehicle/", **auth_header(SCOPE_VEHICLE))
+    assert len(response.data["results"]) == 1
+    expected_results = {
+        "id": "bbbb0000-61fd-4cce-8113-81af1de90942",
+        "provider": "Test provider",
+        "identification_number": "8DDDDD",
+        "propulsion": "combustion",
+        "category": "scooter",
+    }
+    for (key, resp_val) in expected_results.items():
+        assert response.data["results"][0][key] == resp_val
+
+    # Partial update with PATCH
+    response = client.patch(
+        "/vehicle/bbbb0000-61fd-4cce-8113-81af1de90942/",
+        data={"identification_number": "2BE3"},
+        content_type="application/json",
+        **auth_header(SCOPE_VEHICLE),
+    )
+    assert response.status_code == 200
+
+    response = client.get("/vehicle/", **auth_header(SCOPE_VEHICLE))
+    assert len(response.data["results"]) == 1
+    expected_results = {
+        "id": "bbbb0000-61fd-4cce-8113-81af1de90942",
+        "provider": "Test provider",
+        "identification_number": "2BE3",
+        "propulsion": "combustion",
+        "category": "scooter",
+    }
+    for (key, resp_val) in expected_results.items():
+        assert response.data["results"][0][key] == resp_val

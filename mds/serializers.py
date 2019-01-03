@@ -126,23 +126,34 @@ class Point(serializers.Serializer):
     properties = PointProperties(required=False)
 
 
-class Device(BaseModelSerializer):
-    """A device
-    """
-
+class DeviceRegister(BaseModelSerializer):
     id = serializers.UUIDField(help_text="Unique device identifier (UUID)")
-    provider = serializers.CharField(
-        source="provider.name", help_text="Name of the service provider of the device"
-    )
+    model = serializers.CharField(required=False, help_text="Vehicle model")
     identification_number = serializers.CharField(
-        help_text="VIN (Vehicle Identification Number"
+        help_text="VIN (Vehicle Identification Number)"
     )
-    model = serializers.CharField(help_text="Vehicle model")
     category = serializers.ChoiceField(
         enums.DEVICE_CATEGORY_CHOICES, help_text="Device type"
     )
     propulsion = serializers.ChoiceField(
         enums.DEVICE_PROPULSION_CHOICES, help_text="Propulsion type"
+    )
+
+    class Meta:
+        model = models.Device
+        fields = (
+            "id",
+            "provider",
+            "model",
+            "identification_number",
+            "category",
+            "propulsion",
+        )
+
+
+class Device(DeviceRegister):
+    provider = serializers.CharField(
+        source="provider.name", help_text="Name of the service provider of the device"
     )
     registration_date = serializers.DateTimeField(help_text="Device registration date")
     last_telemetry_date = serializers.DateTimeField(
@@ -165,21 +176,15 @@ class Device(BaseModelSerializer):
         fields = (
             "id",
             "provider",
-            "identification_number",
             "model",
-            "status",
-            "position",
+            "identification_number",
             "category",
             "propulsion",
+            "status",
+            "position",
             "registration_date",
             "last_telemetry_date",
         )
-
-
-class DeviceRegister(Device):
-    class Meta:
-        model = models.Device
-        fields = ("id", "provider", "identification_number", "model")
 
 
 class DeviceTelemetry(Device):
