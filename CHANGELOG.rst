@@ -5,6 +5,9 @@ Changelog
 ------------------
 
 - Nothing changed yet.
+- Add Provider Django model
+- Add queryset filters on Device ID, type, provider, status and registration date
+- Pagination on Device view
 
 
 0.1.1 (2018-12-26)
