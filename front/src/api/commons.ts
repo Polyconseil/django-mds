@@ -8,3 +8,25 @@ export function buildUrl(...parts: string[]): string {
   }
   return url;
 }
+
+export function prepRequest(parts: string | string[], options: RequestInit | undefined = {}): Request {
+  let url;
+  if (typeof parts === "string") {
+    url = buildUrl(parts);
+  } else {
+    url = buildUrl(...parts);
+  }
+
+  const request = new Request(url, {
+    method: "GET",
+    mode: "cors",
+    ...options,
+    headers: {
+      "Authorization": "Bearer " + settings.urls.apiAccessToken,
+      "Content-Type": "application/json",
+      ...options.headers
+    },
+  });
+
+  return request;
+}

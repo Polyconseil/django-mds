@@ -5,7 +5,8 @@ declare var __SETTINGS__: any;
 const SETTINGS = {} as any;
 const envSettings = {
   urls: {
-    apiBaseUrl: process.env.REACT_APP_API_BASE_URL
+    apiBaseUrl: process.env.REACT_APP_API_BASE_URL,
+    apiAccessToken: process.env.REACT_APP_ACCESS_TOKEN,
   }
 };
 

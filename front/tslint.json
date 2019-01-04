@@ -7,5 +7,8 @@
       "node_modules/**/*.ts",
       "coverage/lcov-report/*.js"
     ]
+  },
+  "rules": {
+    "object-literal-sort-keys": false
   }
 }

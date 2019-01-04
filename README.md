@@ -35,6 +35,13 @@ A [City of LA MDS Specification](https://github.com/CityOfLosAngeles/mobility-da
 * To initialize the database, run `python manage.py migrate`
 * To start the backend locally, run `MDS_DEV_DEBUG=1 python manage.py runserver`
 
+A sample environment configuration is provided in `.env.local`
+
+#### Authentication
+
+Request authentication is done through JWT bearer token as specified in [MDS](https://github.com/CityOfLosAngeles/mobility-data-specification/tree/dev/agency#authorization)
+JWT secret key or public key should be given through environment configuration `MDS_AUTH_SECRET_KEY` or `MDS_AUTH_PUBLIC_KEY`
+
 ### Frontend
 
 See dedicated README in [front/README.md](https://github.com/Polyconseil/django-mds/blob/master/front/README.md)

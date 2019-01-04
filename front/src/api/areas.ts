@@ -1,4 +1,4 @@
-import { buildUrl } from "./commons";
+import { prepRequest } from "./commons";
 
 export interface IServiceAreasRequest {
   area: any;
@@ -6,13 +6,7 @@ export interface IServiceAreasRequest {
 }
 
 export async function getServiceAreas() {
-  const request = new Request(buildUrl("service_area"), {
-    headers: {
-      "Content-Type": "application/json"
-    },
-    method: "GET",
-    mode: "cors"
-  });
+  const request = prepRequest("service_area");
   return await (await fetch(request)).json();
 }
 
@@ -20,36 +14,24 @@ export async function updateServiceArea(
   areaId: string,
   requestBody: IServiceAreasRequest
 ) {
-  const request = new Request(buildUrl("service_area/", areaId), {
+  const request = prepRequest(["service_area/", areaId], {
     body: JSON.stringify(requestBody),
-    headers: {
-      "Content-Type": "application/json"
-    },
     method: "PATCH",
-    mode: "cors"
   });
   return await (await fetch(request)).json();
 }
 
 export async function postServiceArea(requestBody: IServiceAreasRequest) {
-  const request = new Request(buildUrl("service_area"), {
+  const request = prepRequest("service_area", {
     body: JSON.stringify(requestBody),
-    headers: {
-      "Content-Type": "application/json"
-    },
     method: "POST",
-    mode: "cors"
   });
   return await (await fetch(request)).json();
 }
 
 export async function deleteServiceArea(areaId: string) {
-  const request = new Request(buildUrl("service_area/", areaId), {
-    headers: {
-      "Content-Type": "application/json"
-    },
+  const request = prepRequest(["service_area/", areaId], {
     method: "DELETE",
-    mode: "cors"
   });
   return await fetch(request);
 }

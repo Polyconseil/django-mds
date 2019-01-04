@@ -1,19 +1,20 @@
 import json
 import os.path
-import yaml
 import warnings
 
-from django.shortcuts import render
+import yaml
 from django.db.models import OuterRef, Subquery, Prefetch
-
+from django.shortcuts import render
+from rest_framework import exceptions
 from rest_framework import mixins
 from rest_framework import serializers as drf_serializers
 from rest_framework import viewsets
 from rest_framework.compat import coreapi, coreschema
 from rest_framework.response import Response
 from rest_framework.schemas import inspectors
-from rest_framework import exceptions
 
+from mds.access_control.permissions import require_scopes
+from mds.access_control.scopes import SCOPE_VEHICLE
 from . import models
 from . import serializers
 
@@ -31,7 +32,7 @@ class MultiSerializerViewSet(viewsets.GenericViewSet):
 class CustomViewSchema(inspectors.AutoSchema):
     """
     Overrides `get_serializer_fields()`
-    to accomodate our :class:`MultiSerializerViewSet`
+    to accommodate our :class:`MultiSerializerViewSet`
     """
 
     def get_serializer_fields(self, path, method):
@@ -117,21 +118,7 @@ class DeviceViewSet(
     UpdateOnlyModelMixin,
     MultiSerializerViewSet,
 ):
-
-    queryset = models.Device.objects.prefetch_related(
-        Prefetch(
-            "telemetries",
-            queryset=models.Telemetry.objects.filter(
-                id__in=Subquery(
-                    models.Telemetry.objects.filter(device_id=OuterRef("device_id"))
-                    .order_by("-timestamp")
-                    .values_list("id", flat=True)[:1]
-                )
-            ),
-            to_attr="_latest_telemetry",
-        )
-    ).select_related("provider")
-
+    permission_classes = (require_scopes(SCOPE_VEHICLE),)
     lookup_field = "id"
     serializers_map = {
         "list": serializers.Device,
@@ -141,6 +128,28 @@ class DeviceViewSet(
     }
     serializer_class = serializers.Device
     schema = CustomViewSchema()
+
+    def get_queryset(self):
+        queryset = models.Device.objects.prefetch_related(
+            Prefetch(
+                "telemetries",
+                queryset=models.Telemetry.objects.filter(
+                    id__in=Subquery(
+                        models.Telemetry.objects.filter(device_id=OuterRef("device_id"))
+                        .order_by("-timestamp")
+                        .values_list("id", flat=True)[:1]
+                    )
+                ),
+                to_attr="_latest_telemetry",
+            )
+        ).select_related("provider")
+
+        user = self.request.user
+        provider_id = getattr(self.request.user, "provider_id", None)
+        if provider_id:
+            queryset = queryset.filter(provider_id=user.provider_id)
+
+        return queryset
 
 
 class AreaViewSet(viewsets.ModelViewSet):

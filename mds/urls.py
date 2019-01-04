@@ -56,7 +56,7 @@ class PutCreateRouter(routers.DefaultRouter):
 
 router = PutCreateRouter()
 router.register(r"service_area", views.AreaViewSet)
-router.register(r"vehicle", views.DeviceViewSet)
+router.register(r"vehicle", views.DeviceViewSet, basename="device")
 
 
 def ok_view(request):

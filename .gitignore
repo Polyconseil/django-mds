@@ -18,3 +18,6 @@ front/node_modules
 .vscode/
 *.DS_Store
 .idea/
+
+# local env
+*.local

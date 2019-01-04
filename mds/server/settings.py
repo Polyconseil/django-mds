@@ -1,9 +1,16 @@
 """
 Django settings
 """
+import itertools
 import os
-from corsheaders.defaults import default_headers
+
 import getconf
+from corsheaders.defaults import default_headers
+
+from mds.access_control.auth_means import (
+    SecretKeyJwtBaseAuthMean,
+    PublicKeyJwtBaseAuthMean,
+)
 
 CONFIG = getconf.ConfigGetter("mds")
 
@@ -82,3 +89,34 @@ LOCALE_PATH = (os.path.join(BASE_DIR, "locale"),)
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_HEADERS = list(default_headers) + ["cache-control"]
+
+REST_FRAMEWORK = {
+    # "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "mds.access_control.stateless_jwt.StatelessJwtAuthentication",
+        "rest_framework.authentication.SessionAuthentication",
+        "rest_framework.authentication.BasicAuthentication",
+    )
+}
+
+# AUTH_USER_MODEL = None # TODO later
+
+AUTH_MEANS = []
+for i in itertools.count(start=1):
+    section = "auth" + ("_" + str(i) if i > 1 else "")
+
+    auth_mean = None
+    if CONFIG.getstr(section + ".secret_key"):
+        auth_mean = SecretKeyJwtBaseAuthMean(CONFIG.getstr(section + ".secret_key"))
+    elif CONFIG.getstr(section + ".public_key"):
+        # PEM public keys (-----BEGIN PUBLIC KEY-----)
+        auth_mean = PublicKeyJwtBaseAuthMean(CONFIG.getstr(section + ".public_key"))
+    else:
+        break
+
+    # Optional, recommended if handling long-lived access tokens
+    # (not a good idea when using JWT)
+    if "introspect_url" in section:
+        auth_mean.introspect_url = CONFIG.getstr(section + ".introspect_url", None)
+
+    AUTH_MEANS.append(auth_mean)

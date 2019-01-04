@@ -1,4 +1,4 @@
-import { buildUrl } from "./commons";
+import { prepRequest } from "./commons";
 
 export interface IVehicleResponse {
   unique_id: string;
@@ -296,13 +296,7 @@ export async function getVehicles(requestBody: {}): Promise<
   }
   const mockData = Object.keys(vehiclesStore).map(key => vehiclesStore[key]);
 
-  const request = new Request(buildUrl("vehicle"), {
-    headers: {
-      "Content-Type": "application/json"
-    },
-    method: "GET",
-    mode: "cors"
-  });
+  const request = prepRequest("vehicle");
   let serverData = await (await fetch(request)).json();
   serverData = serverData
     .map((vehicle: any) => {

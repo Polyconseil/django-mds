@@ -1,11 +1,14 @@
-import pytest
 import uuid
 
+import pytest
 from django.contrib.gis.geos.point import Point
 from django.utils import timezone
 
-from mds import admin  # noqa: F401
 from mds import factories
+from mds.access_control.scopes import SCOPE_VEHICLE
+from .auth_helper import auth_header
+
+from mds import admin  # noqa: F401
 
 
 def format_timezone(timezone):
@@ -86,7 +89,7 @@ def test_device_list_basic(client, django_assert_num_queries):
     }
 
     with django_assert_num_queries(4):  # 2 actual queries + 2 savepoints
-        response = client.get("/vehicle/")
+        response = client.get("/vehicle/", **auth_header(SCOPE_VEHICLE))
     assert response.status_code == 200
     assert len(response.data) == 2
 
@@ -150,7 +153,7 @@ def test_device_list_multiple_telemetries(client, django_assert_num_queries):
     }
 
     with django_assert_num_queries(4):  # 2 actual queries + 2 savepoints
-        response = client.get("/vehicle/")
+        response = client.get("/vehicle/", **auth_header(SCOPE_VEHICLE))
     assert response.status_code == 200
     assert len(response.data) == 1
     for (key, resp_val) in response.data[0].items():
@@ -189,7 +192,7 @@ def test_device(client):
         content_type="application/json",
     )
     assert response.status_code == 200
-    response = client.get("/vehicle/")
+    response = client.get("/vehicle/", **auth_header(SCOPE_VEHICLE))
     assert response.status_code == 200
     assert response.data == [
         {
