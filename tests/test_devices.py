@@ -1,5 +1,3 @@
-import uuid
-
 import pytest
 from django.contrib.gis.geos.point import Point
 from django.utils import timezone
@@ -18,8 +16,8 @@ def format_timezone(timezone):
 @pytest.mark.django_db
 def test_device_list_basic(client, django_assert_num_queries):
     today = timezone.now()
-    uuid1 = uuid.UUID("aaaaaaa1-1342-413b-8e89-db802b2f83f6")
-    uuid2 = uuid.UUID("ccccccc3-1342-413b-8e89-db802b2f83f6")
+    uuid1 = "aaaaaaa1-1342-413b-8e89-db802b2f83f6"
+    uuid2 = "ccccccc3-1342-413b-8e89-db802b2f83f6"
 
     provider = factories.Provider(name="Test provider")
     provider2 = factories.Provider(name="Test another provider")
@@ -62,7 +60,7 @@ def test_device_list_basic(client, django_assert_num_queries):
     )
 
     expected_device = {
-        "id": str(uuid1),
+        "id": uuid1,
         "provider": "Test provider",
         "identification_number": "1AAAAA",
         "model": "Testa_Model_S",
@@ -78,7 +76,7 @@ def test_device_list_basic(client, django_assert_num_queries):
         "registration_date": format_timezone(today),
     }
     expected_device2 = {
-        "id": str(uuid2),
+        "id": uuid2,
         "provider": "Test another provider",
         "identification_number": "3CCCCC",
         "model": "Testa_Model_X",
@@ -108,7 +106,7 @@ def test_device_list_multiple_telemetries(client, django_assert_num_queries):
     today = timezone.now()
     yesterday = today - timezone.timedelta(days=1)
     tomorrow = today + timezone.timedelta(days=1)
-    device_uuid = uuid.UUID("ccccccc3-1342-413b-8e89-db802b2f83f6")
+    device_uuid = "ccccccc3-1342-413b-8e89-db802b2f83f6"
 
     provider = factories.Provider(name="Test provider")
     device = factories.Device(
@@ -143,7 +141,7 @@ def test_device_list_multiple_telemetries(client, django_assert_num_queries):
     )
 
     expected = {
-        "id": str(device_uuid),
+        "id": device_uuid,
         "provider": "Test provider",
         "identification_number": "3CCCCC",
         "model": "Testa_Model_X",
@@ -167,7 +165,7 @@ def test_device_list_multiple_telemetries(client, django_assert_num_queries):
         response = client.get("/vehicle/", **auth_header(SCOPE_VEHICLE))
     assert response.status_code == 200
     assert len(response.data["results"]) == 1
-    for (key, resp_val) in response.data["results"][0].items():
+    for key, resp_val in response.data["results"][0].items():
         assert expected[key] == resp_val
 
 
@@ -260,7 +258,7 @@ def test_device_update(client):
 
     provider = factories.Provider(id=provider_id, name="Test provider")
     factories.Device(
-        id=uuid.UUID(device_id),
+        id=device_id,
         provider=provider,
         identification_number="1AAAAA",
         model="",
@@ -292,7 +290,7 @@ def test_device_update(client):
         "propulsion": "combustion",
         "category": "scooter",
     }
-    for (key, resp_val) in expected_results.items():
+    for key, resp_val in expected_results.items():
         assert response.data["results"][0][key] == resp_val
 
     # Partial update with PATCH
@@ -313,5 +311,5 @@ def test_device_update(client):
         "propulsion": "combustion",
         "category": "scooter",
     }
-    for (key, resp_val) in expected_results.items():
+    for key, resp_val in expected_results.items():
         assert response.data["results"][0][key] == resp_val
