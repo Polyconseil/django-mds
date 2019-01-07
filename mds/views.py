@@ -118,8 +118,8 @@ class DeviceLimitOffsetPagination(LimitOffsetPagination):
 
 class DeviceFilter(filters.FilterSet):
     id = filters.CharFilter(lookup_expr="icontains")
-    category = filters.ChoiceFilter(choices=enums.DEVICE_CATEGORY_CHOICES)
-    status = filters.ChoiceFilter(
+    category = filters.MultipleChoiceFilter(choices=enums.DEVICE_CATEGORY_CHOICES)
+    status = filters.MultipleChoiceFilter(
         "telemetries__status", choices=enums.DEVICE_STATUS_CHOICES
     )
     registrationDateFrom = filters.IsoDateTimeFilter(
