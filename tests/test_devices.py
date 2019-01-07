@@ -91,9 +91,12 @@ def test_device_list_basic(client, django_assert_num_queries):
     }
 
     with django_assert_num_queries(5):
-        # 1 query on devices + 1 last telemetry for each device + 2 savepoints + 1 count for pagination
+        # 1 query on devices
+        # 1 last telemetry for each device
+        # 2 savepoints
+        # 1 count for pagination
         response = client.get("/vehicle/", **auth_header(SCOPE_VEHICLE))
-        assert response.status_code == 200
+    assert response.status_code == 200
     assert len(response.data["results"]) == 2
 
     assert expected_device in response.data["results"]
@@ -156,14 +159,12 @@ def test_device_list_multiple_telemetries(client, django_assert_num_queries):
         "registration_date": format_timezone(today),
     }
 
-<<<<<<< HEAD
-    with django_assert_num_queries(5):  # 2 actual queries + 2 savepoints + 1 count
-        response = client.get("/vehicle/", **auth_header(SCOPE_VEHICLE))
-=======
     with django_assert_num_queries(5):
-        # 1 query on devices + 1 last telemetry for each device + 2 savepoints + 1 count for pagination
+        # 1 query on devices
+        # 1 last telemetry for each device
+        # 2 savepoints
+        # 1 count for pagination
         response = client.get("/vehicle/", **auth_header(SCOPE_VEHICLE))
->>>>>>> update install requirements + style
     assert response.status_code == 200
     assert len(response.data["results"]) == 1
     for (key, resp_val) in response.data["results"][0].items():
