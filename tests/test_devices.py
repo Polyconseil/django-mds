@@ -18,12 +18,14 @@ def format_timezone(timezone):
 @pytest.mark.django_db
 def test_device_list_basic(client, django_assert_num_queries):
     today = timezone.now()
+    uuid1 = uuid.UUID("aaaaaaa1-1342-413b-8e89-db802b2f83f6")
+    uuid2 = uuid.UUID("ccccccc3-1342-413b-8e89-db802b2f83f6")
 
     provider = factories.Provider(name="Test provider")
     provider2 = factories.Provider(name="Test another provider")
 
     device = factories.Device(
-        id=uuid.UUID("aaaaaaa1-1342-413b-8e89-db802b2f83f6"),
+        id=uuid1,
         provider=provider,
         identification_number="1AAAAA",
         model="Testa_Model_S",
@@ -32,7 +34,7 @@ def test_device_list_basic(client, django_assert_num_queries):
         registration_date=today,
     )
     factories.Device(
-        id=uuid.UUID("ccccccc3-1342-413b-8e89-db802b2f83f6"),
+        id=uuid2,
         provider=provider2,
         identification_number="3CCCCC",
         model="Testa_Model_X",
@@ -60,7 +62,7 @@ def test_device_list_basic(client, django_assert_num_queries):
     )
 
     expected_device = {
-        "id": "aaaaaaa1-1342-413b-8e89-db802b2f83f6",
+        "id": str(uuid1),
         "provider": "Test provider",
         "identification_number": "1AAAAA",
         "model": "Testa_Model_S",
@@ -76,7 +78,7 @@ def test_device_list_basic(client, django_assert_num_queries):
         "registration_date": format_timezone(today),
     }
     expected_device2 = {
-        "id": "ccccccc3-1342-413b-8e89-db802b2f83f6",
+        "id": str(uuid2),
         "provider": "Test another provider",
         "identification_number": "3CCCCC",
         "model": "Testa_Model_X",
@@ -88,9 +90,10 @@ def test_device_list_basic(client, django_assert_num_queries):
         "registration_date": format_timezone(today),
     }
 
-    with django_assert_num_queries(5):  # 2 actual queries + 2 savepoints + 1 count
+    with django_assert_num_queries(5):
+        # 1 query on devices + 1 last telemetry for each device + 2 savepoints + 1 count for pagination
         response = client.get("/vehicle/", **auth_header(SCOPE_VEHICLE))
-    assert response.status_code == 200
+        assert response.status_code == 200
     assert len(response.data["results"]) == 2
 
     assert expected_device in response.data["results"]
@@ -102,10 +105,11 @@ def test_device_list_multiple_telemetries(client, django_assert_num_queries):
     today = timezone.now()
     yesterday = today - timezone.timedelta(days=1)
     tomorrow = today + timezone.timedelta(days=1)
+    device_uuid = uuid.UUID("ccccccc3-1342-413b-8e89-db802b2f83f6")
 
     provider = factories.Provider(name="Test provider")
     device = factories.Device(
-        id=uuid.UUID("ccccccc3-1342-413b-8e89-db802b2f83f6"),
+        id=device_uuid,
         provider=provider,
         identification_number="3CCCCC",
         model="Testa_Model_X",
@@ -136,7 +140,7 @@ def test_device_list_multiple_telemetries(client, django_assert_num_queries):
     )
 
     expected = {
-        "id": "ccccccc3-1342-413b-8e89-db802b2f83f6",
+        "id": str(device_uuid),
         "provider": "Test provider",
         "identification_number": "3CCCCC",
         "model": "Testa_Model_X",
@@ -152,8 +156,14 @@ def test_device_list_multiple_telemetries(client, django_assert_num_queries):
         "registration_date": format_timezone(today),
     }
 
+<<<<<<< HEAD
     with django_assert_num_queries(5):  # 2 actual queries + 2 savepoints + 1 count
         response = client.get("/vehicle/", **auth_header(SCOPE_VEHICLE))
+=======
+    with django_assert_num_queries(5):
+        # 1 query on devices + 1 last telemetry for each device + 2 savepoints + 1 count for pagination
+        response = client.get("/vehicle/", **auth_header(SCOPE_VEHICLE))
+>>>>>>> update install requirements + style
     assert response.status_code == 200
     assert len(response.data["results"]) == 1
     for (key, resp_val) in response.data["results"][0].items():
@@ -200,17 +210,20 @@ def test_device_list_filter(client):
 
 @pytest.mark.django_db
 def test_device_add(client):
+    provider_id = "aaaa0000-61fd-4cce-8113-81af1de90942"
+    device_id = "bbbb0000-61fd-4cce-8113-81af1de90942"
+
     client.post(
         "/provider/",
-        data={"id": "aaaa0000-61fd-4cce-8113-81af1de90942", "name": "Test provider"},
+        data={"id": provider_id, "name": "Test provider"},
         content_type="application/json",
     )
 
     response = client.post(
         "/vehicle/",
         data={
-            "id": "bbbb0000-61fd-4cce-8113-81af1de90942",
-            "provider": "aaaa0000-61fd-4cce-8113-81af1de90942",
+            "id": device_id,
+            "provider": provider_id,
             "category": "scooter",
             "identification_number": "foo",
             "propulsion": "electric",
@@ -225,7 +238,7 @@ def test_device_add(client):
     assert len(response.data["results"]) == 1
 
     expected_results = {
-        "id": "bbbb0000-61fd-4cce-8113-81af1de90942",
+        "id": device_id,
         "provider": "Test provider",
         "identification_number": "foo",
         "model": "",
@@ -235,17 +248,18 @@ def test_device_add(client):
         "category": "scooter",
         "last_telemetry_date": None,
     }
-    for (key, resp_val) in expected_results.items():
+    for key, resp_val in expected_results.items():
         assert response.data["results"][0][key] == resp_val
 
 
 @pytest.mark.django_db
 def test_device_update(client):
-    provider = factories.Provider(
-        id="aaaa0000-61fd-4cce-8113-81af1de90942", name="Test provider"
-    )
+    provider_id = "aaaa0000-61fd-4cce-8113-81af1de90942"
+    device_id = "bbbb0000-61fd-4cce-8113-81af1de90942"
+
+    provider = factories.Provider(id=provider_id, name="Test provider")
     factories.Device(
-        id=uuid.UUID("bbbb0000-61fd-4cce-8113-81af1de90942"),
+        id=uuid.UUID(device_id),
         provider=provider,
         identification_number="1AAAAA",
         model="",
@@ -256,9 +270,9 @@ def test_device_update(client):
 
     # Full update with POST
     response = client.post(
-        "/vehicle/bbbb0000-61fd-4cce-8113-81af1de90942/",
+        f"/vehicle/{device_id}/",
         data={
-            "provider": "aaaa0000-61fd-4cce-8113-81af1de90942",
+            "provider": provider_id,
             "category": "scooter",
             "identification_number": "8DDDDD",
             "propulsion": "combustion",
@@ -271,7 +285,7 @@ def test_device_update(client):
     response = client.get("/vehicle/", **auth_header(SCOPE_VEHICLE))
     assert len(response.data["results"]) == 1
     expected_results = {
-        "id": "bbbb0000-61fd-4cce-8113-81af1de90942",
+        "id": device_id,
         "provider": "Test provider",
         "identification_number": "8DDDDD",
         "propulsion": "combustion",
@@ -282,7 +296,7 @@ def test_device_update(client):
 
     # Partial update with PATCH
     response = client.patch(
-        "/vehicle/bbbb0000-61fd-4cce-8113-81af1de90942/",
+        f"/vehicle/{device_id}/",
         data={"identification_number": "2BE3"},
         content_type="application/json",
         **auth_header(SCOPE_VEHICLE),
@@ -292,7 +306,7 @@ def test_device_update(client):
     response = client.get("/vehicle/", **auth_header(SCOPE_VEHICLE))
     assert len(response.data["results"]) == 1
     expected_results = {
-        "id": "bbbb0000-61fd-4cce-8113-81af1de90942",
+        "id": device_id,
         "provider": "Test provider",
         "identification_number": "2BE3",
         "propulsion": "combustion",
