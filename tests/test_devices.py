@@ -161,6 +161,44 @@ def test_device_list_multiple_telemetries(client, django_assert_num_queries):
 
 
 @pytest.mark.django_db
+def test_device_list_filter(client):
+    today = timezone.now()
+    yesterday = today - timezone.timedelta(days=1)
+    tomorrow = today + timezone.timedelta(days=1)
+
+    device = factories.Device(
+        id="aaaa0000-61fd-4cce-8113-81af1de90942",
+        category="scooter",
+        registration_date=yesterday,
+    )
+    device2 = factories.Device(
+        id="bbbb0000-61fd-4cce-8113-81af1de90942",
+        category="scooter",
+        registration_date=today,
+    )
+    device3 = factories.Device(
+        id="aaaa1111-61fd-4cce-8113-81af1de90942",
+        category="bike",
+        registration_date=tomorrow,
+    )
+
+    factories.Telemetry(device=device, status="removed")
+    factories.Telemetry(device=device2, status="removed")
+    factories.Telemetry(device=device3, status="available")
+
+    requests = {
+        "/vehicle/?id=aaaa": 2,
+        "/vehicle/?category=scooter": 2,
+        "/vehicle/?status=removed": 2,
+        "/vehicle/?status=available&id=aaaa": 1,
+        f"/vehicle/?registrationDateTo={today.strftime('%Y-%m-%dT%H:%M:%S.%fZ')}": 2,
+    }
+    for req, expected_results in requests.items():
+        results = client.get(req, **auth_header(SCOPE_VEHICLE)).data["results"]
+        assert len(results) == expected_results
+
+
+@pytest.mark.django_db
 def test_device_add(client):
     client.post(
         "/provider/",

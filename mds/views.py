@@ -1,13 +1,12 @@
 import json
 import os.path
 import warnings
-import dateutil.parser
 
 import yaml
 from django.db.models import OuterRef, Subquery, Prefetch
 from django.shortcuts import render
+from django_filters import rest_framework as filters
 from rest_framework import exceptions
-from rest_framework import mixins
 from rest_framework import serializers as drf_serializers
 from rest_framework import viewsets
 from rest_framework.compat import coreapi, coreschema
@@ -19,6 +18,7 @@ from mds.access_control.permissions import require_scopes
 from mds.access_control.scopes import SCOPE_VEHICLE
 from . import models
 from . import serializers
+from . import enums
 
 
 class MultiSerializerViewSet(viewsets.GenericViewSet):
@@ -116,33 +116,35 @@ class DeviceLimitOffsetPagination(LimitOffsetPagination):
     default_limit = 500
 
 
+class DeviceFilter(filters.FilterSet):
+    id = filters.CharFilter(lookup_expr="icontains")
+    category = filters.ChoiceFilter(choices=enums.DEVICE_CATEGORY_CHOICES)
+    status = filters.ChoiceFilter(
+        "telemetries__status", choices=enums.DEVICE_STATUS_CHOICES
+    )
+    registrationDateFrom = filters.IsoDateTimeFilter(
+        "registration_date", lookup_expr="gte"
+    )
+    registrationDateTo = filters.IsoDateTimeFilter(
+        "registration_date", lookup_expr="lte"
+    )
+
+    class Meta:
+        model = models.Device
+        fields = [
+            "id",
+            "category",
+            "status",
+            "registrationDateFrom",
+            "registrationDateTo",
+        ]
+
+
 class DeviceViewSet(
     viewsets.ModelViewSet, UpdateOnlyModelMixin, MultiSerializerViewSet
 ):
     def get_queryset(self):
         queryset = models.Device.objects
-
-        filters = {
-            "category": "category__in",
-            "status": "telemetries__status__in",
-            "provider": "provider__id__in",
-        }
-        time_filters = {
-            "registrationDateFrom": "registration_date__gte",
-            "registrationDateTo": "registration_date__lte",
-        }
-        for (req_field, db_field) in filters.items():
-            if self.request.GET.getlist(req_field):
-                queryset = queryset.filter(
-                    **{db_field: self.request.GET.getlist(req_field)}
-                )
-        for (req_field, db_field) in time_filters.items():
-            if req_field in self.request.GET:
-                queryset = queryset.filter(
-                    **{db_field: dateutil.parser.parse(self.request.GET[req_field])}
-                )
-        if "id" in self.request.GET:
-            queryset = queryset.filter(id__icontains=self.request.GET["id"])
 
         user = self.request.user
         provider_id = getattr(self.request.user, "provider_id", None)
@@ -175,6 +177,8 @@ class DeviceViewSet(
     serializer_class = serializers.Device
     schema = CustomViewSchema()
     pagination_class = DeviceLimitOffsetPagination
+    filter_backends = (filters.DjangoFilterBackend,)
+    filterset_class = DeviceFilter
 
 
 class AreaViewSet(viewsets.ModelViewSet):
