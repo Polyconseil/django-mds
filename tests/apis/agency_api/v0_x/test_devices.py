@@ -2,6 +2,7 @@ import datetime
 
 import pytest
 
+from mds import enums
 from mds import factories
 from mds import models
 from mds.access_control.scopes import SCOPE_VEHICLE
@@ -137,7 +138,9 @@ def test_device_add(client):
 
     assert models.Device.objects.count() == 0
     # test auth
-    response = client.post("/mds/v0.x/vehicles/", data=data, content_type="application/json")
+    response = client.post(
+        "/mds/v0.x/vehicles/", data=data, content_type="application/json"
+    )
     assert response.status_code == 401
     response = client.post(
         "/mds/v0.x/vehicles/",
@@ -284,7 +287,7 @@ def test_device_telemetry(client, django_assert_num_queries):
         models.EventRecord.objects.filter(
             event_type="telemetry",
             device_id__in=[device_id % i for i in range(1, 4)],
-            source="push",
+            source=enums.EVENT_SOURCE.push.name,
         ).count()
         == 2
     )

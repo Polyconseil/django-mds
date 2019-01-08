@@ -12,10 +12,12 @@ from mds.apis import utils
 
 class DeviceFilter(filters.FilterSet):
     id = filters.CharFilter(lookup_expr="icontains")
-    category = filters.MultipleChoiceFilter(choices=enums.DEVICE_CATEGORY_CHOICES)
+    category = filters.MultipleChoiceFilter(
+        choices=enums.choices(enums.DEVICE_CATEGORY)
+    )
     provider = filters.UUIDFilter()
     status = filters.MultipleChoiceFilter(
-        "dn_status", choices=enums.DEVICE_STATUS_CHOICES
+        "dn_status", choices=enums.choices(enums.DEVICE_STATUS)
     )
     registrationDateFrom = filters.IsoDateTimeFilter(
         "registration_date", lookup_expr="gte"
@@ -43,10 +45,10 @@ class DeviceSerializer(serializers.ModelSerializer):
         help_text="VIN (Vehicle Identification Number)"
     )
     category = serializers.ChoiceField(
-        enums.DEVICE_CATEGORY_CHOICES, help_text="Device type"
+        enums.choices(enums.DEVICE_CATEGORY), help_text="Device type"
     )
     propulsion = serializers.ListField(
-        child=serializers.ChoiceField(enums.DEVICE_PROPULSION_CHOICES),
+        child=serializers.ChoiceField(enums.choices(enums.DEVICE_PROPULSION)),
         help_text="Propulsion type(s)",
     )
     provider = serializers.CharField(
@@ -60,7 +62,7 @@ class DeviceSerializer(serializers.ModelSerializer):
         source="dn_gps_point", help_text="Latest GPS position"
     )
     status = serializers.ChoiceField(
-        enums.DEVICE_STATUS_CHOICES,
+        enums.choices(enums.DEVICE_STATUS),
         source="dn_status",
         help_text="Latest status",
         allow_null=True,

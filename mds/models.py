@@ -74,10 +74,10 @@ class Device(models.Model):
     registration_date = models.DateTimeField(default=timezone.now)
     identification_number = UnboundedCharField()
 
-    category = UnboundedCharField(choices=enums.DEVICE_CATEGORY_CHOICES)
+    category = UnboundedCharField(choices=enums.choices(enums.DEVICE_CATEGORY))
     model = UnboundedCharField(default=str)
     propulsion = pg_fields.ArrayField(
-        UnboundedCharField(choices=enums.DEVICE_PROPULSION_CHOICES)
+        UnboundedCharField(choices=enums.choices(enums.DEVICE_PROPULSION))
     )
     year_manufactured = models.IntegerField(null=True)
     manufacturer = UnboundedCharField(default=str)
@@ -86,7 +86,7 @@ class Device(models.Model):
     dn_gps_point = gis_models.PointField(null=True)
     dn_gps_timestamp = models.DateTimeField(null=True)
     dn_status = UnboundedCharField(
-        choices=enums.DEVICE_STATUS_CHOICES, default="unavailable"
+        choices=enums.choices(enums.DEVICE_STATUS), default="unavailable"
     )
 
     objects = DeviceQueryset.as_manager()
@@ -108,12 +108,14 @@ class Device(models.Model):
 class EventRecord(models.Model):
     saved_at = models.DateTimeField(db_index=True, default=utils.timezone.now)
     source = models.CharField(
-        choices=enums.EVENT_INGESTION_SOURCES, default="push", max_length=16
+        choices=enums.choices(enums.EVENT_SOURCE),
+        default=enums.EVENT_SOURCE.push.name,
+        max_length=16,
     )
     device = models.ForeignKey(
         Device, related_name="event_records", on_delete=models.CASCADE
     )
-    event_type = UnboundedCharField(choices=enums.EVENT_TYPE_CHOICES)
+    event_type = UnboundedCharField(choices=enums.choices(enums.EVENT_TYPE))
 
     # JSON fields:
     # {

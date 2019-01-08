@@ -8,38 +8,164 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-12-12 15:33+0100\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"POT-Creation-Date: 2019-01-21 13:58+0000\n"
+"PO-Revision-Date: 2019-01-08 10:43+0000\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
+"Language: en_US\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+#: mds/access_control/authenticate.py:56
+msgid "Signature has expired."
+msgstr ""
+
+#: mds/access_control/authenticate.py:59
+msgid "Error decoding signature."
+msgstr ""
+
+#: mds/access_control/authenticate.py:92
+#, python-format
+msgid "Invalid payload, missing fields: %(fields)s"
+msgstr ""
+
+#: mds/enums.py:15
+msgctxt "Device status"
 msgid "Available"
 msgstr ""
 
+#: mds/enums.py:16
+msgctxt "Device status"
 msgid "Reserved"
 msgstr ""
 
+#: mds/enums.py:17
+msgctxt "Device status"
 msgid "Unavailable"
 msgstr ""
 
+#: mds/enums.py:18
+msgctxt "Device status"
 msgid "Removed"
 msgstr ""
 
+#: mds/enums.py:25
+msgctxt "Device category"
 msgid "Bike"
 msgstr ""
 
+#: mds/enums.py:26
+msgctxt "Device category"
 msgid "Scooter"
 msgstr ""
 
+#: mds/enums.py:27
+msgctxt "Device category"
 msgid "Car"
 msgstr ""
 
+#: mds/enums.py:33
+msgctxt "Device propulsion"
 msgid "Electric"
 msgstr ""
 
+#: mds/enums.py:34
+msgctxt "Device propulsion"
 msgid "Combustion"
+msgstr ""
+
+#: mds/enums.py:41
+msgctxt "Event type"
+msgid "Service start"
+msgstr ""
+
+#: mds/enums.py:42
+msgctxt "Event type"
+msgid "Trip end"
+msgstr ""
+
+#: mds/enums.py:43
+msgctxt "Event type"
+msgid "Rebalance drop_off"
+msgstr ""
+
+#: mds/enums.py:44
+msgctxt "Event type"
+msgid "Maintenance drop off"
+msgstr ""
+
+#: mds/enums.py:45
+msgctxt "Event type"
+msgid "Cancel reservation"
+msgstr ""
+
+#: mds/enums.py:46
+msgctxt "Event type"
+msgid "Reserve"
+msgstr ""
+
+#: mds/enums.py:47
+msgctxt "Event type"
+msgid "Trip start"
+msgstr ""
+
+#: mds/enums.py:48
+msgctxt "Event type"
+msgid "Trip enter"
+msgstr ""
+
+#: mds/enums.py:49
+msgctxt "Event type"
+msgid "Trip leave"
+msgstr ""
+
+#: mds/enums.py:50
+msgctxt "Event type"
+msgid "Register"
+msgstr ""
+
+#: mds/enums.py:51
+msgctxt "Event type"
+msgid "Low battery"
+msgstr ""
+
+#: mds/enums.py:52
+msgctxt "Event type"
+msgid "Maintenance"
+msgstr ""
+
+#: mds/enums.py:53
+msgctxt "Event type"
+msgid "Service end"
+msgstr ""
+
+#: mds/enums.py:54
+msgctxt "Event type"
+msgid "Rebalance pick up"
+msgstr ""
+
+#: mds/enums.py:55
+msgctxt "Event type"
+msgid "Maintenance pick up"
+msgstr ""
+
+#: mds/enums.py:56
+msgctxt "Event type"
+msgid "Deregister"
+msgstr ""
+
+#: mds/enums.py:58
+msgctxt "Event type"
+msgid "Received telemetry"
+msgstr ""
+
+#: mds/enums.py:66
+msgctxt "Event source"
+msgid "push"
+msgstr ""
+
+#: mds/enums.py:68
+msgctxt "Event source"
+msgid "pull"
 msgstr ""

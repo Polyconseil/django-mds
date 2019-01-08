@@ -24,11 +24,11 @@ class DeviceSerializer(serializers.Serializer):
     )
     type = serializers.ChoiceField(
         source="category",
-        choices=enums.DEVICE_CATEGORY_CHOICES,
+        choices=enums.choices(enums.DEVICE_CATEGORY),
         help_text="Vehicle type.",
     )
     propulsion = serializers.ListSerializer(
-        child=serializers.ChoiceField(choices=enums.DEVICE_PROPULSION_CHOICES),
+        child=serializers.ChoiceField(choices=enums.choices(enums.DEVICE_PROPULSION)),
         help_text="Array of Propulsion Type.",
     )
     year = serializers.IntegerField(
@@ -40,12 +40,12 @@ class DeviceSerializer(serializers.Serializer):
     model = serializers.CharField(help_text="Vehicle Model.")
     status = serializers.ChoiceField(
         source="dn_status",
-        choices=enums.DEVICE_STATUS_CHOICES,
+        choices=enums.choices(enums.DEVICE_STATUS),
         help_text="Current vehicle status.",
     )
     prev_event = serializers.ChoiceField(
         source="latest_event.event_type",
-        choices=enums.EVENT_TYPE_CHOICES,
+        choices=enums.choices(enums.EVENT_TYPE),
         help_text="Last Vehicle Event.",
         allow_null=True,
     )
@@ -66,11 +66,11 @@ class DeviceRegisterSerializer(serializers.Serializer):
     )
     type = serializers.ChoiceField(
         source="category",
-        choices=enums.DEVICE_CATEGORY_CHOICES,
+        choices=enums.choices(enums.DEVICE_CATEGORY),
         help_text="Vehicle type.",
     )
     propulsion = serializers.ListSerializer(
-        child=serializers.ChoiceField(choices=enums.DEVICE_PROPULSION_CHOICES),
+        child=serializers.ChoiceField(choices=enums.choices(enums.DEVICE_PROPULSION)),
         help_text="Array of Propulsion Type.",
     )
     year = serializers.IntegerField(
@@ -103,7 +103,7 @@ class DeviceTelemetrySerializer(serializers.Serializer):
 
 class DeviceEventSerializer(serializers.Serializer):
     event_type = serializers.ChoiceField(
-        choices=enums.EVENT_TYPE_CHOICES, help_text="Vehicle event."
+        choices=enums.choices(enums.EVENT_TYPE), help_text="Vehicle event."
     )
     telemetry = DeviceTelemetrySerializer(
         write_only=True, help_text="Single point of telemetry."

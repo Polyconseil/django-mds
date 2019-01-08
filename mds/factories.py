@@ -580,14 +580,12 @@ class Device(factory.DjangoModelFactory):
     provider = factory.SubFactory(Provider)
     identification_number = factory.Sequence(str)
     model = factory.Iterator(["bicycle-A", "car-B"])
-    category = factory.Iterator(choice[0] for choice in enums.DEVICE_CATEGORY_CHOICES)
-    propulsion = factory.Iterator(
-        [choice[0]] for choice in enums.DEVICE_PROPULSION_CHOICES
-    )
+    category = factory.Iterator(choice.name for choice in enums.DEVICE_CATEGORY)
+    propulsion = factory.Iterator([choice.name] for choice in enums.DEVICE_PROPULSION)
 
     dn_gps_point = factory.LazyFunction(get_random_point)
     dn_gps_timestamp = factory.LazyFunction(timezone.now)
-    dn_status = factory.Iterator(choice[0] for choice in enums.DEVICE_STATUS_CHOICES)
+    dn_status = factory.Iterator(choice.name for choice in enums.DEVICE_STATUS)
 
 
 class Area(factory.DjangoModelFactory):
@@ -640,7 +638,7 @@ class EventRecord(factory.DjangoModelFactory):
 
     device = factory.SubFactory(Device)
     saved_at = datetime.datetime(2018, 8, 1, tzinfo=pytz.utc)
-    event_type = factory.Iterator(c for c, _ in enums.EVENT_TYPE_CHOICES)
+    event_type = factory.Iterator(c.name for c in enums.EVENT_TYPE)
     properties = factory.Dict(
         {
             "trip_id": None,
