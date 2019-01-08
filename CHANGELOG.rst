@@ -4,7 +4,7 @@ Changelog
 0.1.2 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Support JWT auth
 - Add Provider Django model
 - Add queryset filters on Device ID, type, provider, status and registration date
 - Pagination on Device view
