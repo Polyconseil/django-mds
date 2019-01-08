@@ -7,5 +7,5 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         factories.Area.create()
-        for _i in range(100):
-            factories.Device.create()
+        for _i in range(1000):
+            factories.Telemetry.create()

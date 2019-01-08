@@ -562,6 +562,13 @@ def get_random_point():
     return point
 
 
+def get_random_provider():
+    providers = models.Provider.objects.all()
+    if not providers.exists():
+        providers = Provider.create_batch(4)
+    return random.choice(providers)
+
+
 class Provider(factory.DjangoModelFactory):
     class Meta:
         model = models.Provider
@@ -575,7 +582,7 @@ class Device(factory.DjangoModelFactory):
     class Meta:
         model = models.Device
 
-    provider = factory.SubFactory(Provider)
+    provider = factory.LazyFunction(get_random_provider)
     identification_number = factory.Sequence(str)
     model = factory.Iterator(["bicycle-A", "car-B"])
     category = factory.Iterator(choice[0] for choice in enums.DEVICE_CATEGORY_CHOICES)
