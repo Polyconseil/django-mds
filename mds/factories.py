@@ -562,16 +562,10 @@ def get_random_point():
     return point
 
 
-def get_random_provider():
-    providers = models.Provider.objects.all()
-    if not providers.exists():
-        providers = Provider.create_batch(4)
-    return random.choice(providers)
-
-
 class Provider(factory.DjangoModelFactory):
     class Meta:
         model = models.Provider
+        django_get_or_create = ['name']
 
     name = factory.Iterator(
         ["Lime", "BlueLA", "Metro Bike", "LongProviderNameCompanyLtdSarlGmoLgbtq"]
@@ -582,7 +576,7 @@ class Device(factory.DjangoModelFactory):
     class Meta:
         model = models.Device
 
-    provider = factory.LazyFunction(get_random_provider)
+    provider = factory.SubFactory(Provider)
     identification_number = factory.Sequence(str)
     model = factory.Iterator(["bicycle-A", "car-B"])
     category = factory.Iterator(choice[0] for choice in enums.DEVICE_CATEGORY_CHOICES)
@@ -617,7 +611,7 @@ class Telemetry(factory.DjangoModelFactory):
         model = models.Telemetry
 
     device = factory.SubFactory(Device)
-    provider = uuid.UUID("a19cdb1e-1342-413b-8e89-db802b2f83f6")
+    provider = factory.SelfAttribute('device.provider.id')
     timestamp = datetime.datetime(2018, 8, 1, tzinfo=pytz.utc)
     status = factory.Iterator(choice[0] for choice in enums.DEVICE_STATUS_CHOICES)
     point = factory.LazyFunction(get_random_point)
