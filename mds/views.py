@@ -148,10 +148,9 @@ class DeviceViewSet(
     def get_queryset(self):
         queryset = models.Device.objects
 
-        user = self.request.user
         provider_id = getattr(self.request.user, "provider_id", None)
         if provider_id:
-            queryset = queryset.filter(provider_id=user.provider_id)
+            queryset = queryset.filter(provider_id=provider_id)
 
         return queryset.prefetch_related(
             Prefetch(
