@@ -593,6 +593,14 @@ class Area(factory.DjangoModelFactory):
     deletion_date = None
     label = ""
 
+    @factory.post_generation
+    def polygons(self, create, extracted, **kwargs):
+        if not create:
+            return  # build, can't record many to many relationship
+        if extracted:
+            for polygon in extracted:
+                self.polygons.add(polygon)
+
 
 class Polygon(factory.DjangoModelFactory):
     class Meta:

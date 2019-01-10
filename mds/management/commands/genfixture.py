@@ -6,6 +6,9 @@ class Command(BaseCommand):
     help = "Create a service area and 100 devices"
 
     def handle(self, *args, **options):
-        factories.Area.create()
+        factories.Area.create(
+            label="District 10",
+            polygons=[factories.Polygon(), factories.Polygon()]
+        )
         for _i in range(1000):
             factories.Telemetry.create()
