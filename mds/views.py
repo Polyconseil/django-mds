@@ -7,12 +7,12 @@ from django.db.models import OuterRef, Subquery, Prefetch
 from django.shortcuts import render
 from django_filters import rest_framework as filters
 from rest_framework import exceptions
+from rest_framework import pagination
 from rest_framework import serializers as drf_serializers
 from rest_framework import viewsets
 from rest_framework.compat import coreapi, coreschema
 from rest_framework.response import Response
 from rest_framework.schemas import inspectors
-from rest_framework.pagination import LimitOffsetPagination
 
 from mds.access_control.permissions import require_scopes
 from mds.access_control.scopes import SCOPE_VEHICLE
@@ -112,7 +112,7 @@ class UpdateOnlyModelMixin(object):
         serializer.save()
 
 
-class DeviceLimitOffsetPagination(LimitOffsetPagination):
+class LimitOffsetPagination(pagination.LimitOffsetPagination):
     default_limit = 500
 
 
@@ -177,15 +177,16 @@ class DeviceViewSet(
     }
     serializer_class = serializers.Device
     schema = CustomViewSchema()
-    pagination_class = DeviceLimitOffsetPagination
+    pagination_class = LimitOffsetPagination
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = DeviceFilter
 
 
 class AreaViewSet(viewsets.ModelViewSet):
-    queryset = models.Area.objects.all()
+    queryset = models.Area.objects.prefetch_related("polygons").all()
     lookup_field = "id"
     serializer_class = serializers.AreaSerializer
+    pagination_class = LimitOffsetPagination
 
 
 class ProviderViewSet(viewsets.ModelViewSet):
