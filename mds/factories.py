@@ -1,7 +1,6 @@
 import datetime
 import factory
 import random
-import uuid
 import zlib
 
 from django.contrib.gis.geos.geometry import GEOSGeometry
@@ -565,7 +564,7 @@ def get_random_point():
 class Provider(factory.DjangoModelFactory):
     class Meta:
         model = models.Provider
-        django_get_or_create = ['name']
+        django_get_or_create = ["name"]
 
     name = factory.Iterator(
         ["Lime", "BlueLA", "Metro Bike", "LongProviderNameCompanyLtdSarlGmoLgbtq"]
@@ -611,7 +610,7 @@ class Telemetry(factory.DjangoModelFactory):
         model = models.Telemetry
 
     device = factory.SubFactory(Device)
-    provider = factory.SelfAttribute('device.provider.id')
+    provider = factory.SelfAttribute("device.provider.id")
     timestamp = datetime.datetime(2018, 8, 1, tzinfo=pytz.utc)
     status = factory.Iterator(choice[0] for choice in enums.DEVICE_STATUS_CHOICES)
     point = factory.LazyFunction(get_random_point)
