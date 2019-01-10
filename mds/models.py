@@ -59,8 +59,12 @@ class Device(models.Model):
 
     @property
     def latest_telemetry(self):
-        telemetries = getattr(self, "_latest_telemetry", None)
-        return telemetries[0] if telemetries else None
+        if hasattr(self, "_latest_telemetry"):
+            # don't do a query in this case, the telemetry was prefetched.
+            return self._latest_telemetry[0] if self._latest_telemetry else None
+        return (
+            Telemetry.objects.filter(device_id=self.id).order_by("-timestamp").first()
+        )
 
 
 class Polygon(models.Model):
