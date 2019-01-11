@@ -4,7 +4,7 @@ Changelog
 0.1.3 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Refactoring Device queryset.
 
 
 0.1.2 (2019-01-10)
