@@ -3,7 +3,6 @@ import os.path
 import warnings
 
 import yaml
-from django.db.models import OuterRef, Subquery, Prefetch
 from django.shortcuts import render
 from django_filters import rest_framework as filters
 from rest_framework import exceptions
@@ -152,19 +151,7 @@ class DeviceViewSet(
         if provider_id:
             queryset = queryset.filter(provider_id=provider_id)
 
-        return queryset.prefetch_related(
-            Prefetch(
-                "telemetries",
-                queryset=models.Telemetry.objects.filter(
-                    id__in=Subquery(
-                        models.Telemetry.objects.filter(device_id=OuterRef("device_id"))
-                        .order_by("-timestamp")
-                        .values_list("id", flat=True)[:1]
-                    )
-                ),
-                to_attr="_latest_telemetry",
-            )
-        ).select_related("provider")
+        return queryset.with_latest_telemetry().select_related("provider")
 
     permission_classes = (require_scopes(SCOPE_VEHICLE),)
     lookup_field = "id"

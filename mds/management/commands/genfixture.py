@@ -7,7 +7,6 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         factories.Area(
-            label="District 10",
-            polygons=[factories.Polygon(), factories.Polygon()]
+            label="District 10", polygons=[factories.Polygon(), factories.Polygon()]
         )
         factories.Telemetry.create_batch(1000)

@@ -7,6 +7,7 @@ from django import forms, utils
 from django.contrib.gis.db import models as gis_models
 from django.contrib.postgres import fields as pg_fields
 from django.db import models
+from django.db.models import OuterRef, Subquery, Prefetch
 from django.utils import timezone
 
 from rest_framework.utils import encoders
@@ -42,6 +43,23 @@ class Provider(models.Model):
     name = UnboundedCharField(default=str)
 
 
+class DeviceQueryset(models.QuerySet):
+    def with_latest_telemetry(self):
+        return self.prefetch_related(
+            Prefetch(
+                "telemetries",
+                queryset=Telemetry.objects.filter(
+                    id__in=Subquery(
+                        Telemetry.objects.filter(device_id=OuterRef("device_id"))
+                        .order_by("-timestamp")
+                        .values_list("id", flat=True)[:1]
+                    )
+                ),
+                to_attr="_latest_telemetry",
+            )
+        )
+
+
 class Device(models.Model):
     """A device
     """
@@ -56,6 +74,8 @@ class Device(models.Model):
     propulsion = UnboundedCharField(choices=enums.DEVICE_PROPULSION_CHOICES)
     registration_date = models.DateTimeField(default=timezone.now)
     properties = pg_fields.JSONField(default=dict, encoder=encoders.JSONEncoder)
+
+    objects = DeviceQueryset.as_manager()
 
     @property
     def latest_telemetry(self):
@@ -96,3 +116,8 @@ class Telemetry(models.Model):
 
     class Meta:
         verbose_name_plural = "telemetries"
+
+    @property
+    def point_as_geojson_list(self):
+        """Represent the point as the [longitude, latitute] GeoJSON convention."""
+        return [self.point.x, self.point.y]
