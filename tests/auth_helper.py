@@ -7,7 +7,7 @@ def auth_header(*scopes, provider_id=None):
     claims = {"jti": "123", "sub": "test-user", "scope": " ".join(scopes)}
 
     if provider_id:
-        claims["provider_id"] = provider_id
+        claims["provider_id"] = str(provider_id)
 
     return {
         "HTTP_AUTHORIZATION": "Bearer "

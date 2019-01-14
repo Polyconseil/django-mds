@@ -1,6 +1,7 @@
 """
 Database description
 """
+import json
 import uuid
 
 from django import forms, utils
@@ -45,18 +46,19 @@ class Provider(models.Model):
 
 
 class DeviceQueryset(models.QuerySet):
-    def with_latest_telemetry(self):
+    def with_latest_event(self):
         return self.prefetch_related(
             Prefetch(
-                "telemetries",
-                queryset=Telemetry.objects.filter(
+                "event_records",
+                queryset=EventRecord.objects.filter(
                     id__in=Subquery(
-                        Telemetry.objects.filter(device_id=OuterRef("device_id"))
-                        .order_by("-timestamp")
+                        EventRecord.objects.filter(device_id=OuterRef("device_id"))
+                        .exclude(event_type="telemetry")
+                        .order_by("-saved_at")
                         .values_list("id", flat=True)[:1]
                     )
                 ),
-                to_attr="_latest_telemetry",
+                to_attr="_latest_event",
             )
         )
 
@@ -69,23 +71,56 @@ class Device(models.Model):
     provider = models.ForeignKey(
         Provider, related_name="devices", on_delete=models.CASCADE
     )
-    identification_number = UnboundedCharField()
-    model = UnboundedCharField(default=str)
-    category = UnboundedCharField(choices=enums.DEVICE_CATEGORY_CHOICES)
-    propulsion = UnboundedCharField(choices=enums.DEVICE_PROPULSION_CHOICES)
     registration_date = models.DateTimeField(default=timezone.now)
-    properties = pg_fields.JSONField(default=dict, encoder=encoders.JSONEncoder)
+    identification_number = UnboundedCharField()
+
+    category = UnboundedCharField(choices=enums.DEVICE_CATEGORY_CHOICES)
+    model = UnboundedCharField(default=str)
+    propulsion = pg_fields.ArrayField(
+        UnboundedCharField(choices=enums.DEVICE_PROPULSION_CHOICES)
+    )
+    year_manufactured = models.IntegerField(null=True)
+    manufacturer = UnboundedCharField(default=str)
+
+    # denormalized fields, the source of truth for this data is in the Record table.
+    dn_gps_point = gis_models.PointField(null=True)
+    dn_gps_timestamp = models.DateTimeField(null=True)
+    dn_status = UnboundedCharField(
+        choices=enums.DEVICE_STATUS_CHOICES, default="unavailable"
+    )
 
     objects = DeviceQueryset.as_manager()
 
     @property
-    def latest_telemetry(self):
-        if hasattr(self, "_latest_telemetry"):
+    def latest_event(self):
+        print("ok okok")
+        if hasattr(self, "_latest_event"):
             # don't do a query in this case, the telemetry was prefetched.
-            return self._latest_telemetry[0] if self._latest_telemetry else None
-        return (
-            Telemetry.objects.filter(device_id=self.id).order_by("-timestamp").first()
-        )
+            return self._latest_event[0] if self._latest_event else None
+        device = Device.objects.filter(pk=self.pk).with_latest_event()
+        return device.latest_event
+
+    @property
+    def gps_point_as_geojson(self):
+        """Represent the gpos point as geojson"""
+        return json.loads(self.dn_gps_point.geojson)
+
+
+class EventRecord(models.Model):
+    saved_at = models.DateTimeField(db_index=True, default=utils.timezone.now)
+    source = models.CharField(
+        choices=enums.EVENT_INGESTION_SOURCES, default="push", max_length=16
+    )
+    device = models.ForeignKey(
+        Device, related_name="event_records", on_delete=models.CASCADE
+    )
+    event_type = UnboundedCharField(choices=enums.EVENT_TYPE_CHOICES)
+
+    # JSON fields:
+    # {
+    #   "telemetry": see serializers.PointProperties for the fields
+    # }
+    properties = pg_fields.JSONField(default=dict, encoder=encoders.JSONEncoder)
 
 
 class Polygon(models.Model):
@@ -103,22 +138,4 @@ class Area(models.Model):
     deletion_date = models.DateTimeField(null=True)
     label = UnboundedCharField(null=True)
     polygons = models.ManyToManyField(Polygon, blank=True, related_name="areas")
-
-
-class Telemetry(models.Model):
-    device = models.ForeignKey(
-        Device, related_name="telemetries", on_delete=models.CASCADE
-    )
-    provider = models.UUIDField()
-    timestamp = models.DateTimeField(db_index=True)
-    status = UnboundedCharField(choices=enums.DEVICE_STATUS_CHOICES)
-    point = gis_models.PointField(null=True)
-    properties = pg_fields.JSONField(default=dict, encoder=encoders.JSONEncoder)
-
-    class Meta:
-        verbose_name_plural = "telemetries"
-
-    @property
-    def point_as_geojson_list(self):
-        """Represent the point as the [longitude, latitute] GeoJSON convention."""
-        return [self.point.x, self.point.y]
+    providers = models.ManyToManyField(Provider, blank=True, related_name="areas")

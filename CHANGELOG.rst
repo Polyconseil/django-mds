@@ -4,7 +4,9 @@ Changelog
 0.1.4 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Adapt API to latest version of LADOT spec
+- Split API into /mds and /prv
+- Add schema auto-generation
 
 
 0.1.3 (2019-01-14)

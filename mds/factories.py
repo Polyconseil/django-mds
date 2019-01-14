@@ -3,8 +3,10 @@ import factory
 import random
 import zlib
 
+from django.contrib.gis import geos
 from django.contrib.gis.geos.geometry import GEOSGeometry
 from django.contrib.gis.geos.point import Point
+from django.utils import timezone
 import pytz
 
 from . import models
@@ -553,8 +555,8 @@ def get_random_point():
     """
     while True:
         point = Point(
-            random.uniform(-118.39091357778655, -118.28229399983276),
-            random.uniform(34.00363399975826, 34.07988124764408),
+            random.uniform(-118.390_913_577_786_55, -118.282_293_999_832_76),
+            random.uniform(34.003_633_999_758_26, 34.079_881_247_644_08),
         )
         if district10.contains(point):
             break
@@ -580,9 +582,12 @@ class Device(factory.DjangoModelFactory):
     model = factory.Iterator(["bicycle-A", "car-B"])
     category = factory.Iterator(choice[0] for choice in enums.DEVICE_CATEGORY_CHOICES)
     propulsion = factory.Iterator(
-        choice[0] for choice in enums.DEVICE_PROPULSION_CHOICES
+        [choice[0]] for choice in enums.DEVICE_PROPULSION_CHOICES
     )
-    properties = {}
+
+    dn_gps_point = factory.LazyFunction(get_random_point)
+    dn_gps_timestamp = factory.LazyFunction(timezone.now)
+    dn_status = factory.Iterator([choice[0]] for choice in enums.DEVICE_STATUS_CHOICES)
 
 
 class Area(factory.DjangoModelFactory):
@@ -600,6 +605,22 @@ class Area(factory.DjangoModelFactory):
         if extracted:
             for polygon in extracted:
                 self.polygons.add(polygon)
+        else:
+            geom = geos.Polygon(
+                ((0.0, 0.0), (0.0, 50.0), (50.0, 50.0), (50.0, 0.0), (0.0, 0.0))
+            )
+            poly = Polygon(geom=geom)
+            self.polygons.add(poly)
+
+    @factory.post_generation
+    def providers(self, create, extracted, **kwargs):
+        if not create:
+            return  # build, can't record many to many relationship
+        if extracted:
+            for provider in extracted:
+                self.providers.add(provider)
+        else:
+            self.providers.add(Provider())
 
 
 class Polygon(factory.DjangoModelFactory):
@@ -613,40 +634,30 @@ class Polygon(factory.DjangoModelFactory):
     properties = {}
 
 
-class Telemetry(factory.DjangoModelFactory):
+class EventRecord(factory.DjangoModelFactory):
     class Meta:
-        model = models.Telemetry
+        model = models.EventRecord
 
     device = factory.SubFactory(Device)
-    provider = factory.SelfAttribute("device.provider.id")
-    timestamp = datetime.datetime(2018, 8, 1, tzinfo=pytz.utc)
-    status = factory.Iterator(choice[0] for choice in enums.DEVICE_STATUS_CHOICES)
-    point = factory.LazyFunction(get_random_point)
+    saved_at = datetime.datetime(2018, 8, 1, tzinfo=pytz.utc)
+    event_type = factory.Iterator(c for c, _ in enums.EVENT_TYPE_CHOICES)
     properties = factory.Dict(
         {
-            "gsm": factory.Dict(
+            "trip_id": None,
+            "telemetry": factory.Dict(
                 {
-                    "timestamp": datetime.datetime(2018, 8, 1, tzinfo=pytz.utc),
-                    "operator": "operator_test",
-                    "signal": 0.5,
+                    "timestamp": 1_325_376_000_000,
+                    "gps": factory.Dict(
+                        {
+                            "lat": 0.0,
+                            "lng": 3.0,
+                            "altitude": 30.0,
+                            "heading": 245.2,
+                            "speed": 32.3,
+                            "accuracy": 2.0,
+                        }
+                    ),
                 }
             ),
-            "gps": factory.Dict(
-                {
-                    "timestamp": datetime.datetime(2018, 8, 1, tzinfo=pytz.utc),
-                    "accuracy": 1,
-                    "course": 235.62,
-                    "speed": 119.15,
-                }
-            ),
-            "vehicle_state": factory.Dict(
-                {
-                    "speed": 1.0,
-                    "acceleration": [1.0, 1.0, 1.0],
-                    "odometer": 5000,
-                    "driver_present": True,
-                }
-            ),
-            "energy": factory.Dict({"cruise_range": 12000, "autonomy": 0.69}),
         }
     )

@@ -6,6 +6,9 @@ from .authenticate import authenticate
 
 
 class StatelessJwtAuthentication(BaseAuthentication):
+    def authenticate_header(self, request):
+        return "Bearer"
+
     def authenticate(self, request):
         encoded_jwt = self.extract_token(request)
         if encoded_jwt is None:
