@@ -4,6 +4,7 @@ Changelog
 0.1.3 (unreleased)
 ------------------
 
+- Store logo for providers.
 - Refactoring Device queryset.
 
 
