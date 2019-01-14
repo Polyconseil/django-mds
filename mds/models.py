@@ -41,6 +41,7 @@ class ProviderModel(models.Model):
 class Provider(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4)
     name = UnboundedCharField(default=str)
+    logo_b64 = UnboundedCharField(null=True, blank=True, default=None)
 
 
 class DeviceQueryset(models.QuerySet):

@@ -213,7 +213,7 @@ def test_device_add(client):
     device_id = "bbbb0000-61fd-4cce-8113-81af1de90942"
 
     client.post(
-        "/provider/",
+        "/providers/",
         data={"id": provider_id, "name": "Test provider"},
         content_type="application/json",
     )

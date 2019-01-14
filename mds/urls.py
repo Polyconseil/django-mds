@@ -55,7 +55,9 @@ class PutCreateRouter(routers.DefaultRouter):
 
 
 router = PutCreateRouter()
-router.register(r"provider", views.ProviderViewSet)
+router.register(r"providers", views.ProviderViewSet)
+# TODO use plural for ressources in URL to be MDS (and rest of the world) compliant
+# TODO Separated /mds resources and /prv endpoints
 router.register(r"service_area", views.AreaViewSet)
 router.register(r"vehicle", views.DeviceViewSet, basename="device")
 
