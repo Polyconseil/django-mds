@@ -1,7 +1,7 @@
 Changelog
 =========
 
-0.1.3 (unreleased)
+0.1.3 (2019-01-14)
 ------------------
 
 - Store logo for providers.
