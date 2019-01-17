@@ -138,3 +138,6 @@ class Area(models.Model):
     label = UnboundedCharField(null=True)
     polygons = models.ManyToManyField(Polygon, blank=True, related_name="areas")
     providers = models.ManyToManyField(Provider, blank=True, related_name="areas")
+    color = models.CharField(
+        max_length=8, default="#FFFFFF", help_text="hexa representation"
+    )

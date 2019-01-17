@@ -8,7 +8,7 @@ from mds.access_control.scopes import SCOPE_ADMIN
 
 class ProviderSerializer(serializers.ModelSerializer):
     id = serializers.UUIDField(
-        required=False, help_text="Unique provider identifier (UUID)"
+        required=True, help_text="Unique provider identifier (UUID)"
     )
     name = serializers.CharField(help_text="Name of the Provider")
     logo_b64 = serializers.CharField(

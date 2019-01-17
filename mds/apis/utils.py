@@ -39,7 +39,10 @@ class MultiSerializerViewSetMixin:
         partial = kwargs.pop("partial", False)
         instance = self.get_object()
         request_serializer = self.get_serializer(
-            instance, data=request.data, partial=partial
+            instance,
+            data=request.data,
+            partial=partial,
+            context={"request_or_response": "request"},
         )
         request_serializer.is_valid(raise_exception=True)
         request_serializer.save()
@@ -59,9 +62,10 @@ class MultiSerializerViewSetMixin:
         context.update(self.get_serializer_context())
         kwargs["context"] = context
         request_or_response = context.get("request_or_response", "response")
-        serializer = self.serializers_mapping.get(self.action, {}).get(
-            request_or_response
-        )
+        action = self.action
+        if action == "partial_update":
+            action = "update"
+        serializer = self.serializers_mapping.get(action, {}).get(request_or_response)
         if serializer:
             return serializer(*args, **kwargs)
         return super().get_serializer(*args, **kwargs)

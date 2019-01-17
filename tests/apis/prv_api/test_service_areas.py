@@ -41,37 +41,32 @@ def test_area_creation(client):
         **auth_header(SCOPE_ADMIN),
     )
     assert response.status_code == 201
-    assert response.data == {
-        "id": area_id,
-        "creation_date": "2012-01-01T00:00:00Z",
-        "label": "test_area",
-        "deletion_date": None,
-        "polygons": [],
-    }
 
-    assert models.Area.objects.filter(id=area_id).count() == 1
+    assert models.Area.objects.count() == 1
 
 
 @pytest.mark.django_db
 def test_area_get(client):
-    area_id = str(uuid.uuid4())
+    area_id = uuid.uuid4()
     area = Area(id=area_id, label="test_area", creation_date="2012-01-01T00:00:00Z")
 
     response = client.get(
-        "{}{}/".format(AREA_BASE_URL, area_id), **auth_header(SCOPE_ADMIN)
+        "{}{}/".format(AREA_BASE_URL, str(area_id)), **auth_header(SCOPE_ADMIN)
     )
     assert response.status_code == 200
     data = dict(response.data)
     poly = list(map(dict, data.pop("polygons")))
     assert data == {
-        "id": area_id,
+        "id": str(area_id),
         "creation_date": "2012-01-01T00:00:00Z",
         "label": "test_area",
         "deletion_date": None,
+        "color": "#FFFFFF",
     }
     assert poly == [
         {
             "id": str(area.polygons.get().id),
+            "areas": [area_id],
             "label": "",
             "creation_date": "2018-08-01T00:00:00Z",
             "deletion_date": None,
@@ -81,7 +76,6 @@ def test_area_get(client):
                 ],
                 "type": "Polygon",
             },
-            "properties": {},
         }
     ]
 
@@ -89,7 +83,7 @@ def test_area_get(client):
 @pytest.mark.django_db
 def test_area_patch(client):
     area_id = str(uuid.uuid4())
-    Area(id=area_id, label="test_area", creation_date="2012-01-01T00:00:00Z")
+    area = Area(id=area_id, label="test_area", creation_date="2012-01-01T00:00:00Z")
 
     response = client.patch(
         "{}{}/".format(AREA_BASE_URL, area_id),
@@ -98,21 +92,14 @@ def test_area_patch(client):
         **auth_header(SCOPE_ADMIN),
     )
     assert response.status_code == 200
-    data = dict(response.data)
-    poly = data.pop("polygons")
-    assert data == {
-        "id": area_id,
-        "creation_date": "2012-01-01T00:00:00Z",
-        "label": "test_area_foo",
-        "deletion_date": None,
-    }
-    assert len(poly) == 1
+    area.refresh_from_db()
+    assert area.label == "test_area_foo"
 
 
 @pytest.mark.django_db
 def test_area_update(client):
     area_id = str(uuid.uuid4())
-    Area(id=area_id, label="test_area", creation_date="2012-01-01T00:00:00Z")
+    area = Area(id=area_id, label="test_area", creation_date="2012-01-01T00:00:00Z")
 
     response = client.put(
         "{}{}/".format(AREA_BASE_URL, area_id),
@@ -120,7 +107,7 @@ def test_area_update(client):
         content_type="application/json",
         **auth_header(SCOPE_ADMIN),
     )
-    assert response.status_code == 400
+    assert response.status_code == 200
 
     response = client.put(
         "{}{}/".format(AREA_BASE_URL, area_id),
@@ -129,15 +116,8 @@ def test_area_update(client):
         **auth_header(SCOPE_ADMIN),
     )
     assert response.status_code == 200
-    data = dict(response.data)
-    poly = data.pop("polygons")
-    assert data == {
-        "id": area_id,
-        "creation_date": "2018-01-01T00:00:00Z",
-        "label": "test_area_foo",
-        "deletion_date": None,
-    }
-    assert len(poly) == 1
+    area.refresh_from_db()
+    assert area.label == "test_area_foo"
 
 
 @pytest.mark.django_db
@@ -185,13 +165,10 @@ def test_all_polygons_get(client):
 
 @pytest.mark.django_db
 def test_polygon_creation(client):
-    polygon_id = str(uuid.uuid4())
     response = client.post(
         POLY_BASE_URL,
         data={
-            "id": polygon_id,
             "label": "test",
-            "properties": {},
             "creation_date": "2012-01-01T00:00:00Z",
             "geom": MOCK_GEOJSON,
         },
@@ -199,16 +176,7 @@ def test_polygon_creation(client):
         **auth_header(SCOPE_ADMIN),
     )
     assert response.status_code == 201
-    assert response.data == {
-        "id": polygon_id,
-        "label": "test",
-        "properties": {},
-        "creation_date": "2012-01-01T00:00:00Z",
-        "deletion_date": None,
-        "geom": MOCK_GEOJSON,
-    }
-
-    assert models.Polygon.objects.filter(id=polygon_id).count() == 1
+    assert models.Polygon.objects.count() == 1
 
 
 @pytest.mark.django_db
@@ -228,8 +196,8 @@ def test_polygon_get(client):
     assert response.status_code == 200
     assert response.data == {
         "id": polygon_id,
+        "areas": [],
         "label": "test",
-        "properties": {},
         "creation_date": "2012-01-01T00:00:00Z",
         "deletion_date": None,
         "geom": MOCK_GEOJSON,
@@ -239,7 +207,7 @@ def test_polygon_get(client):
 @pytest.mark.django_db
 def test_polygon_patch(client):
     polygon_id = str(uuid.uuid4())
-    Polygon(
+    poly = Polygon(
         id=polygon_id,
         label="test",
         properties={},
@@ -254,20 +222,14 @@ def test_polygon_patch(client):
         **auth_header(SCOPE_ADMIN),
     )
     assert response.status_code == 200
-    assert response.data == {
-        "id": polygon_id,
-        "creation_date": "2012-01-01T00:00:00Z",
-        "label": "test_polygon_foo",
-        "properties": {"name": "foo"},
-        "deletion_date": None,
-        "geom": MOCK_GEOJSON,
-    }
+    poly.refresh_from_db()
+    assert poly.label == "test_polygon_foo"
 
 
 @pytest.mark.django_db
 def test_polygon_update(client):
     polygon_id = str(uuid.uuid4())
-    Polygon(
+    poly = Polygon(
         id=polygon_id,
         label="test",
         properties={},
@@ -286,8 +248,7 @@ def test_polygon_update(client):
     response = client.put(
         "{}{}/".format(POLY_BASE_URL, polygon_id),
         data={
-            "properties": {"label": "test_polygon_foo", "properties": {"name": "foo"}},
-            "label": "test",
+            "label": "test 2",
             "creation_date": "2012-01-01T00:00:00Z",
             "geom": MOCK_GEOJSON,
         },
@@ -295,14 +256,8 @@ def test_polygon_update(client):
         **auth_header(SCOPE_ADMIN),
     )
     assert response.status_code == 200
-    assert response.data == {
-        "id": polygon_id,
-        "properties": {"label": "test_polygon_foo", "properties": {"name": "foo"}},
-        "label": "test",
-        "creation_date": "2012-01-01T00:00:00Z",
-        "deletion_date": None,
-        "geom": MOCK_GEOJSON,
-    }
+    poly.refresh_from_db()
+    assert poly.label == "test 2"
 
 
 @pytest.mark.django_db
