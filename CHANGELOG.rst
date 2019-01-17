@@ -1,8 +1,8 @@
 Changelog
 =========
 
-0.1.4 (unreleased)
-------------------
+0.2 (2019-01-17)
+----------------
 
 - Adapt API to latest version of LADOT spec
 - Split API into /mds and /prv
