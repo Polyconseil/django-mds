@@ -3,11 +3,11 @@ import pytest
 
 from mds import factories
 from mds.access_control.scopes import SCOPE_VEHICLE
-from tests.auth_helper import auth_header
+from tests.auth_helpers import auth_header, BASE_NUM_QUERIES
 
 
 @pytest.mark.django_db
-def test_areas_metadata(client, django_assert_num_queries):
+def test_areas_metadata(client):
     provider = factories.Provider(name="Test provider")
     response = client.options(
         "/mds/v0.x/service_areas/",
@@ -41,10 +41,10 @@ def test_areas_detail(client, django_assert_num_queries):
     )
     assert response.status_code == 404
 
-    with django_assert_num_queries(4):
-        # 1 query on areas
-        # 1 query on polygons
-        # 2 savepoints
+    n = BASE_NUM_QUERIES
+    n += 1  # query on areas
+    n += 1  # query on polygons
+    with django_assert_num_queries(n):
         response = client.get(
             "/mds/v0.x/service_areas/{}/".format(area.pk),
             **auth_header(SCOPE_VEHICLE, provider_id=provider.id),
@@ -69,10 +69,10 @@ def test_areas_list(client, django_assert_num_queries):
     response = client.get("/mds/v0.x/service_areas/")
     assert response.status_code == 401
 
-    with django_assert_num_queries(4):
-        # 1 query on areas
-        # 1 query on polygons
-        # 2 savepoints
+    n = BASE_NUM_QUERIES
+    n += 1  # query on areas
+    n += 1  # query on polygons
+    with django_assert_num_queries(n):
         response = client.get(
             "/mds/v0.x/service_areas/",
             **auth_header(SCOPE_VEHICLE, provider_id=provider.id),

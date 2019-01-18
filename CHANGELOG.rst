@@ -4,7 +4,8 @@ Changelog
 0.3.1 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Add oauth2 endpoints.
+- Add endpoint to generate long lived tokens.
 
 
 0.3.0 (2019-01-21)

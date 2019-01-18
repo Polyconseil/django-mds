@@ -3,7 +3,7 @@ import uuid
 
 from mds import factories
 from mds.access_control.scopes import SCOPE_ADMIN, SCOPE_VEHICLE
-from tests.auth_helper import auth_header
+from tests.auth_helpers import auth_header, BASE_NUM_QUERIES
 
 
 @pytest.mark.django_db
@@ -26,9 +26,9 @@ def test_provider_basic(client, django_assert_num_queries):
     )
     assert response.status_code == 403
 
-    with django_assert_num_queries(3):
-        # 1 providers
-        # 2 savepoints
+    n = BASE_NUM_QUERIES
+    n += 1  # query on providers
+    with django_assert_num_queries(n):
         response = client.get("/prv/providers/", **auth_header(SCOPE_ADMIN))
     assert response.status_code == 200
     assert len(response.data) == 3

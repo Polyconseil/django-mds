@@ -25,6 +25,8 @@ ALLOWED_HOSTS = CONFIG.getlist(
 )
 
 INSTALLED_APPS = [
+    "mds.authent.apps.Config",
+    "mds.authent.oauth2_provider_apps.Config",
     "mds.apps.Config",
     "corsheaders",
     "django.contrib.admin",
@@ -128,3 +130,20 @@ for i in itertools.count(start=1):
         auth_mean.introspect_url = CONFIG.getstr(section + ".introspect_url", None)
 
     AUTH_MEANS.append(auth_mean)
+AUTHENT_SECRET_KEY = "my-secret"
+AUTHENT_RSA_PRIVATE_KEY = ""
+OAUTH2_PROVIDER = {
+    "APPLICATION_MODEL": "authent.Application",
+    "ACCESS_TOKEN_MODEL": "authent.AccessToken",
+    "GRANT_MODEL": "authent.Grant",
+    "REFRESH_TOKEN_MODEL": "authent.RefreshToken",
+    "OAUTH2_SERVER_CLASS": "mds.authent.oauthlib_utils.Server",
+    "OAUTH2_VALIDATOR_CLASS": "mds.authent.oauthlib_utils.OAuth2Validator",
+    "SCOPES_BACKEND_CLASS": "mds.authent.oauthlib_utils.AppScopes",
+}
+MIGRATION_MODULES = {
+    # see https://github.com/jazzband/django-oauth-toolkit/issues/634
+    # swappable models are badly designed in oauth2_provider
+    # ignore migrations and provide our own models.
+    "oauth2_provider": None
+}

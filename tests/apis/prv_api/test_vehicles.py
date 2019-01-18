@@ -4,7 +4,7 @@ import pytest
 
 from mds import factories
 from mds.access_control.scopes import SCOPE_ADMIN
-from tests.auth_helper import auth_header
+from tests.auth_helpers import auth_header, BASE_NUM_QUERIES
 
 
 @pytest.mark.django_db
@@ -75,9 +75,11 @@ def test_device_list_basic(client, django_assert_num_queries):
     # test auth
     response = client.get("/prv/vehicles/")
     assert response.status_code == 401
-    with django_assert_num_queries(4):
-        # 1 query on devices
-        # 2 savepoints
+
+    n = BASE_NUM_QUERIES
+    n += 1  # query on devices
+    n += 1  # count on devices
+    with django_assert_num_queries(n):
         response = client.get(
             "/prv/vehicles/", **auth_header(SCOPE_ADMIN, provider_id=provider.id)
         )
@@ -90,9 +92,10 @@ def test_device_list_basic(client, django_assert_num_queries):
     # test auth
     response = client.get("/prv/vehicles/%s/" % device.id)
     assert response.status_code == 401
-    with django_assert_num_queries(3):
-        # 1 query on devices
-        # 2 savepoints
+
+    n = BASE_NUM_QUERIES
+    n += 1  # query on devices
+    with django_assert_num_queries(n):
         response = client.get(
             "/prv/vehicles/%s/" % device.id,
             **auth_header(SCOPE_ADMIN, provider_id=provider.id),

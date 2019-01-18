@@ -4,7 +4,7 @@ import pytest
 from mds.access_control.scopes import SCOPE_ADMIN
 from mds.factories import Area, Polygon
 import mds.models as models
-from tests.auth_helper import auth_header
+from tests.auth_helpers import auth_header
 
 
 AREA_BASE_URL = "/prv/service_areas/"

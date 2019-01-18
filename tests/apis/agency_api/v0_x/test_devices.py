@@ -6,11 +6,11 @@ from mds import enums
 from mds import factories
 from mds import models
 from mds.access_control.scopes import SCOPE_VEHICLE
-from tests.auth_helper import auth_header
+from tests.auth_helpers import auth_header, BASE_NUM_QUERIES
 
 
 @pytest.mark.django_db
-def test_devices_metadata(client, django_assert_num_queries):
+def test_devices_metadata(client):
     provider = factories.Provider(name="Test provider")
     response = client.options(
         "/mds/v0.x/vehicles/", **auth_header(SCOPE_VEHICLE, provider_id=provider.id)
@@ -86,10 +86,11 @@ def test_device_list_basic(client, django_assert_num_queries):
     # test auth
     response = client.get("/mds/v0.x/vehicles/")
     assert response.status_code == 401
-    with django_assert_num_queries(4):
-        # 1 query on devices
-        # 1 last telemetry for each device
-        # 2 savepoints
+
+    n = BASE_NUM_QUERIES
+    n += 1  # query on devices
+    n += 1  # query on last telemetry
+    with django_assert_num_queries(n):
         response = client.get(
             "/mds/v0.x/vehicles/", **auth_header(SCOPE_VEHICLE, provider_id=provider.id)
         )
@@ -102,10 +103,11 @@ def test_device_list_basic(client, django_assert_num_queries):
     # test auth
     response = client.get("/mds/v0.x/vehicles/%s/" % device.id)
     assert response.status_code == 401
-    with django_assert_num_queries(4):
-        # 1 query on devices
-        # 1 last telemetry for each device
-        # 2 savepoints
+
+    n = BASE_NUM_QUERIES
+    n += 1  # query on devices
+    n += 1  # query on last telemetry
+    with django_assert_num_queries(n):
         response = client.get(
             "/mds/v0.x/vehicles/%s/" % device.id,
             **auth_header(SCOPE_VEHICLE, provider_id=provider.id),
@@ -271,10 +273,10 @@ def test_device_telemetry(client, django_assert_num_queries):
     )
     assert response.status_code == 400
 
-    with django_assert_num_queries(4):
-        # 1 select devices
-        # 1 insert records
-        # 2 savepoints
+    n = BASE_NUM_QUERIES
+    n += 1  # select devices
+    n += 1  # insert records
+    with django_assert_num_queries(n):
         response = client.post(
             "/mds/v0.x/vehicles/telemetry/",
             data=data,

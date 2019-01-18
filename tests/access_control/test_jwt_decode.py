@@ -1,14 +1,12 @@
 import jwt
 import pytest
-from cryptography.hazmat.backends import default_backend
-from cryptography.hazmat.primitives import serialization
-from cryptography.hazmat.primitives.asymmetric import rsa
 
 from mds.access_control.auth_means import (
     SecretKeyJwtBaseAuthMean,
     PublicKeyJwtBaseAuthMean,
 )
 from mds.access_control.jwt_decode import jwt_multi_decode
+from tests.auth_helpers import gen_keys
 
 
 def test_jwt_multi_decode_fails_if_no_key_given():
@@ -22,22 +20,6 @@ def test_jwt_multi_decode_secret_key():
         [SecretKeyJwtBaseAuthMean("MY-SECRET")], encoded_jwt
     )
     assert decoded_jwt["jti"] == "123"
-
-
-def gen_keys() -> (str, str):
-    key = rsa.generate_private_key(
-        public_exponent=65537, key_size=512, backend=default_backend()
-    )
-    private_key_pem = key.private_bytes(
-        encoding=serialization.Encoding.PEM,
-        format=serialization.PrivateFormat.TraditionalOpenSSL,
-        encryption_algorithm=serialization.NoEncryption(),
-    )
-    public_key_pem = key.public_key().public_bytes(
-        encoding=serialization.Encoding.PEM,
-        format=serialization.PublicFormat.SubjectPublicKeyInfo,
-    )
-    return public_key_pem, private_key_pem
 
 
 def test_jwt_multi_decode_public_key():
