@@ -587,7 +587,7 @@ class Device(factory.DjangoModelFactory):
 
     dn_gps_point = factory.LazyFunction(get_random_point)
     dn_gps_timestamp = factory.LazyFunction(timezone.now)
-    dn_status = factory.Iterator([choice[0]] for choice in enums.DEVICE_STATUS_CHOICES)
+    dn_status = factory.Iterator(choice[0] for choice in enums.DEVICE_STATUS_CHOICES)
 
 
 class Area(factory.DjangoModelFactory):
