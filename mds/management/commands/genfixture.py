@@ -1,5 +1,4 @@
 from django.core.management.base import BaseCommand
-from mds import factories
 
 
 class Command(BaseCommand):
@@ -11,6 +10,10 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **options):
+        # this is a dev-only command
+        # mds.factories use factory-boy, a [dev] extra requirement
+        from mds import factories
+
         factories.Area(
             label="District 10", polygons=[factories.Polygon(), factories.Polygon()]
         )
