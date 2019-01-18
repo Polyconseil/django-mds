@@ -1,8 +1,8 @@
 Changelog
 =========
 
-0.3 (unreleased)
-----------------
+0.2.1 (2019-01-18)
+------------------
 
 - Bugfix: genfixture command now only imports factory when used as package is an extra.
 
