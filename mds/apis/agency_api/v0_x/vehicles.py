@@ -1,3 +1,6 @@
+import datetime
+import pytz
+
 from rest_framework import mixins
 from rest_framework import serializers
 from rest_framework import status
@@ -120,6 +123,9 @@ class DeviceEventSerializer(serializers.Serializer):
     def create(self, validated_data):
         device = self.context["device"]
         return models.EventRecord.objects.create(
+            timestamp=utils.millis_to_datetime(
+                validated_data["telemetry"]["timestamp"]
+            ),
             device_id=device.id,
             event_type=validated_data["event_type"],
             properties={
@@ -160,8 +166,9 @@ class DeviceTelemetryInputSerializer(serializers.Serializer):
 
         to_create = [
             models.EventRecord(
+                timestamp=utils.millis_to_datetime(telemetry["timestamp"]),
                 device_id=telemetry["device_id"],
-                event_type="telemetry",
+                event_type=enums.EVENT_TYPE.telemetry.name,
                 properties={"telemetry": telemetry, "trip_id": None},
             )
             for telemetry in validated_data["data"]

@@ -54,7 +54,7 @@ class DeviceQueryset(models.QuerySet):
                     id__in=Subquery(
                         EventRecord.objects.filter(device_id=OuterRef("device_id"))
                         .exclude(event_type="telemetry")
-                        .order_by("-saved_at")
+                        .order_by("-timestamp")
                         .values_list("id", flat=True)[:1]
                     )
                 ),
@@ -106,7 +106,8 @@ class Device(models.Model):
 
 
 class EventRecord(models.Model):
-    saved_at = models.DateTimeField(db_index=True, default=utils.timezone.now)
+    timestamp = models.DateTimeField(db_index=True)
+    saved_at = models.DateTimeField(default=utils.timezone.now)
     source = models.CharField(
         choices=enums.choices(enums.EVENT_SOURCE),
         default=enums.EVENT_SOURCE.push.name,
@@ -122,6 +123,9 @@ class EventRecord(models.Model):
     #   "telemetry": see serializers.PointProperties for the fields
     # }
     properties = pg_fields.JSONField(default=dict, encoder=encoders.JSONEncoder)
+
+    class Meta:
+        unique_together = [("device", "timestamp")]
 
 
 class Polygon(models.Model):

@@ -16,9 +16,9 @@ class DeviceAdmin(admin.ModelAdmin):
 
 @admin.register(models.EventRecord)
 class EventRecordAdmin(admin.ModelAdmin):
-    list_display = ["saved_at", "device", "event_type"]
+    list_display = ["timestamp", "device", "event_type"]
     list_filter = ["device__provider", "event_type"]
-    ordering = ["-saved_at"]
+    ordering = ["-timestamp"]
 
 
 @admin.register(models.Area)

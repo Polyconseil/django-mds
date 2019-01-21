@@ -637,7 +637,11 @@ class EventRecord(factory.DjangoModelFactory):
         model = models.EventRecord
 
     device = factory.SubFactory(Device)
-    saved_at = datetime.datetime(2018, 8, 1, tzinfo=pytz.utc)
+    timestamp = factory.Sequence(
+        lambda n: datetime.datetime(2018, 8, 1, tzinfo=pytz.utc)
+        + datetime.timedelta(seconds=n)
+    )
+    saved_at = datetime.datetime(2018, 8, 1, 1, tzinfo=pytz.utc)
     event_type = factory.Iterator(c.name for c in enums.EVENT_TYPE)
     properties = factory.Dict(
         {

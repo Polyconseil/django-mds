@@ -122,13 +122,10 @@ class PolygonSerializer(BaseGeometrySerializer):
 
 class UnixTimestampMilliseconds(serializers.IntegerField):
     def to_representation(self, value: datetime.datetime):
-        dt = value - datetime.datetime(1970, 1, 1, tzinfo=datetime.timezone.utc)
-        return int(dt.total_seconds() * 1000)
+        return datetime_to_millis(value)
 
     def to_internal_value(self, value):
-        value = super().to_representation(value)
-        dt = datetime.datetime(1970, 1, 1, tzinfo=datetime.timezone.utc)
-        return dt + datetime.timedelta(0, 0, 0, value)
+        return millis_to_datetime(value)
 
 
 # Schema #########################################################
@@ -209,3 +206,16 @@ class CustomSwaggerAutoSchema(drf_yasg.inspectors.SwaggerAutoSchema):
             return body_override
 
         return self.get_view_serializer("response")
+
+
+# date & time #########################################################
+
+
+def datetime_to_millis(value: datetime.datetime):
+    td = value - datetime.datetime(1970, 1, 1, tzinfo=datetime.timezone.utc)
+    return int(td.total_seconds() * 1000 + td.microseconds)
+
+
+def millis_to_datetime(value: int):
+    dt = datetime.datetime(1970, 1, 1, tzinfo=datetime.timezone.utc)
+    return dt + datetime.timedelta(microseconds=value)

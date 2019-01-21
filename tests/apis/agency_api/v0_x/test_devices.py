@@ -51,9 +51,24 @@ def test_device_list_basic(client, django_assert_num_queries):
     other_device = factories.Device(provider=provider2)
 
     # Add some telemetries on the first device
-    factories.EventRecord(device=device, saved_at=today, event_type="reserve")
-    factories.EventRecord.create_batch(
-        3, device=device, saved_at=today - datetime.timedelta(seconds=10)
+    factories.EventRecord(
+        device=device,
+        saved_at=today - datetime.timedelta(seconds=10),
+        timestamp=today - datetime.timedelta(seconds=10),
+    )
+    # Last event
+    factories.EventRecord(
+        device=device,
+        saved_at=today,
+        event_type=enums.EVENT_TYPE.reserve.name,
+        timestamp=today,
+    )
+    # timestamp predates second record, but it was saved afterwards
+    factories.EventRecord(
+        device=device,
+        saved_at=today + datetime.timedelta(seconds=10),
+        event_type=enums.EVENT_TYPE.maintenance_drop_off.name,
+        timestamp=today - datetime.timedelta(seconds=5),
     )
 
     expected_device = {
@@ -69,6 +84,7 @@ def test_device_list_basic(client, django_assert_num_queries):
         "prev_event": "reserve",
         "updated": 1_325_376_000_000,
     }
+
     expected_device2 = {
         "device_id": uuid2,
         "provider_id": str(provider.id),
