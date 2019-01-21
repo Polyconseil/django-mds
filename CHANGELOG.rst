@@ -4,7 +4,7 @@ Changelog
 0.2.3 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Use Python3 Enum for enums.
 
 
 0.2.2 (2019-01-21)
