@@ -1,7 +1,7 @@
 Changelog
 =========
 
-0.2.2 (unreleased)
+0.2.2 (2019-01-21)
 ------------------
 
 - Improve serializer for frontend.
