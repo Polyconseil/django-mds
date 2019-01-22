@@ -107,6 +107,7 @@ class Device(models.Model):
 
 class EventRecord(models.Model):
     timestamp = models.DateTimeField(db_index=True)
+    point = gis_models.PointField(null=True)
     saved_at = models.DateTimeField(default=utils.timezone.now)
     source = models.CharField(
         choices=enums.choices(enums.EVENT_SOURCE),

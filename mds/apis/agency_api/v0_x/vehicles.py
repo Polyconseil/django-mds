@@ -6,6 +6,8 @@ from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 
+from django.contrib.gis.geos import Point
+
 from mds import enums
 from mds import models
 from mds.access_control.permissions import require_scopes
@@ -95,6 +97,13 @@ class GPSSerializer(serializers.Serializer):
     accuracy = serializers.FloatField(help_text="in meters")
 
 
+def gps_to_gis_point(gps_data):
+    if gps_data:
+        # TODO(lip): maybe use altitude as z ?
+        return Point(gps_data["lng"], gps_data["lat"], srid=4326)
+    return None
+
+
 class DeviceTelemetrySerializer(serializers.Serializer):
     device_id = serializers.UUIDField()
     gps = GPSSerializer()
@@ -123,6 +132,7 @@ class DeviceEventSerializer(serializers.Serializer):
             timestamp=utils.millis_to_datetime(
                 validated_data["telemetry"]["timestamp"]
             ),
+            point=gps_to_gis_point(validated_data["telemetry"].get("gps", {})),
             device_id=device.id,
             event_type=validated_data["event_type"],
             properties={
@@ -164,6 +174,7 @@ class DeviceTelemetryInputSerializer(serializers.Serializer):
         to_create = [
             models.EventRecord(
                 timestamp=utils.millis_to_datetime(telemetry["timestamp"]),
+                point=gps_to_gis_point(telemetry.get("gps", {})),
                 device_id=telemetry["device_id"],
                 event_type=enums.EVENT_TYPE.telemetry.name,
                 properties={"telemetry": telemetry, "trip_id": None},
