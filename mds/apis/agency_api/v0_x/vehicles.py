@@ -1,6 +1,3 @@
-import datetime
-import pytz
-
 from rest_framework import mixins
 from rest_framework import serializers
 from rest_framework import status

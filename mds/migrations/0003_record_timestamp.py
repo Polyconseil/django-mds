@@ -6,24 +6,23 @@ import django.utils.timezone
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('mds', '0002_area_color'),
-    ]
+    dependencies = [("mds", "0002_area_color")]
 
     operations = [
         migrations.AddField(
-            model_name='eventrecord',
-            name='timestamp',
-            field=models.DateTimeField(db_index=True, default=django.utils.timezone.now),
+            model_name="eventrecord",
+            name="timestamp",
+            field=models.DateTimeField(
+                db_index=True, default=django.utils.timezone.now
+            ),
             preserve_default=False,
         ),
         migrations.AlterField(
-            model_name='eventrecord',
-            name='saved_at',
+            model_name="eventrecord",
+            name="saved_at",
             field=models.DateTimeField(default=django.utils.timezone.now),
         ),
         migrations.AlterUniqueTogether(
-            name='eventrecord',
-            unique_together={('device', 'timestamp')},
+            name="eventrecord", unique_together={("device", "timestamp")}
         ),
     ]

@@ -5,14 +5,14 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('mds', '0001_initial'),
-    ]
+    dependencies = [("mds", "0001_initial")]
 
     operations = [
         migrations.AddField(
-            model_name='area',
-            name='color',
-            field=models.CharField(default='#FFFFFF', help_text='hexa representation', max_length=8),
-        ),
+            model_name="area",
+            name="color",
+            field=models.CharField(
+                default="#FFFFFF", help_text="hexa representation", max_length=8
+            ),
+        )
     ]
