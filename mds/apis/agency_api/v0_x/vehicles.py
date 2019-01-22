@@ -107,7 +107,9 @@ def gps_to_gis_point(gps_data):
 class DeviceTelemetrySerializer(serializers.Serializer):
     device_id = serializers.UUIDField()
     gps = GPSSerializer()
-    timestamp = serializers.IntegerField(help_text="Unix timestamp in milliseconds")
+    timestamp = utils.UnixTimestampMilliseconds(
+        help_text="Unix timestamp in milliseconds"
+    )
 
 
 class DeviceEventSerializer(serializers.Serializer):
@@ -129,9 +131,7 @@ class DeviceEventSerializer(serializers.Serializer):
     def create(self, validated_data):
         device = self.context["device"]
         return models.EventRecord.objects.create(
-            timestamp=utils.millis_to_datetime(
-                validated_data["telemetry"]["timestamp"]
-            ),
+            timestamp=validated_data["telemetry"]["timestamp"],
             point=gps_to_gis_point(validated_data["telemetry"].get("gps", {})),
             device_id=device.id,
             event_type=validated_data["event_type"],
@@ -173,7 +173,7 @@ class DeviceTelemetryInputSerializer(serializers.Serializer):
 
         to_create = [
             models.EventRecord(
-                timestamp=utils.millis_to_datetime(telemetry["timestamp"]),
+                timestamp=telemetry["timestamp"],
                 point=gps_to_gis_point(telemetry.get("gps", {})),
                 device_id=telemetry["device_id"],
                 event_type=enums.EVENT_TYPE.telemetry.name,
