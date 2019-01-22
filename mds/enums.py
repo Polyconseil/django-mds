@@ -16,6 +16,7 @@ DEVICE_STATUS = enum.Enum(
         ("reserved", pgettext_lazy("Device status", "Reserved")),
         ("unavailable", pgettext_lazy("Device status", "Unavailable")),
         ("removed", pgettext_lazy("Device status", "Removed")),
+        ("unknown", pgettext_lazy("Device status", "Unknown")),
     ],
 )
 
@@ -58,6 +59,28 @@ EVENT_TYPE = enum.Enum(
         ("telemetry", pgettext_lazy("Event type", "Received telemetry")),
     ],
 )
+
+
+EVENT_TYPE_TO_DEVICE_STATUS = {
+    EVENT_TYPE.service_start.name: DEVICE_STATUS.available.name,
+    EVENT_TYPE.trip_end.name: DEVICE_STATUS.available.name,
+    EVENT_TYPE.rebalance_drop_off.name: DEVICE_STATUS.available.name,
+    EVENT_TYPE.maintenance_drop_off.name: DEVICE_STATUS.available.name,
+    EVENT_TYPE.cancel_reservation.name: DEVICE_STATUS.available.name,
+    EVENT_TYPE.reserve.name: DEVICE_STATUS.reserved.name,
+    EVENT_TYPE.trip_start.name: DEVICE_STATUS.reserved.name,
+    EVENT_TYPE.trip_enter.name: DEVICE_STATUS.reserved.name,
+    EVENT_TYPE.trip_leave.name: DEVICE_STATUS.reserved.name,
+    EVENT_TYPE.register.name: DEVICE_STATUS.unknown.name,
+    EVENT_TYPE.low_battery.name: DEVICE_STATUS.unavailable.name,
+    EVENT_TYPE.maintenance.name: DEVICE_STATUS.unavailable.name,
+    EVENT_TYPE.service_end.name: DEVICE_STATUS.unavailable.name,
+    EVENT_TYPE.rebalance_pick_up.name: DEVICE_STATUS.reserved.name,
+    EVENT_TYPE.maintenance_pick_up.name: DEVICE_STATUS.reserved.name,
+    EVENT_TYPE.deregister.name: DEVICE_STATUS.unknown.name,
+    EVENT_TYPE.telemetry.name: DEVICE_STATUS.unknown.name,
+}
+
 
 EVENT_SOURCE = enum.Enum(
     "Event source",
