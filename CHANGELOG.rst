@@ -1,7 +1,7 @@
 Changelog
 =========
 
-0.3.1 (unreleased)
+0.4.0 (2019-01-23)
 ------------------
 
 - Add oauth2 endpoints.
