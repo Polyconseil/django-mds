@@ -1,3 +1,5 @@
+import json
+
 from rest_framework import serializers
 from rest_framework import viewsets
 
@@ -12,11 +14,26 @@ class PolygonRequestSerializer(serializers.ModelSerializer):
     """
 
     label = serializers.CharField(help_text="Name of the polygon")
-    geom = utils.GeometryField(help_text="GeoJSON Polygon")
+    geom = utils.PolygonSerializer(help_text="GeoJSON Polygon")
 
     class Meta:
         fields = ("geom", "label")
         model = models.Polygon
+
+    def create(self, validated_data):
+        instance = self.Meta.model(
+            label=validated_data["label"], geom=json.dumps(validated_data["geom"])
+        )
+        instance.save()
+        return instance
+
+    def update(self, instance, validated_data):
+        if validated_data.get("label"):
+            instance.label = validated_data["label"]
+        if validated_data.get("geom"):
+            instance.geom = json.dumps(validated_data["geom"])
+        instance.save()
+        return instance
 
 
 class PolygonResponseSerializer(serializers.Serializer):
@@ -29,7 +46,7 @@ class PolygonResponseSerializer(serializers.Serializer):
     deletion_date = serializers.DateTimeField(
         required=False, help_text="Polygon deletion date"
     )
-    geom = utils.GeometryField(help_text="GeoJSON Polygon")
+    geom = utils.PolygonSerializer(help_text="GeoJSON Polygon")
     areas = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
 
     class Meta:

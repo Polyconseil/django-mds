@@ -2,7 +2,6 @@
 import datetime
 import json
 
-from django.contrib.gis.geos.geometry import GEOSGeometry
 import drf_yasg.inspectors
 import drf_yasg.inspectors.base
 import drf_yasg.utils
@@ -78,20 +77,39 @@ class EmptyResponseSerializer(serializers.Serializer):
     pass
 
 
-class GeometryField(serializers.Field):
-    type_name = "GeometryField"
-
+class BaseGeometrySerializer(serializers.Serializer):
     def to_representation(self, value):
         if isinstance(value, dict) or value is None:
             return value
         return json.loads(value.geojson)
 
     def to_internal_value(self, value):
-        if isinstance(value, GEOSGeometry) or value is None:
-            return value
-        if isinstance(value, dict):
-            value = json.dumps(value)
-        return GEOSGeometry(value)
+        if not isinstance(value, dict):
+            value = json.loads(value)
+        return value
+
+
+class PointSerializer(BaseGeometrySerializer):
+    type = serializers.ChoiceField(["Point"])
+    coordinates = serializers.ListField(
+        child=serializers.FloatField(), min_length=2, max_length=3
+    )  # could include altitude
+
+
+class MultiPointSerializer(BaseGeometrySerializer):
+    type = serializers.ChoiceField(["MultiPoint"])
+    coordinates = serializers.ListField(
+        child=serializers.ListField(child=serializers.FloatField())
+    )
+
+
+class PolygonSerializer(BaseGeometrySerializer):
+    type = serializers.ChoiceField(["Polygon"])
+    coordinates = serializers.ListField(
+        child=serializers.ListField(
+            child=serializers.ListField(child=serializers.FloatField())
+        )
+    )
 
 
 class UnixTimestampMilliseconds(serializers.IntegerField):

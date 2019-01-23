@@ -4,7 +4,7 @@ Changelog
 0.4.1 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Replace GeometryField by self documenting serializer.
 
 
 0.4.0 (2019-01-23)

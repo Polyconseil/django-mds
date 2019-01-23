@@ -58,7 +58,7 @@ class DeviceSerializer(serializers.ModelSerializer):
     last_telemetry_date = serializers.DateTimeField(
         source="dn_gps_timestamp", help_text="Latest GPS timestamp", allow_null=True
     )
-    position = utils.GeometryField(
+    position = utils.PointSerializer(
         source="dn_gps_point", help_text="Latest GPS position"
     )
     status = serializers.ChoiceField(
