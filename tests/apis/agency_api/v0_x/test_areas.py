@@ -10,7 +10,8 @@ from tests.auth_helper import auth_header
 def test_areas_metadata(client, django_assert_num_queries):
     provider = factories.Provider(name="Test provider")
     response = client.options(
-        "/mds/v0.x/service_areas/", **auth_header(SCOPE_VEHICLE, provider_id=provider.id)
+        "/mds/v0.x/service_areas/",
+        **auth_header(SCOPE_VEHICLE, provider_id=provider.id),
     )
     assert response.status_code == 200
     assert response._headers["allow"][1] == "GET, HEAD, OPTIONS"
@@ -73,7 +74,8 @@ def test_areas_list(client, django_assert_num_queries):
         # 1 query on polygons
         # 2 savepoints
         response = client.get(
-            "/mds/v0.x/service_areas/", **auth_header(SCOPE_VEHICLE, provider_id=provider.id)
+            "/mds/v0.x/service_areas/",
+            **auth_header(SCOPE_VEHICLE, provider_id=provider.id),
         )
     assert response.status_code == 200
     assert len(response.data) == 5
