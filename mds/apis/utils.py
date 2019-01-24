@@ -5,8 +5,16 @@ import json
 import drf_yasg.inspectors
 import drf_yasg.inspectors.base
 import drf_yasg.utils
+from rest_framework import pagination
 from rest_framework import serializers
 from rest_framework.response import Response
+
+
+# Pagination ###################################################
+
+
+class LimitOffsetPagination(pagination.LimitOffsetPagination):
+    default_limit = 100
 
 
 # Viewsets #####################################################

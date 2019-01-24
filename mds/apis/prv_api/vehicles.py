@@ -1,5 +1,4 @@
 from django_filters import rest_framework as filters
-from rest_framework import pagination
 from rest_framework import serializers
 from rest_framework import viewsets
 
@@ -88,7 +87,7 @@ class DeviceViewSet(viewsets.ReadOnlyModelViewSet):
     permission_classes = (require_scopes(SCOPE_ADMIN),)
     lookup_field = "id"
     serializer_class = DeviceSerializer
-    pagination_class = pagination.LimitOffsetPagination
+    pagination_class = utils.LimitOffsetPagination
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = DeviceFilter
     queryset = models.Device.objects.select_related("provider").all()

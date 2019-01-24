@@ -84,10 +84,11 @@ def test_device_list_basic(client, django_assert_num_queries):
             "/prv/vehicles/", **auth_header(SCOPE_ADMIN, provider_id=provider.id)
         )
     assert response.status_code == 200
-    assert len(response.data) == 2
+    data = response.data["results"]
+    assert len(data) == 2
 
-    assert expected_device in response.data
-    assert expected_device2 in response.data
+    assert expected_device in data
+    assert expected_device2 in data
 
     # test auth
     response = client.get("/prv/vehicles/%s/" % device.id)
