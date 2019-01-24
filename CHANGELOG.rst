@@ -4,7 +4,7 @@ Changelog
 0.4.2 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Fix /prv/vehicles/ pagination
 
 
 0.4.1 (2019-01-23)
