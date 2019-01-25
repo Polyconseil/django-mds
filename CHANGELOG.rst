@@ -1,7 +1,7 @@
 Changelog
 =========
 
-0.4.4 (unreleased)
+0.4.4 (2019-01-25)
 ------------------
 
 - Add ``device_category`` to the ``Provider`` model
