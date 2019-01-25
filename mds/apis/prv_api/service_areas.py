@@ -15,9 +15,10 @@ class PolygonRequestSerializer(serializers.ModelSerializer):
 
     label = serializers.CharField(help_text="Name of the polygon")
     geom = utils.PolygonSerializer(help_text="GeoJSON Polygon")
+    areas = serializers.PrimaryKeyRelatedField(many=True, queryset=models.Area.objects)
 
     class Meta:
-        fields = ("geom", "label")
+        fields = ("geom", "label", "areas")
         model = models.Polygon
 
     def create(self, validated_data):
@@ -32,6 +33,9 @@ class PolygonRequestSerializer(serializers.ModelSerializer):
             instance.label = validated_data["label"]
         if validated_data.get("geom"):
             instance.geom = json.dumps(validated_data["geom"])
+        if validated_data.get("areas"):
+            areas = validated_data.pop("areas", [])
+            instance.areas.set(areas)
         instance.save()
         return instance
 

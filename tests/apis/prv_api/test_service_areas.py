@@ -171,6 +171,7 @@ def test_polygon_creation(client):
             "label": "test",
             "creation_date": "2012-01-01T00:00:00Z",
             "geom": MOCK_GEOJSON,
+            "areas": [],
         },
         content_type="application/json",
         **auth_header(SCOPE_ADMIN),
@@ -251,6 +252,7 @@ def test_polygon_update(client):
             "label": "test 2",
             "creation_date": "2012-01-01T00:00:00Z",
             "geom": MOCK_GEOJSON,
+            "areas": [],
         },
         content_type="application/json",
         **auth_header(SCOPE_ADMIN),
@@ -258,6 +260,27 @@ def test_polygon_update(client):
     assert response.status_code == 200
     poly.refresh_from_db()
     assert poly.label == "test 2"
+
+
+@pytest.mark.django_db
+def test_polygon_areas_update(client):
+    area_id = str(uuid.uuid4())
+    area = Area(id=area_id)
+    polygon_id = str(uuid.uuid4())
+    poly = Polygon(id=polygon_id, label="test", geom=str(MOCK_GEOJSON))
+
+    assert poly.areas.count() == 0
+
+    response = client.patch(
+        "{}{}/".format(POLY_BASE_URL, polygon_id),
+        data={"areas": [area_id]},
+        content_type="application/json",
+        **auth_header(SCOPE_ADMIN),
+    )
+    assert response.status_code == 200
+    poly.refresh_from_db()
+    assert poly.areas.count() == 1
+    assert str(poly.areas.first().id) == str(area.id)
 
 
 @pytest.mark.django_db
