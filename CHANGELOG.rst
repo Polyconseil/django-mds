@@ -4,7 +4,8 @@ Changelog
 0.4.3 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Improve /service_areas endpoint
+- Adjust EventRecord model
 
 
 0.4.2 (2019-01-24)
