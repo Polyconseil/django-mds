@@ -43,6 +43,7 @@ class Provider(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4)
     name = UnboundedCharField(default=str)
     logo_b64 = UnboundedCharField(null=True, blank=True, default=None)
+    device_category = UnboundedCharField(choices=enums.choices(enums.DEVICE_CATEGORY))
 
 
 class DeviceQueryset(models.QuerySet):
