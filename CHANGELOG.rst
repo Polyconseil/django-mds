@@ -1,7 +1,7 @@
 Changelog
 =========
 
-0.4.3 (unreleased)
+0.4.3 (2019-01-25)
 ------------------
 
 - Improve /service_areas endpoint
