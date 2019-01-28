@@ -2,8 +2,11 @@
 import datetime
 import json
 
-import drf_yasg.inspectors
+from django_filters import rest_framework as filters
+from drf_yasg.inspectors import SwaggerAutoSchema
+from drf_yasg.inspectors.base import FilterInspector, NotHandled
 import drf_yasg.inspectors.base
+import drf_yasg.openapi
 import drf_yasg.utils
 from rest_framework import pagination
 from rest_framework import serializers
@@ -160,7 +163,7 @@ def _call_view_method(
     return default
 
 
-class CustomSwaggerAutoSchema(drf_yasg.inspectors.SwaggerAutoSchema):
+class CustomSwaggerAutoSchema(SwaggerAutoSchema):
     """Customer Schema generator that understands Request and Response serializers.
 
     By default DRF has no concept of Request serializer VS Response serializer.
@@ -208,3 +211,52 @@ class CustomSwaggerAutoSchema(drf_yasg.inspectors.SwaggerAutoSchema):
             return body_override
 
         return self.get_view_serializer("response")
+
+
+class CustomFilterInspector(FilterInspector):
+    def _convert_field_to_parameter(self, field_name, field):
+        extra_param = {}
+        if isinstance(field, filters.MultipleChoiceFilter):
+            type_ = drf_yasg.openapi.TYPE_ARRAY
+            extra_param["items"] = drf_yasg.openapi.Items(
+                type=drf_yasg.openapi.TYPE_STRING,
+                enum=[c for c, _ in field.extra["choices"]],
+            )
+            extra_param["collection_format"] = "multi"
+        else:
+            if isinstance(field, filters.ChoiceFilter):
+                type_ = subtype = drf_yasg.openapi.TYPE_STRING
+                extra_param["enum"] = [c for c, _ in field.extra["choices"]]
+            elif isinstance(field, filters.NumberFilter):
+                type_ = subtype = drf_yasg.openapi.TYPE_NUMBER
+            else:
+                type_ = subtype = drf_yasg.openapi.TYPE_STRING
+            if field.lookup_expr == "in":
+                type_ = drf_yasg.openapi.TYPE_ARRAY
+                extra_param["items"] = drf_yasg.openapi.Items(
+                    type=subtype, enum=extra_param.pop("enum", None)
+                )
+        return drf_yasg.openapi.Parameter(
+            name=field_name,
+            in_=drf_yasg.openapi.IN_QUERY,
+            required=field.extra["required"],
+            description=field.extra.get("help_text", ""),
+            type=type_,
+            **extra_param
+        )
+
+    def get_filter_parameters(self, filter_backend):
+        if not hasattr(filter_backend, "get_filterset_class"):
+            return NotHandled
+
+        queryset = self.view.get_queryset()
+        filterset_class = filter_backend.get_filterset_class(self.view, queryset)
+
+        return (
+            []
+            if not filterset_class
+            else [
+                self._convert_field_to_parameter(field_name, field)
+                for field_name, field in filterset_class.base_filters.items()
+            ]
+        )

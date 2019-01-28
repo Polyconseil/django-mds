@@ -1,23 +1,25 @@
 from django_filters import rest_framework as filters
-from rest_framework import serializers
-from rest_framework import viewsets
+from rest_framework import serializers, viewsets
 
-from mds import enums
-from mds import models
+from mds import enums, models
 from mds.access_control.permissions import require_scopes
 from mds.access_control.scopes import SCOPE_ADMIN
 from mds.apis import utils
 
 
+class UUIDInFilter(filters.BaseInFilter, filters.UUIDFilter):
+    pass
+
+
+class ChoicesInFilter(filters.BaseInFilter, filters.ChoiceFilter):
+    pass
+
+
 class DeviceFilter(filters.FilterSet):
     id = filters.CharFilter(lookup_expr="icontains")
-    category = filters.MultipleChoiceFilter(
-        choices=enums.choices(enums.DEVICE_CATEGORY)
-    )
-    provider = filters.UUIDFilter()
-    status = filters.MultipleChoiceFilter(
-        "dn_status", choices=enums.choices(enums.DEVICE_STATUS)
-    )
+    category = ChoicesInFilter(choices=enums.choices(enums.DEVICE_CATEGORY))
+    provider = UUIDInFilter()
+    status = ChoicesInFilter("dn_status", choices=enums.choices(enums.DEVICE_STATUS))
     registrationDateFrom = filters.IsoDateTimeFilter(
         "registration_date", lookup_expr="gte"
     )
@@ -89,5 +91,6 @@ class DeviceViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = DeviceSerializer
     pagination_class = utils.LimitOffsetPagination
     filter_backends = (filters.DjangoFilterBackend,)
+
     filterset_class = DeviceFilter
     queryset = models.Device.objects.select_related("provider").all()

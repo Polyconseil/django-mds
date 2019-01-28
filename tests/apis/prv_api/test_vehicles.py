@@ -1,8 +1,10 @@
 import datetime
+import uuid
 
 import pytest
 
 from mds import factories
+from mds import models
 from mds.access_control.scopes import SCOPE_ADMIN
 from tests.auth_helpers import auth_header, BASE_NUM_QUERIES
 
@@ -103,3 +105,69 @@ def test_device_list_basic(client, django_assert_num_queries):
         )
     assert response.status_code == 200
     assert response.data == expected_device
+
+
+@pytest.mark.django_db
+def test_device_list_filters(client, django_assert_num_queries):
+    factories.Device.create_batch(3, category="car", dn_status="available")
+    factories.Device.create_batch(3, category="scooter", dn_status="unavailable")
+    factories.Device.create_batch(3, category="bike", dn_status="unavailable")
+
+    response = client.get("/prv/vehicles/?category=car", **auth_header(SCOPE_ADMIN))
+    assert response.status_code == 200
+    assert len(response.data["results"]) == 3
+
+    response = client.get(
+        "/prv/vehicles/?category=car,scooter", **auth_header(SCOPE_ADMIN)
+    )
+    assert response.status_code == 200
+    assert len(response.data["results"]) == 6
+
+    response = client.get("/prv/vehicles/?status=available", **auth_header(SCOPE_ADMIN))
+    assert response.status_code == 200
+    assert len(response.data["results"]) == 3
+
+    response = client.get(
+        "/prv/vehicles/?status=available,unavailable", **auth_header(SCOPE_ADMIN)
+    )
+    assert response.status_code == 200
+    assert len(response.data["results"]) == 9
+
+    response = client.get(
+        "/prv/vehicles/?status=available,unavailable&category=car",
+        **auth_header(SCOPE_ADMIN),
+    )
+    assert response.status_code == 200
+    assert len(response.data["results"]) == 3
+
+    provider = str(models.Device.objects.filter(category="car").first().provider_id)
+    response = client.get(
+        "/prv/vehicles/?provider=%s,%s" % (provider, str(uuid.uuid4())),
+        **auth_header(SCOPE_ADMIN),
+    )
+    assert response.status_code == 200
+    assert (
+        len(response.data["results"])
+        == models.Device.objects.filter(provider_id=provider).count()
+    )
+
+    response = client.get(
+        "/prv/vehicles/?category=car&status=available&provider=%s,%s"
+        % (provider, str(uuid.uuid4())),
+        **auth_header(SCOPE_ADMIN),
+    )
+    assert response.status_code == 200
+    assert (
+        len(response.data["results"])
+        == models.Device.objects.filter(
+            category="car", dn_status="available", provider_id=provider
+        ).count()
+    )
+
+    response = client.get(
+        "/prv/vehicles/?category=car&status=unavailable&provider=%s,%s"
+        % (provider, str(uuid.uuid4())),
+        **auth_header(SCOPE_ADMIN),
+    )
+    assert response.status_code == 200
+    assert len(response.data["results"]) == 0
