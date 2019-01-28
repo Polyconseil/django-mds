@@ -1,7 +1,8 @@
 import datetime
-import factory
 import random
 import zlib
+
+import factory
 
 from django.contrib.gis import geos
 from django.contrib.gis.geos.geometry import GEOSGeometry
@@ -571,6 +572,7 @@ class Provider(factory.DjangoModelFactory):
     name = factory.Iterator(
         ["Lime", "BlueLA", "Metro Bike", "LongProviderNameCompanyLtdSarlGmoLgbtq"]
     )
+    base_api_url = "http://provider"
 
 
 class Device(factory.DjangoModelFactory):
@@ -641,6 +643,12 @@ class EventRecord(factory.DjangoModelFactory):
         lambda n: datetime.datetime(2018, 8, 1, tzinfo=pytz.utc)
         + datetime.timedelta(seconds=n)
     )
+    point = factory.LazyAttribute(
+        lambda f: geos.Point(
+            f.properties["telemetry"]["gps"]["lng"],
+            f.properties["telemetry"]["gps"]["lat"],
+        )
+    )
     saved_at = datetime.datetime(2018, 8, 1, 1, tzinfo=pytz.utc)
     event_type = factory.Iterator(c.name for c in enums.EVENT_TYPE)
     properties = factory.Dict(
@@ -663,3 +671,43 @@ class EventRecord(factory.DjangoModelFactory):
             ),
         }
     )
+
+
+class ProviderStatusChange(factory.DictFactory):
+    """Excepted status change from the provider API."""
+
+    provider_id = factory.Faker("uuid4")
+    provider_name = factory.Iterator(["Lime", "BlueLA", "Metro Bike"])
+    device_id = factory.Faker("uuid4")
+    vehicle_id = factory.Sequence(str)
+    vehicle_type = factory.Iterator(c.name for c in enums.DEVICE_CATEGORY)
+    propulsion_type = factory.Iterator([c.name] for c in enums.DEVICE_PROPULSION)
+    event_type = factory.Iterator(c.name for c in enums.DEVICE_STATUS)
+    event_type_reason = factory.Iterator(c.name for c in enums.EVENT_TYPE)
+    event_time = 1_529_968_782_421
+    event_location = factory.Dict(
+        {
+            "type": "Feature",
+            "properties": factory.Dict({"timestamp": 1_529_968_782_421}),
+            "geometry": factory.Dict(
+                {
+                    "type": "Point",
+                    "coordinates": factory.LazyFunction(
+                        lambda: list(get_random_point().coords)
+                    ),
+                }
+            ),
+        }
+    )
+    battery_pct = 50.0
+    associated_trips = factory.List([])
+
+
+class ProviderStatusChangesBody(factory.DictFactory):
+    """Expected response from the provider API."""
+
+    version = "x.y.z"
+    data = factory.Dict(
+        {"status_changes": factory.List([factory.SubFactory(ProviderStatusChange)])}
+    )
+    links = factory.Dict({"next": None})

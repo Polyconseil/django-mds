@@ -44,6 +44,12 @@ class Provider(models.Model):
     name = UnboundedCharField(default=str)
     logo_b64 = UnboundedCharField(null=True, blank=True, default=None)
     device_category = UnboundedCharField(choices=enums.choices(enums.DEVICE_CATEGORY))
+    base_api_url = UnboundedCharField(default="", verbose_name="Base API URL")
+    # Only mandatory key is "type": "none", "token" or "oauth2"
+    # other keys are specific to each type, e.g. client_id and secret for oauth2
+    authentication = pg_fields.HStoreField(
+        default=dict, verbose_name="API Authentication"
+    )
 
 
 class DeviceQueryset(models.QuerySet):
