@@ -1,9 +1,11 @@
 from collections import namedtuple
+import datetime
 import uuid
 
 from django.utils import timezone
 import jwt
 
+from . import models
 from . import settings
 
 
@@ -15,8 +17,18 @@ def generate_jwt_with_payload(application, token_duration, user=None):
     return _generate_jwt(payload), payload
 
 
-def generate_jwt(application, token_duration):
-    return generate_jwt_with_payload(application, token_duration)[0]
+def generate_jwt(application, token_duration, save=False):
+    token, payload = generate_jwt_with_payload(application, token_duration)
+    if save:
+        models.AccessToken.objects.create(
+            token=token,
+            jti=payload["jti"],
+            application=application,
+            expires=datetime.datetime.fromtimestamp(
+                payload["exp"], tz=timezone.now().tzinfo
+            ),
+        )
+    return token
 
 
 def _generate_jwt(payload):

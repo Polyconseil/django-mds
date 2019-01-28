@@ -122,10 +122,11 @@ def test_token_views_nominal_path(mocked, client):
     )
     assert response.status_code == 200
     data = response.data
-    assert jwt.decode(
+    jwt_token = jwt.decode(
         data.pop("access_token"), auth_mean.key, algorithms=auth_mean.algorithm
     )
     assert data == {"expires_in": 3600, "token_type": "bearer"}
+    assert models.AccessToken.objects.get(jti=jwt_token["jti"])
 
     # Get a new token with the refresh token for later
     data = {"grant_type": "refresh_token", "refresh_token": refresh_token}

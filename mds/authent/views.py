@@ -61,7 +61,7 @@ class LongLivedTokenView(GenericAPIView):
             seconds=serializer.validated_data["token_duration"]
         )
 
-        token = generators.generate_jwt(application, token_duration)
+        token = generators.generate_jwt(application, token_duration, save=True)
         serializer = self.ResponseSerializer(
             instance={
                 "access_token": token,
