@@ -4,6 +4,7 @@ Changelog
 0.4.5 (unreleased)
 ------------------
 
+- prv_api: Fix filters on vehicle list
 - Management command to poll provider status changes.
 
 
