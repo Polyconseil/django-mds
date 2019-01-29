@@ -1,7 +1,7 @@
 Changelog
 =========
 
-0.4.5 (unreleased)
+0.4.5 (2019-01-29)
 ------------------
 
 - prv_api: Fix filters on vehicle list
