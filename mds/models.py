@@ -39,16 +39,41 @@ class ProviderModel(models.Model):
         abstract = True
 
 
+def api_authentication_default():
+    """Default value for the API authentication field of a provider.
+
+    Other keys are specific to each type:
+    - token: "header" and "token"
+    - oauth2: "client_id" and "client_secret"
+    """
+    return {"type": "none"}
+
+
+def api_configuration_default():
+    """Default value for the API configuration field of a provider.
+
+    Some provider implementations can be picky, configure these special cases here.
+    """
+    return {
+        "trailing_slash": False,  # Some providers endpoint won't reply without it
+        "bluela_dash": False,  # FIXME Remove when "/statues_changes/" is exposed
+    }
+
+
 class Provider(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4)
     name = UnboundedCharField(default=str)
     logo_b64 = UnboundedCharField(null=True, blank=True, default=None)
     device_category = UnboundedCharField(choices=enums.choices(enums.DEVICE_CATEGORY))
     base_api_url = UnboundedCharField(default="", verbose_name="Base API URL")
-    # Only mandatory key is "type": "none", "token" or "oauth2"
-    # other keys are specific to each type, e.g. client_id and secret for oauth2
-    authentication = pg_fields.HStoreField(
-        default=dict, verbose_name="API Authentication"
+    oauth2_url = UnboundedCharField(
+        default="", verbose_name="OAuth2 URL (if different)"
+    )
+    api_authentication = pg_fields.JSONField(
+        default=api_authentication_default, verbose_name="API Authentication"
+    )
+    api_configuration = pg_fields.JSONField(
+        default=api_configuration_default, verbose_name="API Configuration"
     )
 
 

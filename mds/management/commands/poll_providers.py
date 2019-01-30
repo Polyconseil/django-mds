@@ -46,8 +46,14 @@ class Command(management.BaseCommand):
             self.stdout.write("Success!")
 
     def poll_status_changes(self, provider):
-        # FIXME it was reverted to "status_changes" as the doc writes it
-        next_url = urllib.parse.urljoin(provider.base_api_url, "status-changes/")
+        endpoint_path = "status_changes"
+        # FIXME Remove when dropped from BlueLA
+        if provider.api_configuration.get("bluela_dash"):
+            endpoint_path = "status-changes"
+        next_url = urllib.parse.urljoin(provider.base_api_url, endpoint_path)
+        if provider.api_configuration.get("trailing_slash"):
+            next_url += "/"
+
         # Start where we left
         # (we wouldn't know if the provider recorded late telemetries after the last sync)
         max_timestamp = models.EventRecord.objects.filter(
@@ -118,7 +124,7 @@ class Command(management.BaseCommand):
                 next_url = None
 
     def get_data(self, provider, url):
-        authentication_type = provider.authentication.get("type")
+        authentication_type = provider.api_authentication.get("type")
         if authentication_type in (None, "", "none"):
             client = requests
         elif authentication_type == "oauth2":
@@ -133,21 +139,26 @@ class Command(management.BaseCommand):
 
 def authenticate_client_credentials(provider):
     """Authenticate using the Backend Application Flow from OAuth2."""
-    client_id = provider.authentication["client_id"]
-    client_secret = provider.authentication["client_secret"]
+    client_id = provider.api_authentication["client_id"]
 
     # Skip the whole token refreshing with just BlueLA to consider
-    token = _fetch_token(provider, client_id, client_secret)
+    token = _fetch_token(provider)
     client = OAuth2Session(client_id, token=token)
     return client
 
 
-def _fetch_token(provider, client_id, client_secret):
+def _fetch_token(provider):
     """Fetch an access token from the provider"""
+    client_id = provider.api_authentication["client_id"]
+    client_secret = provider.api_authentication["client_secret"]
     client = BackendApplicationClient(client_id=client_id)
-    oauth = OAuth2Session(client=client)
-    refresh_url = urllib.parse.urljoin(provider.base_api_url, "/oauth2/token/")
-    token = oauth.fetch_token(
-        token_url=refresh_url, client_id=client_id, client_secret=client_secret
+    session = OAuth2Session(client=client)
+    token_url = provider.oauth2_url
+    if not token_url:
+        token_url = urllib.parse.urljoin(provider.base_api_url, "/oauth2/token")
+        if provider.api_configuration.get("trailing_slash"):
+            token_url += "/"
+    token = session.fetch_token(
+        token_url=token_url, client_id=client_id, client_secret=client_secret
     )
     return token

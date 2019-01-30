@@ -27,7 +27,7 @@ def test_poll_provider_batch(client):
     stdout, stderr = io.StringIO(), io.StringIO()
 
     with requests_mock.Mocker() as m:
-        url = urllib.parse.urljoin(provider.base_api_url, "/status-changes/")
+        url = urllib.parse.urljoin(provider.base_api_url, "/status_changes")
         next_page = "%s?page=2" % url
         m.get(url, json=make_response(provider, device1, expected_event1, next_page))
         m.get(
@@ -71,11 +71,11 @@ def test_several_providers(client, django_assert_num_queries):
     with django_assert_num_queries(n):
         with requests_mock.Mocker() as m:
             m.get(
-                urllib.parse.urljoin(provider1.base_api_url, "/status-changes/"),
+                urllib.parse.urljoin(provider1.base_api_url, "/status_changes"),
                 json=make_response(provider1, device1, expected_event1),
             )
             m.get(
-                urllib.parse.urljoin(provider2.base_api_url, "/status-changes/"),
+                urllib.parse.urljoin(provider2.base_api_url, "/status_changes"),
                 json=make_response(provider2, device2, expected_event2),
             )
             call_command("poll_providers", stdout=stdout, stderr=stderr)
@@ -100,13 +100,13 @@ def test_follow_up(client):
     with requests_mock.Mocker() as m:
         # Mocking must fail if the command does not make the expected query
         m.get(
-            urllib.parse.urljoin(provider.base_api_url, "/status-changes/"),
+            urllib.parse.urljoin(provider.base_api_url, "/status_changes"),
             status_code=400,
         )
         m.get(
             urllib.parse.urljoin(
                 provider.base_api_url,
-                "/status-changes/?%s"
+                "/status_changes?%s"
                 % urllib.parse.urlencode(
                     {"start_time": int(event.timestamp.timestamp() * 1000)}
                 ),
