@@ -1,5 +1,4 @@
 from uuid import uuid4
-from mds.authent import models
 
 from django.utils.translation import ugettext as _
 
@@ -62,21 +61,6 @@ class AppCreationView(GenericAPIView):
         serializer = self.CreationRequestSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         validated_data = serializer.validated_data
-        application = models.Application.objects.filter(
-            owner=validated_data["app_owner"]
-        ).last()
-
-        if (
-            application and application.scopes
-        ):  # Application is revoked if there are no scopes
-            serializer = self.CreationResponseSerializer(
-                instance={
-                    "client_id": application.client_id,
-                    "client_secret": application.client_secret,
-                }
-            )
-
-            return Response(serializer.data, status=200)
 
         application = public_api.create_application(
             name=validated_data["app_name"],
@@ -86,8 +70,8 @@ class AppCreationView(GenericAPIView):
 
         serializer = self.CreationResponseSerializer(
             instance={
-                "client_id": application.client_id,
-                "client_secret": application.client_secret,
+                "client_id": application["client_id"],
+                "client_secret": application["client_secret"],
             }
         )
 
@@ -100,22 +84,19 @@ class AppCreationView(GenericAPIView):
         serializer = self.RevocationRequestSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         validated_data = serializer.validated_data
-        application = models.Application.objects.filter(
-            owner=validated_data["app_owner"]
-        ).last()
 
-        if not application:
+        try:
+            if validated_data["delete"]:
+                public_api.delete_application(validated_data["app_owner"])
+            else:
+                public_api.revoke_application(validated_data["app_owner"])
+        except public_api.NoApplicationForOwner:
             raise exceptions.ValidationError(
                 {
                     "app_owner": _("No application known for owner %s")
                     % validated_data["app_owner"]
                 }
             )
-
-        if validated_data["delete"]:
-            public_api.delete_application(validated_data["app_owner"])
-        else:
-            public_api.revoke_application(validated_data["app_owner"])
 
         return Response(self.RevokationResponseSerializer().data, status=200)
 
@@ -144,7 +125,7 @@ class LongLivedTokenView(GenericAPIView):
         access_token = serializers.CharField()
 
     class RevokeResponseSerializer(utils.EmptyResponseSerializer):
-        pass
+        revocation_date = serializers.DateTimeField()
 
     class ResponseSerializer(serializers.Serializer):
         access_token = serializers.CharField()
@@ -158,21 +139,18 @@ class LongLivedTokenView(GenericAPIView):
         serializer = self.RequestSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         validated_data = serializer.validated_data
-        application = models.Application.objects.filter(
-            owner=validated_data["app_owner"]
-        ).last()
 
-        if not application:
+        try:
+            token = public_api.get_long_lived_token(
+                validated_data["app_owner"], validated_data["token_duration"]
+            )
+        except public_api.NoApplicationForOwner:
             raise exceptions.ValidationError(
                 {
                     "app_owner": _("No application known for owner %s")
                     % validated_data["app_owner"]
                 }
             )
-
-        token = public_api.get_long_lived_token(
-            application, serializer.validated_data["token_duration"]
-        )
         serializer = self.ResponseSerializer(
             instance={
                 "access_token": token,
@@ -189,11 +167,12 @@ class LongLivedTokenView(GenericAPIView):
         serializer = self.RevokeRequestSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         validated_data = serializer.validated_data
-        token = models.AccessToken.objects.filter(
-            token=validated_data["access_token"]
-        ).last()
 
-        if not token:
+        try:
+            revocation_date = public_api.revoke_long_lived_token(
+                serializer.validated_data["access_token"]
+            )
+        except public_api.UnknownToken:
             raise exceptions.ValidationError(
                 {
                     "token": _("No access token known for %s")
@@ -201,15 +180,7 @@ class LongLivedTokenView(GenericAPIView):
                 }
             )
 
-        if token.revoked_after:
-            raise exceptions.ValidationError(
-                {
-                    "token": _("Token %s already revoked")
-                    % validated_data["access_token"]
-                }
-            )
-
-            public_api.revoke_long_lived_token(
-                serializer.validated_data["access_token"]
-            )
-        return Response(self.RevokeResponseSerializer().data, status=200)
+        return Response(
+            self.RevokeResponseSerializer({"revocation_date": revocation_date}).data,
+            status=200,
+        )

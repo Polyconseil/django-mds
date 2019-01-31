@@ -9,19 +9,37 @@ from django.utils import timezone
 from mds.authent import models, generators
 
 
-def get_long_lived_token(application, duration):
-    token_duration = datetime.timedelta(seconds=duration)
+class MDSAuthentException(Exception):
+    pass
 
+
+class NoApplicationForOwner(MDSAuthentException):
+    pass
+
+
+class UnknownToken(MDSAuthentException):
+    pass
+
+
+def get_long_lived_token(owner, duration):
+    application = models.Application.objects.filter(owner=owner).last()
+    if not application:
+        raise NoApplicationForOwner()
+
+    token_duration = datetime.timedelta(seconds=duration)
     token = generators.generate_jwt(application, token_duration, save=True)
     return token
 
 
 def revoke_long_lived_token(token):
-    stored_token = models.AccessToken.objects.filter(token=token).last()
+    token_qs = models.AccessToken.objects.filter(token=token)
+    stored_token = token_qs.last()
+    if not stored_token:
+        raise UnknownToken()
 
-    if stored_token:
-        stored_token.revoked_after = timezone.now()
-        stored_token.save()
+    if not stored_token.revoked_after:
+        _revoke_tokens(token_qs)
+    return stored_token.revoked_after
 
 
 def get_revocation_list() -> List[str]:
@@ -53,22 +71,43 @@ def get_revocation_list() -> List[str]:
     return token_ids
 
 
-def create_application(name, owner=None, user=None, grant=None, scopes=None):
+def create_application(name, owner=None, grant=None, scopes=None):
     grant = grant or models.Application.GRANT_CLIENT_CREDENTIALS
-    return models.Application.objects.create(
+    app, created = models.Application.objects.get_or_create(
         name=name,
-        redirect_uris="http://example.com",
         client_type=models.Application.CLIENT_CONFIDENTIAL,
         authorization_grant_type=grant,
         scopes=scopes,
-        user=user,
         owner=owner,
     )
+    return {
+        "name": name,
+        "client_id": app.client_id,
+        "client_secret": app.secret,
+        "client_type": models.Application.CLIENT_CONFIDENTIAL,
+        "grant_type": grant,
+        "scopes": scopes,
+        "created": created,
+    }
 
 
 def revoke_application(owner_id):
-    models.Application.objects.filter(owner=owner_id).update(scopes=[])
+    app_qs = models.Application.objects.filter(owner=owner_id)
+    updated = app_qs.update(scopes=[])
+    if not updated:
+        raise NoApplicationForOwner()
+    _revoke_tokens(
+        models.AccessToken.objects.filter(
+            application_id__in=app_qs.values_list("id", flat=True)
+        )
+    )
 
 
 def delete_application(owner_id):
-    models.Application.objects.filter(owner=owner_id).delete()
+    deleted, _ = models.Application.objects.filter(owner=owner_id).delete()
+    if not deleted:
+        raise NoApplicationForOwner()
+
+
+def _revoke_tokens(token_qs):
+    token_qs.update(revoked_after=timezone.now())
