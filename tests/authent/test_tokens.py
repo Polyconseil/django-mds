@@ -66,7 +66,7 @@ def test_generate_jwt_with_rsa(mocked):
 
 @pytest.mark.django_db
 def test_long_lived_token_view_auth(client):
-    response = client.post(reverse("authent:long_lived_token"))
+    response = client.post(reverse("mds_prv_api:long_lived_token"))
     assert response.status_code == 401
     assert response["WWW-Authenticate"] == 'Bearer realm="api"'
 
@@ -104,18 +104,18 @@ def test_token_views_nominal_path(mocked, client):
 
     # Get long lived token
     bearer_headers = {"HTTP_AUTHORIZATION": b"Bearer %s" % token.encode("utf-8")}
-    response = client.post(reverse("authent:long_lived_token"), **bearer_headers)
+    response = client.post(reverse("mds_prv_api:long_lived_token"), **bearer_headers)
     assert response.status_code == 403
 
     user.user_permissions.add(Permission.objects.get(codename="add_accesstoken"))
 
-    response = client.post(reverse("authent:long_lived_token"), **bearer_headers)
+    response = client.post(reverse("mds_prv_api:long_lived_token"), **bearer_headers)
     assert response.status_code == 400
     assert set(response.data.keys()) == {"app_owner", "token_duration"}
 
     data = {"app_owner": str(app.owner), "token_duration": 3600}
     response = client.post(
-        reverse("authent:long_lived_token"),
+        reverse("mds_prv_api:long_lived_token"),
         data=data,
         content_type="application/json",
         **bearer_headers
@@ -165,7 +165,7 @@ def test_client_credentials_grant_should_be_refused(client):
     bearer_headers = {"HTTP_AUTHORIZATION": b"Bearer %s" % token.encode("utf-8")}
     data = {"app_owner": str(app.owner), "token_duration": 3600}
     response = client.post(
-        reverse("authent:long_lived_token"),
+        reverse("mds_prv_api:long_lived_token"),
         data=data,
         content_type="application/json",
         **bearer_headers

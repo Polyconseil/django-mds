@@ -39,6 +39,16 @@ class ProviderModel(models.Model):
         abstract = True
 
 
+def agency_api_authentication_default():
+    """Default value for the authentication of the Agency API use by the provider.
+
+    Other keys are specific to each type:
+    - token: "header" and "token"
+    - oauth2: "client_id" and "client_secret"
+    """
+    return {"type": "none"}
+
+
 def api_authentication_default():
     """Default value for the API authentication field of a provider.
 
@@ -74,6 +84,10 @@ class Provider(models.Model):
     )
     api_configuration = pg_fields.JSONField(
         default=api_configuration_default, verbose_name="API Configuration"
+    )
+    agency_api_authentication = pg_fields.JSONField(
+        default=agency_api_authentication_default,
+        verbose_name="API Agency Authentication",
     )
 
 

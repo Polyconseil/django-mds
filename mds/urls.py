@@ -6,8 +6,6 @@ from django.urls import path
 import mds.apis.agency_api.v0_x.urls
 import mds.apis.prv_api.urls
 import mds.authent.urls
-import mds.authent.views
-
 
 urlpatterns = [
     path(

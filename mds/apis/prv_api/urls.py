@@ -1,8 +1,11 @@
 from rest_framework import routers
+from django.conf.urls import include
+from django.urls import path
 
 from . import providers
 from . import service_areas
 from . import vehicles
+from . import authent
 
 
 def get_prv_router():
@@ -20,4 +23,17 @@ def get_prv_router():
 
 
 app_name = "mds_prv_api"
-urlpatterns = get_prv_router().urls
+
+auth_urls = [
+    path(
+        "long_lived_token/",
+        authent.LongLivedTokenView.as_view(),
+        name="long_lived_token",
+    ),
+    path("create_application/", authent.AppCreationView.as_view(), name="create_app"),
+    path("revoke_application/", authent.AppCreationView.as_view(), name="revoke_app"),
+    path("delete_application/", authent.AppCreationView.as_view(), name="delete_app"),
+]
+
+urlpatterns = [path("authent/", include(auth_urls))]
+urlpatterns += get_prv_router().urls

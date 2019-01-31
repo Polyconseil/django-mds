@@ -1,15 +1,14 @@
 from typing import Set, Optional, List, Dict
 
 import jwt
-from django.apps import apps
-from django.core.cache import cache
-from django.utils import timezone
 from django.utils.translation import ugettext as _
 from rest_framework import exceptions
 
 from .auth_means import BaseAuthMean
 from .jwt_decode import jwt_multi_decode
 from .scopes import SCOPE_ADMIN
+
+from mds.authent.public_api import get_revocation_list
 
 
 class RemoteUser:
@@ -100,36 +99,3 @@ def build_user(payload: Dict) -> RemoteUser:
     scopes = set(payload["scope"].split(" "))
 
     return RemoteUser(payload["sub"], scopes, payload.get("app_owner", None))
-
-
-def get_revocation_list() -> List[str]:
-    """Get the list of revoked tokens.
-
-    The code below could be replaced by an API call if the authentication
-    server and the resource server are split.
-    see (https://tools.ietf.org/id/draft-gpujol-oauth-atrl-00.html)
-    """
-    cache_key = "authent:revocation_list"
-    cached = cache.get(cache_key)
-    if cached:
-        return cached
-
-    try:
-        apps.get_app_config("authent")
-    except LookupError:
-        raise NotImplementedError(
-            "Calling this function requires mds.authent in INSTALLED_APPS."
-        )
-
-    # Keep the import here, there shouldn't be hard dependencies
-    # with mds.authent as the authentication server could very well be split.
-    from mds.authent import models
-
-    token_ids = [
-        str(t)
-        for t in models.AccessToken.objects.filter(
-            revoked_after__lt=timezone.now()
-        ).values_list("jti", flat=True)
-    ]
-    cache.set(cache_key, token_ids, timeout=60)  # seconds
-    return token_ids
