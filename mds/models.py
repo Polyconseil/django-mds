@@ -114,7 +114,7 @@ class Device(models.Model):
     year_manufactured = models.IntegerField(null=True)
     manufacturer = UnboundedCharField(default=str)
 
-    # denormalized fields, the source of truth for this data is in the Record table.
+    # denormalized fields, the source of truth for this data is in the EventRecord table.
     dn_gps_point = gis_models.PointField(null=True)
     dn_gps_timestamp = models.DateTimeField(null=True)
     dn_status = UnboundedCharField(
@@ -133,7 +133,7 @@ class Device(models.Model):
 
     @property
     def gps_point_as_geojson(self):
-        """Represent the gpos point as geojson"""
+        """Represent the GPS point as GeoJSON"""
         return json.loads(self.dn_gps_point.geojson)
 
 
