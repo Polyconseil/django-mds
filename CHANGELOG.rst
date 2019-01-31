@@ -1,7 +1,7 @@
 Changelog
 =========
 
-0.4.6 (unreleased)
+0.4.6 (2019-01-31)
 ------------------
 
 - Add Agency authentication field on Provider
