@@ -7,19 +7,13 @@ from mds.access_control.scopes import SCOPE_ADMIN
 from mds.apis import utils
 
 
-class UUIDInFilter(filters.BaseInFilter, filters.UUIDFilter):
-    pass
-
-
-class ChoicesInFilter(filters.BaseInFilter, filters.ChoiceFilter):
-    pass
-
-
 class DeviceFilter(filters.FilterSet):
     id = filters.CharFilter(lookup_expr="icontains")
-    category = ChoicesInFilter(choices=enums.choices(enums.DEVICE_CATEGORY))
-    provider = UUIDInFilter()
-    status = ChoicesInFilter("dn_status", choices=enums.choices(enums.DEVICE_STATUS))
+    category = utils.ChoicesInFilter(choices=enums.choices(enums.DEVICE_CATEGORY))
+    provider = utils.UUIDInFilter()
+    status = utils.ChoicesInFilter(
+        "dn_status", choices=enums.choices(enums.DEVICE_STATUS)
+    )
     registrationDateFrom = filters.IsoDateTimeFilter(
         "registration_date", lookup_expr="gte"
     )

@@ -260,3 +260,14 @@ class CustomFilterInspector(FilterInspector):
                 for field_name, field in filterset_class.base_filters.items()
             ]
         )
+
+
+# Filters #########################################################
+
+
+class UUIDInFilter(filters.BaseInFilter, filters.UUIDFilter):
+    pass
+
+
+class ChoicesInFilter(filters.BaseInFilter, filters.ChoiceFilter):
+    pass
