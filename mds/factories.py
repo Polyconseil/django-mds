@@ -686,7 +686,9 @@ class ProviderStatusChange(factory.DictFactory):
     vehicle_type = factory.Iterator(c.name for c in enums.DEVICE_CATEGORY)
     propulsion_type = factory.Iterator([c.name] for c in enums.DEVICE_PROPULSION)
     event_type = factory.Iterator(c.name for c in enums.DEVICE_STATUS)
-    event_type_reason = factory.Iterator(c.name for c in enums.EVENT_TYPE)
+    event_type_reason = factory.Iterator(
+        enums.PROVIDER_EVENT_TYPE_REASON_TO_AGENCY_EVENT_TYPE
+    )
     event_time = 1_529_968_782_421
     event_location = factory.Dict(
         {

@@ -14,6 +14,16 @@ from mds import factories
 from mds import models
 
 
+# A single one for each, for reproducible results
+EVENT_TYPE_REASONS = {
+    "available": "service_start",
+    "reserved": "user_pick_up",
+    "unavailable": "maintenance",
+    "removed": "service_end",
+    "unknown": "unknown",
+}
+
+
 @pytest.mark.django_db
 def test_poll_provider_batch(client):
     """A single provider with two pages of status changes."""
@@ -135,8 +145,6 @@ def make_response(provider, device, event, next_page=None):
                 vehicle_type=device.category,
                 propulsion_type=device.propulsion,
                 event_time=int(event.timestamp.timestamp() * 1000),  # In ms
-                event_type=enums.EVENT_TYPE_TO_DEVICE_STATUS[event.event_type],
-                event_type_reason=event.event_type,
                 event_location__properties__timestamp=telemetry["timestamp"],
                 event_location__geometry__coordinates=[
                     telemetry["gps"]["lng"],
@@ -183,5 +191,4 @@ def assert_event_equal(event, expected_event):
         seconds=0.001
     )
     assert event.point.json == expected_event.point.json
-    assert event.event_type == expected_event.event_type
     assert event.properties == expected_event.properties
