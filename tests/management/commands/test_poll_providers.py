@@ -9,7 +9,6 @@ from django.utils import timezone
 
 import requests_mock
 
-from mds import enums
 from mds import factories
 from mds import models
 
