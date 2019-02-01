@@ -28,15 +28,10 @@ def test_all_areas_get(client):
 
 @pytest.mark.django_db
 def test_area_creation(client):
-    area_id = str(uuid.uuid4())
 
     response = client.post(
         AREA_BASE_URL,
-        data={
-            "creation_date": "2012-01-01T00:00:00Z",
-            "label": "test_area",
-            "id": area_id,
-        },
+        data={"color": "#FF00FF", "label": "test_area", "polygons": []},
         content_type="application/json",
         **auth_header(SCOPE_ADMIN),
     )
@@ -103,21 +98,14 @@ def test_area_update(client):
 
     response = client.put(
         "{}{}/".format(AREA_BASE_URL, area_id),
-        data={"label": "test_area_foo"},
-        content_type="application/json",
-        **auth_header(SCOPE_ADMIN),
-    )
-    assert response.status_code == 200
-
-    response = client.put(
-        "{}{}/".format(AREA_BASE_URL, area_id),
-        data={"creation_date": "2018-01-01T00:00:00Z", "label": "test_area_foo"},
+        data={"color": "#FF00FF", "label": "test_area_foo", "polygons": []},
         content_type="application/json",
         **auth_header(SCOPE_ADMIN),
     )
     assert response.status_code == 200
     area.refresh_from_db()
     assert area.label == "test_area_foo"
+    assert area.color == "#FF00FF"
 
 
 @pytest.mark.django_db
@@ -297,3 +285,66 @@ def test_polygon_delete(client):
         "{}{}/".format(POLY_BASE_URL, polygon_id), **auth_header(SCOPE_ADMIN)
     )
     assert response.status_code == 404
+
+
+@pytest.mark.django_db
+def test_polygons_import(client):
+    new_polygon = {
+        "label": "test import",
+        "geom": MOCK_GEOJSON,
+        "areas": ["test area", "test_other_area"],
+    }
+
+    response = client.post(
+        "{}import/".format(POLY_BASE_URL),
+        data={"polygons": [new_polygon]},
+        content_type="application/json",
+        **auth_header(SCOPE_ADMIN),
+    )
+
+    assert response.status_code == 200
+    assert models.Polygon.objects.filter(label=new_polygon["label"]).count() == 1
+    assert models.Area.objects.filter(label__in=new_polygon["areas"]).count() == len(
+        new_polygon["areas"]
+    )
+
+    polygon = models.Polygon.objects.all().first()
+    assert polygon.areas.count() == 2
+
+
+@pytest.mark.django_db
+def test_polygons_import_without_areas(client):
+    new_polygon = {"label": "test import", "geom": MOCK_GEOJSON, "areas": []}
+
+    response = client.post(
+        "{}import/".format(POLY_BASE_URL),
+        data={"polygons": [new_polygon]},
+        content_type="application/json",
+        **auth_header(SCOPE_ADMIN),
+    )
+
+    assert response.status_code == 200
+    assert models.Polygon.objects.filter(label=new_polygon["label"]).count() == 1
+    assert models.Area.objects.count() == 0
+
+
+@pytest.mark.django_db
+def test_polygons_import_existing_areas(client):
+    Area(label="test_area")
+
+    new_polygon = {
+        "label": "test import",
+        "geom": MOCK_GEOJSON,
+        "areas": ["test_area", "test_other_area"],
+    }
+
+    response = client.post(
+        "{}import/".format(POLY_BASE_URL),
+        data={"polygons": [new_polygon]},
+        content_type="application/json",
+        **auth_header(SCOPE_ADMIN),
+    )
+
+    assert response.status_code == 200
+    assert models.Polygon.objects.filter(label=new_polygon["label"]).count() == 1
+    assert models.Area.objects.filter(label__in=new_polygon["areas"]).count() == 2
