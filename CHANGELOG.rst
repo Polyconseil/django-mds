@@ -1,7 +1,7 @@
 Changelog
 =========
 
-0.4.7 (unreleased)
+0.4.7 (2019-02-01)
 ------------------
 
 - Fix translating provider events to agency events.
