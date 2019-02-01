@@ -9,17 +9,23 @@ from django.utils import timezone
 
 import requests_mock
 
+from mds import enums
 from mds import factories
 from mds import models
 
 
-# A single one for each, for reproducible results
-EVENT_TYPE_REASONS = {
-    "available": "service_start",
-    "reserved": "user_pick_up",
-    "unavailable": "maintenance",
-    "removed": "service_end",
-    "unknown": "unknown",
+# This is what the agency API is calling status, go figure
+PROVIDER_EVENT_TYPES = {
+    "service_start": "available",
+    "user_drop_off": "available",
+    "rebalance_drop_off": "available",
+    "maintenance_drop_off": "available",
+    "user_pick_up": "reserved",
+    "maintenance": "unavailable",
+    "low_battery": "unavailable",
+    "service_end": "removed",
+    "rebalance_pick_up": "removed",
+    "maintenance_pick_up": "removed",
 }
 
 
@@ -29,18 +35,30 @@ def test_poll_provider_batch(client):
     provider = factories.Provider()
     # The first device received already exists
     device1 = factories.Device(provider=provider)
-    expected_event1 = factories.EventRecord.build()
+    expected_event1 = factories.EventRecord.build(
+        event_type=enums.EVENT_TYPE.service_start.name
+    )
     # The second device received is unknown
     expected_device2 = factories.Device.build()
-    expected_event2 = factories.EventRecord.build()
+    expected_event2 = factories.EventRecord.build(
+        event_type=enums.EVENT_TYPE.trip_end.name
+    )
     stdout, stderr = io.StringIO(), io.StringIO()
 
     with requests_mock.Mocker() as m:
         url = urllib.parse.urljoin(provider.base_api_url, "/status_changes")
         next_page = "%s?page=2" % url
-        m.get(url, json=make_response(provider, device1, expected_event1, next_page))
         m.get(
-            next_page, json=make_response(provider, expected_device2, expected_event2)
+            url,
+            json=make_response(
+                provider, device1, expected_event1, "service_start", next_page
+            ),
+        )
+        m.get(
+            next_page,
+            json=make_response(
+                provider, expected_device2, expected_event2, "user_drop_off"
+            ),
         )
         call_command("poll_providers", stdout=stdout, stderr=stderr)
 
@@ -63,10 +81,14 @@ def test_several_providers(client, django_assert_num_queries):
     """Two providers this time."""
     provider1 = factories.Provider(base_api_url="http://provider1")
     device1 = factories.Device(provider=provider1)
-    expected_event1 = factories.EventRecord.build()
+    expected_event1 = factories.EventRecord.build(
+        event_type=enums.EVENT_TYPE.rebalance_drop_off.name
+    )
     provider2 = factories.Provider(base_api_url="http://provider2")
     device2 = factories.Device(provider=provider2)
-    expected_event2 = factories.EventRecord.build()
+    expected_event2 = factories.EventRecord.build(
+        event_type=enums.EVENT_TYPE.reserve.name
+    )
     stdout, stderr = io.StringIO(), io.StringIO()
 
     n = 1  # List of providers
@@ -81,11 +103,13 @@ def test_several_providers(client, django_assert_num_queries):
         with requests_mock.Mocker() as m:
             m.get(
                 urllib.parse.urljoin(provider1.base_api_url, "/status_changes"),
-                json=make_response(provider1, device1, expected_event1),
+                json=make_response(
+                    provider1, device1, expected_event1, "rebalance_drop_off"
+                ),
             )
             m.get(
                 urllib.parse.urljoin(provider2.base_api_url, "/status_changes"),
-                json=make_response(provider2, device2, expected_event2),
+                json=make_response(provider2, device2, expected_event2, "user_pick_up"),
             )
             call_command("poll_providers", stdout=stdout, stderr=stderr)
 
@@ -103,7 +127,9 @@ def test_follow_up(client):
     event = factories.EventRecord()
     device = event.device
     provider = device.provider
-    expected_event = factories.EventRecord.build(timestamp=timezone.now())
+    expected_event = factories.EventRecord.build(
+        event_type=enums.EVENT_TYPE.service_end.name, timestamp=timezone.now()
+    )
     stdout, stderr = io.StringIO(), io.StringIO()
 
     with requests_mock.Mocker() as m:
@@ -120,7 +146,7 @@ def test_follow_up(client):
                     {"start_time": int(event.timestamp.timestamp() * 1000)}
                 ),
             ),
-            json=make_response(provider, device, expected_event),
+            json=make_response(provider, device, expected_event, "service_end"),
         )
         call_command("poll_providers", stdout=stdout, stderr=stderr)
 
@@ -131,7 +157,11 @@ def test_follow_up(client):
     assert_event_equal(event, expected_event)
 
 
-def make_response(provider, device, event, next_page=None):
+def make_response(provider, device, event, event_type_reason, next_page=None):
+    assert (
+        event.event_type
+        in dict(enums.PROVIDER_EVENT_TYPE_REASON_TO_AGENCY_EVENT_TYPE).values()
+    )
     telemetry = event.properties["telemetry"]
 
     response = factories.ProviderStatusChangesBody(
@@ -142,6 +172,8 @@ def make_response(provider, device, event, next_page=None):
                 device_id=str(device.pk),
                 vehicle_id=device.identification_number,
                 vehicle_type=device.category,
+                event_type=PROVIDER_EVENT_TYPES[event_type_reason],
+                event_type_reason=event_type_reason,
                 propulsion_type=device.propulsion,
                 event_time=int(event.timestamp.timestamp() * 1000),  # In ms
                 event_location__properties__timestamp=telemetry["timestamp"],
