@@ -13,6 +13,7 @@ import requests
 from requests_oauthlib import OAuth2Session
 import pytz
 
+from mds import enums
 from mds import models
 
 
@@ -88,6 +89,12 @@ class Command(management.BaseCommand):
                 event_location = status_change["event_location"]
                 assert event_location["geometry"]["type"] == "Point"
 
+                # The list of event types and even the naming don't match between
+                # the provider and agency APIs, so translate one to the other
+                event_type = enums.PROVIDER_EVENT_TYPE_REASON_TO_AGENCY_EVENT_TYPE[
+                    status_change["event_type_reason"]
+                ]
+
                 # Filtering on start_time *should* be implemented
                 # So consider timestamps as unique per device
                 device.event_records.get_or_create(
@@ -97,8 +104,7 @@ class Command(management.BaseCommand):
                     defaults=dict(
                         source="pull",  # pulled by agency
                         point=geos.Point(event_location["geometry"]["coordinates"]),
-                        # XXX Vocabulary mismatch between agency and provider
-                        event_type=status_change["event_type_reason"],
+                        event_type=event_type,
                         properties={
                             "trip_id": None,  # XXX I receive a list
                             "telemetry": {

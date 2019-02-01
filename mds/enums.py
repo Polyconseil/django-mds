@@ -82,6 +82,21 @@ EVENT_TYPE_TO_DEVICE_STATUS = {
 }
 
 
+# The two APIs don't match on names, hopefully temporary
+PROVIDER_EVENT_TYPE_REASON_TO_AGENCY_EVENT_TYPE = {
+    "service_start": EVENT_TYPE.service_start.name,
+    "user_drop_off": EVENT_TYPE.trip_end.name,
+    "rebalance_drop_off": EVENT_TYPE.rebalance_drop_off.name,
+    "maintenance_drop_off": EVENT_TYPE.maintenance_drop_off.name,
+    "user_pick_up": EVENT_TYPE.reserve.name,
+    "maintenance": EVENT_TYPE.maintenance.name,
+    "low_battery": EVENT_TYPE.low_battery.name,
+    "service_end": EVENT_TYPE.service_end.name,
+    "rebalance_pick_up": EVENT_TYPE.rebalance_pick_up.name,
+    "maintenance_pick_up": EVENT_TYPE.maintenance_pick_up.name,
+}
+
+
 EVENT_SOURCE = enum.Enum(
     "Event source",
     [
