@@ -57,6 +57,8 @@ EVENT_TYPE = enum.Enum(
         ("deregister", pgettext_lazy("Event type", "Deregister")),
         # this last event is not in the MDS spec
         ("telemetry", pgettext_lazy("Event type", "Received telemetry")),
+        # Also added to fill a hole in the provider API
+        ("battery_ok", pgettext_lazy("Event type", "Battery OK")),
     ],
 )
 
@@ -79,6 +81,7 @@ EVENT_TYPE_TO_DEVICE_STATUS = {
     EVENT_TYPE.maintenance_pick_up.name: DEVICE_STATUS.reserved.name,
     EVENT_TYPE.deregister.name: DEVICE_STATUS.unknown.name,
     EVENT_TYPE.telemetry.name: DEVICE_STATUS.unknown.name,
+    EVENT_TYPE.battery_ok.name: DEVICE_STATUS.available.name,
 }
 
 
@@ -94,6 +97,8 @@ PROVIDER_EVENT_TYPE_REASON_TO_AGENCY_EVENT_TYPE = {
     "service_end": EVENT_TYPE.service_end.name,
     "rebalance_pick_up": EVENT_TYPE.rebalance_pick_up.name,
     "maintenance_pick_up": EVENT_TYPE.maintenance_pick_up.name,
+    # XXX Added to fill a hole in the provider API
+    "battery_ok": EVENT_TYPE.battery_ok.name,
 }
 
 
