@@ -1,7 +1,7 @@
 Changelog
 =========
 
-0.4.10 (unreleased)
+0.4.10 (2019-02-04)
 -------------------
 
 - Add device_category field on serializer.
