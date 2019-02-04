@@ -114,6 +114,7 @@ class Command(management.BaseCommand):
                                     "lat": event_location["geometry"]["coordinates"][1],
                                     # XXX altitude, etc.?
                                 },
+                                "battery_pct": status_change.get("battery_pct"),
                             },
                         },
                     ),

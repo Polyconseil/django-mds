@@ -670,6 +670,7 @@ class EventRecord(factory.DjangoModelFactory):
                             "accuracy": 2.0,
                         }
                     ),
+                    "battery_pct": 0.5,
                 }
             ),
         }
@@ -704,7 +705,7 @@ class ProviderStatusChange(factory.DictFactory):
             ),
         }
     )
-    battery_pct = 50.0
+    battery_pct = 0.5
     associated_trips = factory.List([])
 
 
