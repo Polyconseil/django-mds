@@ -38,7 +38,6 @@ def test_provider_basic(client, django_assert_num_queries):
         response = client.get("/prv/providers/", **auth_header(SCOPE_ADMIN))
     assert response.status_code == 200
     assert len(response.data) == 3
-    print(response.data[0])
     assert {
         "id": "aaaaaaa0-1342-413b-8e89-db802b2f83f6",
         "name": "Test provider",
