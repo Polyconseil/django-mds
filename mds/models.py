@@ -142,7 +142,7 @@ class Device(models.Model):
         if hasattr(self, "_latest_event"):
             # don't do a query in this case, the telemetry was prefetched.
             return self._latest_event[0] if self._latest_event else None
-        device = Device.objects.filter(pk=self.pk).with_latest_event()
+        device = Device.objects.filter(pk=self.pk).with_latest_event().get()
         return device.latest_event
 
     @property
