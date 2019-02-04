@@ -22,6 +22,7 @@ class ProviderSerializer(serializers.ModelSerializer):
             "name",
             "logo_b64",
             "base_api_url",
+            "device_category",
             "api_authentication",
             "api_configuration",
             "agency_api_authentication",
