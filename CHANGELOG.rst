@@ -1,7 +1,7 @@
 Changelog
 =========
 
-0.4.8 (unreleased)
+0.4.8 (2019-02-04)
 ------------------
 
 - Add battery in prv_api/devices
