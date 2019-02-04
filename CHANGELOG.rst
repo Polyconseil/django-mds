@@ -1,7 +1,7 @@
 Changelog
 =========
 
-0.4.9 (unreleased)
+0.4.9 (2019-02-04)
 ------------------
 
 - Prototype of a "battery_ok" event type.
