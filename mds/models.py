@@ -148,6 +148,8 @@ class Device(models.Model):
     @property
     def gps_point_as_geojson(self):
         """Represent the GPS point as GeoJSON"""
+        if not self.dn_gps_point:
+            return None
         return json.loads(self.dn_gps_point.geojson)
 
 
@@ -173,6 +175,13 @@ class EventRecord(models.Model):
 
     class Meta:
         unique_together = [("device", "timestamp")]
+
+    @property
+    def point_as_geojson(self):
+        """Represent the GPS point as GeoJSON"""
+        if not self.point:
+            return None
+        return json.loads(self.point.geojson)
 
 
 class Polygon(models.Model):
