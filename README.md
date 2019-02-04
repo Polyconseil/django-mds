@@ -45,3 +45,11 @@ JWT secret key or public key should be given through environment configuration `
 ### Frontend
 
 See dedicated README in [front/README.md](https://github.com/Polyconseil/django-mds/blob/master/front/README.md)
+
+## Release
+
+We use [semantic versioning](https://semver.org/) and zest.releaser for the actual release:
+
+    fullrelease
+
+Just follow the steps and hit Enter to answer Yes.
