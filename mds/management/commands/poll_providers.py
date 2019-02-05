@@ -47,11 +47,7 @@ class Command(management.BaseCommand):
             self.stdout.write("Success!")
 
     def poll_status_changes(self, provider):
-        endpoint_path = "status_changes"
-        # FIXME Remove when dropped from BlueLA
-        if provider.api_configuration.get("bluela_dash"):
-            endpoint_path = "status-changes"
-        next_url = urllib.parse.urljoin(provider.base_api_url, endpoint_path)
+        next_url = urllib.parse.urljoin(provider.base_api_url, "status_changes")
         if provider.api_configuration.get("trailing_slash"):
             next_url += "/"
 

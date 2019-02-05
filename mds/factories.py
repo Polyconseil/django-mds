@@ -573,7 +573,7 @@ class Provider(factory.DjangoModelFactory):
         ["Lime", "BlueLA", "Metro Bike", "LongProviderNameCompanyLtdSarlGmoLgbtq"]
     )
     base_api_url = "http://provider"
-    api_configuration = {"bluela_dash": False, "trailing_slash": False}
+    api_configuration = {"trailing_slash": False}
     api_authentication = {"type": "none"}
     agency_api_authentication = {"type": "none"}
 

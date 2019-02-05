@@ -44,7 +44,7 @@ def test_provider_basic(client, django_assert_num_queries):
         "logo_b64": None,
         "device_category": "car",
         "base_api_url": "http://provider",
-        "api_configuration": {"bluela_dash": False, "trailing_slash": False},
+        "api_configuration": {"trailing_slash": False},
         "api_authentication": {"type": "none"},
         "agency_api_authentication": {"type": "none"},
     } in response.data
@@ -54,7 +54,7 @@ def test_provider_basic(client, django_assert_num_queries):
         "device_category": "scooter",
         "logo_b64": None,
         "base_api_url": "http://provider",
-        "api_configuration": {"bluela_dash": False, "trailing_slash": False},
+        "api_configuration": {"trailing_slash": False},
         "api_authentication": {"type": "none"},
         "agency_api_authentication": {"type": "none"},
     } in response.data
@@ -64,7 +64,7 @@ def test_provider_basic(client, django_assert_num_queries):
         "logo_b64": None,
         "device_category": "bike",
         "base_api_url": "http://provider",
-        "api_configuration": {"bluela_dash": False, "trailing_slash": False},
+        "api_configuration": {"trailing_slash": False},
         "api_authentication": {"type": "none"},
         "agency_api_authentication": {"type": "none"},
     } in response.data
@@ -80,7 +80,7 @@ def test_provider_basic(client, django_assert_num_queries):
         "device_category": "car",
         "logo_b64": None,
         "base_api_url": "http://provider",
-        "api_configuration": {"bluela_dash": False, "trailing_slash": False},
+        "api_configuration": {"trailing_slash": False},
         "api_authentication": {"type": "none"},
         "agency_api_authentication": {"type": "none"},
     }

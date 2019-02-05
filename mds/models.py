@@ -67,7 +67,6 @@ def api_configuration_default():
     """
     return {
         "trailing_slash": False,  # Some providers endpoint won't reply without it
-        "bluela_dash": False,  # FIXME Remove when "/statues_changes/" is exposed
     }
 
 
