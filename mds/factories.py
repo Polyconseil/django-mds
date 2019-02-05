@@ -706,7 +706,7 @@ class ProviderStatusChange(factory.DictFactory):
         }
     )
     battery_pct = 0.5
-    associated_trips = factory.List([])
+    associated_trip = None
 
 
 class ProviderStatusChangesBody(factory.DictFactory):

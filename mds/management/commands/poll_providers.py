@@ -113,7 +113,7 @@ class Command(management.BaseCommand):
                         point=geos.Point(event_location["geometry"]["coordinates"]),
                         event_type=event_type,
                         properties={
-                            "trip_id": None,  # XXX I receive a list
+                            "trip_id": status_change.get("associated_trip"),
                             "telemetry": {
                                 "timestamp": event_location["properties"]["timestamp"],
                                 "gps": {

@@ -36,7 +36,8 @@ def test_poll_provider_batch(client):
     # The first device received already exists
     device1 = factories.Device(provider=provider)
     expected_event1 = factories.EventRecord.build(
-        event_type=enums.EVENT_TYPE.service_start.name
+        event_type=enums.EVENT_TYPE.service_start.name,
+        properties__trip_id="e7a9d3aa-68ea-4666-8adf-7bad40e49805",
     )
     # The second device received is unknown
     expected_device2 = factories.Device.build()
@@ -51,13 +52,21 @@ def test_poll_provider_batch(client):
         m.get(
             url,
             json=make_response(
-                provider, device1, expected_event1, "service_start", next_page
+                provider,
+                device1,
+                expected_event1,
+                event_type_reason="service_start",
+                associated_trip="e7a9d3aa-68ea-4666-8adf-7bad40e49805",
+                next_page=next_page,
             ),
         )
         m.get(
             next_page,
             json=make_response(
-                provider, expected_device2, expected_event2, "user_drop_off"
+                provider,
+                expected_device2,
+                expected_event2,
+                event_type_reason="user_drop_off",
             ),
         )
         call_command("poll_providers", stdout=stdout, stderr=stderr)
@@ -104,12 +113,20 @@ def test_several_providers(client, django_assert_num_queries):
             m.get(
                 urllib.parse.urljoin(provider1.base_api_url, "/status_changes"),
                 json=make_response(
-                    provider1, device1, expected_event1, "rebalance_drop_off"
+                    provider1,
+                    device1,
+                    expected_event1,
+                    event_type_reason="rebalance_drop_off",
                 ),
             )
             m.get(
                 urllib.parse.urljoin(provider2.base_api_url, "/status_changes"),
-                json=make_response(provider2, device2, expected_event2, "user_pick_up"),
+                json=make_response(
+                    provider2,
+                    device2,
+                    expected_event2,
+                    event_type_reason="user_pick_up",
+                ),
             )
             call_command("poll_providers", stdout=stdout, stderr=stderr)
 
@@ -146,7 +163,9 @@ def test_follow_up(client):
                     {"start_time": int(event.timestamp.timestamp() * 1000)}
                 ),
             ),
-            json=make_response(provider, device, expected_event, "service_end"),
+            json=make_response(
+                provider, device, expected_event, event_type_reason="service_end"
+            ),
         )
         call_command("poll_providers", stdout=stdout, stderr=stderr)
 
@@ -157,7 +176,9 @@ def test_follow_up(client):
     assert_event_equal(event, expected_event)
 
 
-def make_response(provider, device, event, event_type_reason, next_page=None):
+def make_response(
+    provider, device, event, event_type_reason, associated_trip=None, next_page=None
+):
     assert (
         event.event_type
         in dict(enums.PROVIDER_EVENT_TYPE_REASON_TO_AGENCY_EVENT_TYPE).values()
@@ -181,6 +202,7 @@ def make_response(provider, device, event, event_type_reason, next_page=None):
                     telemetry["gps"]["lng"],
                     telemetry["gps"]["lat"],
                 ],
+                associated_trip=associated_trip,
             )
         ],
         links__next=next_page,

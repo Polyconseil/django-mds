@@ -169,7 +169,7 @@ class EventRecord(models.Model):
 
     # JSON fields:
     # {
-    #   "telemetry": see serializers.PointProperties for the fields
+    #   "telemetry": see factories.EventRecord for an exhaustive example
     # }
     properties = pg_fields.JSONField(default=dict, encoder=encoders.JSONEncoder)
 
