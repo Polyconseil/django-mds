@@ -4,7 +4,7 @@ Changelog
 0.4.11 (unreleased)
 -------------------
 
-- Nothing changed yet.
+- Ignore area creation date by setting it in the past.
 
 
 0.4.10 (2019-02-04)
