@@ -187,8 +187,8 @@ class EventRecord(models.Model):
 class Polygon(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4)
     creation_date = models.DateTimeField(default=utils.timezone.now)
-    deletion_date = models.DateTimeField(null=True)
-    label = UnboundedCharField(null=True)
+    deletion_date = models.DateTimeField(null=True, blank=True)
+    label = UnboundedCharField(null=True, blank=True)
     geom = gis_models.PolygonField()
     properties = pg_fields.JSONField(default=dict, encoder=encoders.JSONEncoder)
 
@@ -196,8 +196,8 @@ class Polygon(models.Model):
 class Area(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4)
     creation_date = models.DateTimeField(default=utils.timezone.now)
-    deletion_date = models.DateTimeField(null=True)
-    label = UnboundedCharField(null=True)
+    deletion_date = models.DateTimeField(null=True, blank=True)
+    label = UnboundedCharField(null=True, blank=True)
     polygons = models.ManyToManyField(Polygon, blank=True, related_name="areas")
     providers = models.ManyToManyField(Provider, blank=True, related_name="areas")
     color = models.CharField(
