@@ -48,7 +48,8 @@ def _get_auth_mean():
 def _generate_payload(application, token_duration, user):
     payload = {"jti": str(uuid.uuid4()), "scope": application.scopes_string}
     if user:
-        payload["sub"] = "user:%s" % user
+        payload["sub"] = "user:%s" % user.username
+        payload["name"] = user.get_full_name() or user.username
     else:
         payload["sub"] = ("application:%s" % application.client_id,)
     if application.owner:

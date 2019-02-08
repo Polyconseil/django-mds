@@ -1,16 +1,12 @@
-from uuid import uuid4
-
 from django.utils.translation import ugettext as _
 
-from oauth2_provider.contrib.rest_framework import OAuth2Authentication, TokenHasScope
-
 from rest_framework import exceptions
-from rest_framework import permissions
 from rest_framework import serializers
 from rest_framework.response import Response
 from rest_framework.generics import GenericAPIView
 
 from mds.apis import utils
+from mds.access_control.permissions import require_scopes
 from mds.access_control.scopes import SCOPE_PROVIDER
 
 import mds.authent.public_api as public_api
@@ -20,16 +16,14 @@ class AppCreationView(GenericAPIView):
     """ Implements an endpoint to create Oauth2 application for providers
     """
 
-    authentication_classes = (OAuth2Authentication,)
-    permission_classes = [permissions.IsAuthenticated, TokenHasScope]
-    required_scopes = [SCOPE_PROVIDER]
+    permission_classes = (require_scopes(SCOPE_PROVIDER),)
 
     class CreationRequestSerializer(serializers.Serializer):
-        app_name = serializers.CharField(required=False, default=str(uuid4()))
-        scopes = serializers.CharField(
-            required=False,
-            help_text="Scope of the application separated by a comma.",
-            default=["provider"],
+        app_name = serializers.CharField()
+        scopes = serializers.ListField(
+            child=serializers.CharField(
+                help_text="Scope of the application separated by a comma."
+            )
         )
         app_owner = serializers.UUIDField(
             help_text="The owner for which the application is generated."
@@ -55,9 +49,6 @@ class AppCreationView(GenericAPIView):
         pass
 
     def post(self, request, *args, **kwargs):
-        if not request.user.has_perm("authent.add_accesstoken"):
-            raise exceptions.PermissionDenied()
-
         serializer = self.CreationRequestSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         validated_data = serializer.validated_data
@@ -78,9 +69,6 @@ class AppCreationView(GenericAPIView):
         return Response(serializer.data, status=200)
 
     def delete(self, request, *args, **kwargs):
-        if not request.user.has_perm("authent.add_accesstoken"):
-            raise exceptions.PermissionDenied()
-
         serializer = self.RevocationRequestSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         validated_data = serializer.validated_data
@@ -109,9 +97,7 @@ class LongLivedTokenView(GenericAPIView):
     it to the token owner for future use with our API.
     """
 
-    authentication_classes = (OAuth2Authentication,)
-    permission_classes = [permissions.IsAuthenticated, TokenHasScope]
-    required_scopes = [SCOPE_PROVIDER]
+    permission_classes = (require_scopes(SCOPE_PROVIDER),)
 
     class RequestSerializer(serializers.Serializer):
         app_owner = serializers.UUIDField(
@@ -133,9 +119,6 @@ class LongLivedTokenView(GenericAPIView):
         expires_in = serializers.IntegerField()
 
     def post(self, request, *args, **kwargs):
-        if not request.user.has_perm("authent.add_accesstoken"):
-            raise exceptions.PermissionDenied()
-
         serializer = self.RequestSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         validated_data = serializer.validated_data
@@ -161,9 +144,6 @@ class LongLivedTokenView(GenericAPIView):
         return Response(serializer.data, status=200)
 
     def delete(self, request, *args, **kwargs):
-        if not request.user.has_perm("authent.add_accesstoken"):
-            raise exceptions.PermissionDenied()
-
         serializer = self.RevokeRequestSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         validated_data = serializer.validated_data

@@ -83,7 +83,7 @@ def create_application(name, owner=None, grant=None, scopes=None):
     return {
         "name": name,
         "client_id": app.client_id,
-        "client_secret": app.secret,
+        "client_secret": app.client_secret,
         "client_type": models.Application.CLIENT_CONFIDENTIAL,
         "grant_type": grant,
         "scopes": scopes,

@@ -4,7 +4,7 @@ import json
 import uuid
 from unittest import mock
 
-from django.contrib.auth.models import Permission, User
+from django.contrib.auth.models import User
 from django.test.utils import override_settings
 from django.urls import reverse
 from django.utils import timezone
@@ -68,7 +68,7 @@ def test_generate_jwt_with_rsa(mocked):
 def test_long_lived_token_view_auth(client):
     response = client.post(reverse("mds_prv_api:long_lived_token"))
     assert response.status_code == 401
-    assert response["WWW-Authenticate"] == 'Bearer realm="api"'
+    assert response["WWW-Authenticate"] == "Bearer"
 
 
 @pytest.mark.django_db
@@ -77,11 +77,11 @@ def test_long_lived_token_view_auth(client):
     return_value=generators.AuthMean(key="my-secret", algorithm="HS256"),
 )
 def test_token_views_nominal_path(mocked, client):
-    app = _create_application("My application", owner=uuid.uuid4())
+    _create_application("My application", owner=uuid.uuid4())
     our_frontend = _create_application(
         "Frontend", grant=models.Application.GRANT_PASSWORD, scopes=["provider"]
     )
-    user = _create_user("toto", "titi")
+    _create_user("toto", "titi")
 
     # Get access token
     basic_auth_headers = {
@@ -102,32 +102,6 @@ def test_token_views_nominal_path(mocked, client):
         models.AccessToken.objects.get(jti=token_payload["jti"]).scopes.keys()
     ) == ["provider"]
 
-    # Get long lived token
-    bearer_headers = {"HTTP_AUTHORIZATION": b"Bearer %s" % token.encode("utf-8")}
-    response = client.post(reverse("mds_prv_api:long_lived_token"), **bearer_headers)
-    assert response.status_code == 403
-
-    user.user_permissions.add(Permission.objects.get(codename="add_accesstoken"))
-
-    response = client.post(reverse("mds_prv_api:long_lived_token"), **bearer_headers)
-    assert response.status_code == 400
-    assert set(response.data.keys()) == {"app_owner", "token_duration"}
-
-    data = {"app_owner": str(app.owner), "token_duration": 3600}
-    response = client.post(
-        reverse("mds_prv_api:long_lived_token"),
-        data=data,
-        content_type="application/json",
-        **bearer_headers
-    )
-    assert response.status_code == 200
-    data = response.data
-    jwt_token = jwt.decode(
-        data.pop("access_token"), auth_mean.key, algorithms=auth_mean.algorithm
-    )
-    assert data == {"expires_in": 3600, "token_type": "bearer"}
-    assert models.AccessToken.objects.get(jti=jwt_token["jti"])
-
     # Get a new token with the refresh token for later
     data = {"grant_type": "refresh_token", "refresh_token": refresh_token}
     response = client.post(reverse("authent:token"), data, **basic_auth_headers)
@@ -138,39 +112,6 @@ def test_token_views_nominal_path(mocked, client):
     assert list(
         models.AccessToken.objects.get(jti=token_payload["jti"]).scopes.keys()
     ) == ["provider"]
-
-
-@pytest.mark.django_db
-def test_client_credentials_grant_should_be_refused(client):
-    app = _create_application("My application", owner=uuid.uuid4())
-    other_app = _create_application(
-        "other_app",
-        grant=models.Application.GRANT_CLIENT_CREDENTIALS,
-        scopes=["provider"],
-    )
-
-    # Get access token
-    basic_auth_headers = {
-        "HTTP_AUTHORIZATION": b"Basic %s"
-        % base64.b64encode(
-            ("%s:%s" % (other_app.client_id, other_app.client_secret)).encode()
-        )
-    }
-    data = {"grant_type": "client_credentials"}
-    response = client.post(reverse("authent:token"), data, **basic_auth_headers)
-    assert response.status_code == 200
-    data = json.loads(response.content)
-    token = data["access_token"]
-
-    bearer_headers = {"HTTP_AUTHORIZATION": b"Bearer %s" % token.encode("utf-8")}
-    data = {"app_owner": str(app.owner), "token_duration": 3600}
-    response = client.post(
-        reverse("mds_prv_api:long_lived_token"),
-        data=data,
-        content_type="application/json",
-        **bearer_headers
-    )
-    assert response.status_code == 403
 
 
 @pytest.mark.django_db

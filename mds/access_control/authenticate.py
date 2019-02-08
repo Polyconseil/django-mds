@@ -83,7 +83,7 @@ def build_user(payload: Dict) -> RemoteUser:
         * jti (required): identifier for the JWT (make it possible to blacklist
           the token)
         * scope (required): space-delimited permissions
-        * provider_id (optional, required for provider): asked for by
+        * app_owner (optional, required for provider): asked for by
           https://github.com/CityOfLosAngeles/mobility-data-specification/tree/dev/agency#authorization
     """
     required_fields = {"sub", "jti", "scope"}
