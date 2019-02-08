@@ -4,7 +4,7 @@ Changelog
 0.4.12 (unreleased)
 -------------------
 
-- Nothing changed yet.
+- Refactor scopes
 
 
 0.4.11 (2019-02-05)
