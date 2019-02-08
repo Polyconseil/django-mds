@@ -7,7 +7,7 @@ from rest_framework.generics import GenericAPIView
 
 from mds.apis import utils
 from mds.access_control.permissions import require_scopes
-from mds.access_control.scopes import SCOPE_PROVIDER
+from mds.access_control.scopes import SCOPE_PRV_API
 
 import mds.authent.public_api as public_api
 
@@ -16,7 +16,7 @@ class AppCreationView(GenericAPIView):
     """ Implements an endpoint to create Oauth2 application for providers
     """
 
-    permission_classes = (require_scopes(SCOPE_PROVIDER),)
+    permission_classes = (require_scopes(SCOPE_PRV_API),)
 
     class CreationRequestSerializer(serializers.Serializer):
         app_name = serializers.CharField()
@@ -97,7 +97,7 @@ class LongLivedTokenView(GenericAPIView):
     it to the token owner for future use with our API.
     """
 
-    permission_classes = (require_scopes(SCOPE_PROVIDER),)
+    permission_classes = (require_scopes(SCOPE_PRV_API),)
 
     class RequestSerializer(serializers.Serializer):
         app_owner = serializers.UUIDField(

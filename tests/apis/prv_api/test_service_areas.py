@@ -1,7 +1,7 @@
 import uuid
 import pytest
 
-from mds.access_control.scopes import SCOPE_ADMIN
+from mds.access_control.scopes import SCOPE_PRV_API
 from mds.factories import Area, Polygon
 import mds.models as models
 from tests.auth_helpers import auth_header
@@ -17,7 +17,7 @@ def test_all_areas_get(client):
     response = client.get(AREA_BASE_URL)
     assert response.status_code == 401
 
-    response = client.get(AREA_BASE_URL, **auth_header(SCOPE_ADMIN))
+    response = client.get(AREA_BASE_URL, **auth_header(SCOPE_PRV_API))
     assert response.status_code == 200
 
     db_areas = models.Area.objects.all()
@@ -33,7 +33,7 @@ def test_area_creation(client):
         AREA_BASE_URL,
         data={"color": "#FF00FF", "label": "test_area", "polygons": []},
         content_type="application/json",
-        **auth_header(SCOPE_ADMIN),
+        **auth_header(SCOPE_PRV_API),
     )
     assert response.status_code == 201
 
@@ -46,7 +46,7 @@ def test_area_get(client):
     area = Area(id=area_id, label="test_area", creation_date="2012-01-01T00:00:00Z")
 
     response = client.get(
-        "{}{}/".format(AREA_BASE_URL, str(area_id)), **auth_header(SCOPE_ADMIN)
+        "{}{}/".format(AREA_BASE_URL, str(area_id)), **auth_header(SCOPE_PRV_API)
     )
     assert response.status_code == 200
     data = dict(response.data)
@@ -84,7 +84,7 @@ def test_area_patch(client):
         "{}{}/".format(AREA_BASE_URL, area_id),
         data={"label": "test_area_foo"},
         content_type="application/json",
-        **auth_header(SCOPE_ADMIN),
+        **auth_header(SCOPE_PRV_API),
     )
     assert response.status_code == 200
     area.refresh_from_db()
@@ -100,7 +100,7 @@ def test_area_update(client):
         "{}{}/".format(AREA_BASE_URL, area_id),
         data={"color": "#FF00FF", "label": "test_area_foo", "polygons": []},
         content_type="application/json",
-        **auth_header(SCOPE_ADMIN),
+        **auth_header(SCOPE_PRV_API),
     )
     assert response.status_code == 200
     area.refresh_from_db()
@@ -115,12 +115,12 @@ def test_area_delete(client):
     Area(id=area_id)
 
     response = client.delete(
-        "{}{}/".format(AREA_BASE_URL, area_id), **auth_header(SCOPE_ADMIN)
+        "{}{}/".format(AREA_BASE_URL, area_id), **auth_header(SCOPE_PRV_API)
     )
     assert response.status_code == 204
 
     response = client.get(
-        "{}{}/".format(AREA_BASE_URL, area_id), **auth_header(SCOPE_ADMIN)
+        "{}{}/".format(AREA_BASE_URL, area_id), **auth_header(SCOPE_PRV_API)
     )
     assert response.status_code == 404
 
@@ -147,7 +147,7 @@ MOCK_GEOJSON = {
 def test_all_polygons_get(client):
     response = client.get(POLY_BASE_URL)
     assert response.status_code == 401
-    response = client.get(POLY_BASE_URL, **auth_header(SCOPE_ADMIN))
+    response = client.get(POLY_BASE_URL, **auth_header(SCOPE_PRV_API))
     assert response.status_code == 200
 
 
@@ -162,7 +162,7 @@ def test_polygon_creation(client):
             "areas": [],
         },
         content_type="application/json",
-        **auth_header(SCOPE_ADMIN),
+        **auth_header(SCOPE_PRV_API),
     )
     assert response.status_code == 201
     assert models.Polygon.objects.count() == 1
@@ -180,7 +180,7 @@ def test_polygon_get(client):
     )
 
     response = client.get(
-        "{}{}/".format(POLY_BASE_URL, polygon_id), **auth_header(SCOPE_ADMIN)
+        "{}{}/".format(POLY_BASE_URL, polygon_id), **auth_header(SCOPE_PRV_API)
     )
     assert response.status_code == 200
     assert response.data == {
@@ -208,7 +208,7 @@ def test_polygon_patch(client):
         "{}{}/".format(POLY_BASE_URL, polygon_id),
         data={"label": "test_polygon_foo", "properties": {"name": "foo"}},
         content_type="application/json",
-        **auth_header(SCOPE_ADMIN),
+        **auth_header(SCOPE_PRV_API),
     )
     assert response.status_code == 200
     poly.refresh_from_db()
@@ -230,7 +230,7 @@ def test_polygon_update(client):
         "{}{}/".format(POLY_BASE_URL, polygon_id),
         data={"label": "test_polygon_foo", "properties": {"name": "foo"}},
         content_type="application/json",
-        **auth_header(SCOPE_ADMIN),
+        **auth_header(SCOPE_PRV_API),
     )
     assert response.status_code == 400
 
@@ -243,7 +243,7 @@ def test_polygon_update(client):
             "areas": [],
         },
         content_type="application/json",
-        **auth_header(SCOPE_ADMIN),
+        **auth_header(SCOPE_PRV_API),
     )
     assert response.status_code == 200
     poly.refresh_from_db()
@@ -263,7 +263,7 @@ def test_polygon_areas_update(client):
         "{}{}/".format(POLY_BASE_URL, polygon_id),
         data={"areas": [area_id]},
         content_type="application/json",
-        **auth_header(SCOPE_ADMIN),
+        **auth_header(SCOPE_PRV_API),
     )
     assert response.status_code == 200
     poly.refresh_from_db()
@@ -277,12 +277,12 @@ def test_polygon_delete(client):
     Polygon(id=polygon_id, geom=str(MOCK_GEOJSON))
 
     response = client.delete(
-        "{}{}/".format(POLY_BASE_URL, polygon_id), **auth_header(SCOPE_ADMIN)
+        "{}{}/".format(POLY_BASE_URL, polygon_id), **auth_header(SCOPE_PRV_API)
     )
     assert response.status_code == 204
 
     response = client.get(
-        "{}{}/".format(POLY_BASE_URL, polygon_id), **auth_header(SCOPE_ADMIN)
+        "{}{}/".format(POLY_BASE_URL, polygon_id), **auth_header(SCOPE_PRV_API)
     )
     assert response.status_code == 404
 
@@ -299,7 +299,7 @@ def test_polygons_import(client):
         "{}import/".format(POLY_BASE_URL),
         data={"polygons": [new_polygon]},
         content_type="application/json",
-        **auth_header(SCOPE_ADMIN),
+        **auth_header(SCOPE_PRV_API),
     )
 
     assert response.status_code == 200
@@ -320,7 +320,7 @@ def test_polygons_import_without_areas(client):
         "{}import/".format(POLY_BASE_URL),
         data={"polygons": [new_polygon]},
         content_type="application/json",
-        **auth_header(SCOPE_ADMIN),
+        **auth_header(SCOPE_PRV_API),
     )
 
     assert response.status_code == 200
@@ -342,7 +342,7 @@ def test_polygons_import_existing_areas(client):
         "{}import/".format(POLY_BASE_URL),
         data={"polygons": [new_polygon]},
         content_type="application/json",
-        **auth_header(SCOPE_ADMIN),
+        **auth_header(SCOPE_PRV_API),
     )
 
     assert response.status_code == 200

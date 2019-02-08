@@ -79,7 +79,7 @@ def test_long_lived_token_view_auth(client):
 def test_token_views_nominal_path(mocked, client):
     _create_application("My application", owner=uuid.uuid4())
     our_frontend = _create_application(
-        "Frontend", grant=models.Application.GRANT_PASSWORD, scopes=["provider"]
+        "Frontend", grant=models.Application.GRANT_PASSWORD, scopes=["anyscope"]
     )
     _create_user("toto", "titi")
 
@@ -100,7 +100,7 @@ def test_token_views_nominal_path(mocked, client):
     token_payload = jwt.decode(token, auth_mean.key, algorithms=auth_mean.algorithm)
     assert list(
         models.AccessToken.objects.get(jti=token_payload["jti"]).scopes.keys()
-    ) == ["provider"]
+    ) == ["anyscope"]
 
     # Get a new token with the refresh token for later
     data = {"grant_type": "refresh_token", "refresh_token": refresh_token}
@@ -111,7 +111,7 @@ def test_token_views_nominal_path(mocked, client):
     token_payload = jwt.decode(token, auth_mean.key, algorithms=auth_mean.algorithm)
     assert list(
         models.AccessToken.objects.get(jti=token_payload["jti"]).scopes.keys()
-    ) == ["provider"]
+    ) == ["anyscope"]
 
 
 @pytest.mark.django_db
@@ -122,7 +122,7 @@ def test_token_views_nominal_path(mocked, client):
 @override_settings(AUTH_MEANS=[SecretKeyJwtBaseAuthMean("my-secret")])
 def test_revocation_list(mocked, client):
     our_frontend = _create_application(
-        "Frontend", grant=models.Application.GRANT_PASSWORD, scopes=["admin"]
+        "Frontend", grant=models.Application.GRANT_PASSWORD, scopes=["prv_api"]
     )
     _create_user("toto", "titi")
 

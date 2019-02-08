@@ -2,7 +2,7 @@ import pytest
 import uuid
 
 from mds import factories
-from mds.access_control.scopes import SCOPE_ADMIN, SCOPE_VEHICLE
+from mds.access_control.scopes import SCOPE_PRV_API, SCOPE_AGENCY_API
 from tests.auth_helpers import auth_header, BASE_NUM_QUERIES
 
 
@@ -28,14 +28,14 @@ def test_provider_basic(client, django_assert_num_queries):
     assert response.status_code == 401
 
     response = client.get(
-        "/prv/providers/", **auth_header(SCOPE_VEHICLE, provider_id=provider.id)
+        "/prv/providers/", **auth_header(SCOPE_AGENCY_API, provider_id=provider.id)
     )
     assert response.status_code == 403
 
     n = BASE_NUM_QUERIES
     n += 1  # query on providers
     with django_assert_num_queries(n):
-        response = client.get("/prv/providers/", **auth_header(SCOPE_ADMIN))
+        response = client.get("/prv/providers/", **auth_header(SCOPE_PRV_API))
     assert response.status_code == 200
     assert len(response.data) == 3
     assert {
@@ -71,7 +71,7 @@ def test_provider_basic(client, django_assert_num_queries):
 
     response = client.get(
         "/prv/providers/%s/" % "aaaaaaa0-1342-413b-8e89-db802b2f83f6",
-        **auth_header(SCOPE_ADMIN)
+        **auth_header(SCOPE_PRV_API)
     )
     assert response.status_code == 200
     assert response.data == {

@@ -5,7 +5,7 @@ import pytest
 
 from mds import factories
 from mds import models
-from mds.access_control.scopes import SCOPE_ADMIN
+from mds.access_control.scopes import SCOPE_PRV_API
 from tests.auth_helpers import auth_header, BASE_NUM_QUERIES
 
 
@@ -86,7 +86,7 @@ def test_device_list_basic(client, django_assert_num_queries):
     n += 1  # count on devices
     with django_assert_num_queries(n):
         response = client.get(
-            "/prv/vehicles/", **auth_header(SCOPE_ADMIN, provider_id=provider.id)
+            "/prv/vehicles/", **auth_header(SCOPE_PRV_API, provider_id=provider.id)
         )
     assert response.status_code == 200
     data = response.data["results"]
@@ -105,7 +105,7 @@ def test_device_list_basic(client, django_assert_num_queries):
     with django_assert_num_queries(n):
         response = client.get(
             "/prv/vehicles/%s/" % device.id,
-            **auth_header(SCOPE_ADMIN, provider_id=provider.id),
+            **auth_header(SCOPE_PRV_API, provider_id=provider.id),
         )
     assert response.status_code == 200
     assert response.data == expected_device
@@ -117,29 +117,31 @@ def test_device_list_filters(client, django_assert_num_queries):
     factories.Device.create_batch(3, category="scooter", dn_status="unavailable")
     factories.Device.create_batch(3, category="bike", dn_status="unavailable")
 
-    response = client.get("/prv/vehicles/?category=car", **auth_header(SCOPE_ADMIN))
+    response = client.get("/prv/vehicles/?category=car", **auth_header(SCOPE_PRV_API))
     assert response.status_code == 200
     assert len(response.data["results"]) == 3
 
     response = client.get(
-        "/prv/vehicles/?category=car,scooter", **auth_header(SCOPE_ADMIN)
+        "/prv/vehicles/?category=car,scooter", **auth_header(SCOPE_PRV_API)
     )
     assert response.status_code == 200
     assert len(response.data["results"]) == 6
 
-    response = client.get("/prv/vehicles/?status=available", **auth_header(SCOPE_ADMIN))
+    response = client.get(
+        "/prv/vehicles/?status=available", **auth_header(SCOPE_PRV_API)
+    )
     assert response.status_code == 200
     assert len(response.data["results"]) == 3
 
     response = client.get(
-        "/prv/vehicles/?status=available,unavailable", **auth_header(SCOPE_ADMIN)
+        "/prv/vehicles/?status=available,unavailable", **auth_header(SCOPE_PRV_API)
     )
     assert response.status_code == 200
     assert len(response.data["results"]) == 9
 
     response = client.get(
         "/prv/vehicles/?status=available,unavailable&category=car",
-        **auth_header(SCOPE_ADMIN),
+        **auth_header(SCOPE_PRV_API),
     )
     assert response.status_code == 200
     assert len(response.data["results"]) == 3
@@ -147,7 +149,7 @@ def test_device_list_filters(client, django_assert_num_queries):
     provider = str(models.Device.objects.filter(category="car").first().provider_id)
     response = client.get(
         "/prv/vehicles/?provider=%s,%s" % (provider, str(uuid.uuid4())),
-        **auth_header(SCOPE_ADMIN),
+        **auth_header(SCOPE_PRV_API),
     )
     assert response.status_code == 200
     assert (
@@ -158,7 +160,7 @@ def test_device_list_filters(client, django_assert_num_queries):
     response = client.get(
         "/prv/vehicles/?category=car&status=available&provider=%s,%s"
         % (provider, str(uuid.uuid4())),
-        **auth_header(SCOPE_ADMIN),
+        **auth_header(SCOPE_PRV_API),
     )
     assert response.status_code == 200
     assert (
@@ -171,7 +173,7 @@ def test_device_list_filters(client, django_assert_num_queries):
     response = client.get(
         "/prv/vehicles/?category=car&status=unavailable&provider=%s,%s"
         % (provider, str(uuid.uuid4())),
-        **auth_header(SCOPE_ADMIN),
+        **auth_header(SCOPE_PRV_API),
     )
     assert response.status_code == 200
     assert len(response.data["results"]) == 0

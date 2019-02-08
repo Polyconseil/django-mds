@@ -3,7 +3,7 @@ from rest_framework import serializers, viewsets
 
 from mds import enums, models
 from mds.access_control.permissions import require_scopes
-from mds.access_control.scopes import SCOPE_ADMIN
+from mds.access_control.scopes import SCOPE_PRV_API
 from mds.apis import utils
 
 
@@ -86,7 +86,7 @@ class DeviceSerializer(serializers.ModelSerializer):
 
 
 class DeviceViewSet(viewsets.ReadOnlyModelViewSet):
-    permission_classes = (require_scopes(SCOPE_ADMIN),)
+    permission_classes = (require_scopes(SCOPE_PRV_API),)
     lookup_field = "id"
     serializer_class = DeviceSerializer
     pagination_class = utils.LimitOffsetPagination

@@ -10,7 +10,7 @@ from django.db import IntegrityError
 
 from mds import models
 from mds.access_control.permissions import require_scopes
-from mds.access_control.scopes import SCOPE_ADMIN
+from mds.access_control.scopes import SCOPE_PRV_API
 from mds.apis import utils
 
 
@@ -71,7 +71,7 @@ class PolygonsImportRequestSerializer(serializers.Serializer):
 
 
 class PolygonViewSet(utils.MultiSerializerViewSetMixin, viewsets.ModelViewSet):
-    permission_classes = (require_scopes(SCOPE_ADMIN),)
+    permission_classes = (require_scopes(SCOPE_PRV_API),)
     queryset = models.Polygon.objects.prefetch_related("areas").all()
     lookup_field = "id"
     serializer_class = PolygonResponseSerializer
@@ -186,7 +186,7 @@ class AreaResponseSerializer(serializers.Serializer):
 
 
 class AreaViewSet(utils.MultiSerializerViewSetMixin, viewsets.ModelViewSet):
-    permission_classes = (require_scopes(SCOPE_ADMIN),)
+    permission_classes = (require_scopes(SCOPE_PRV_API),)
     queryset = models.Area.objects.prefetch_related("polygons").all()
     lookup_field = "id"
     serializer_class = AreaResponseSerializer

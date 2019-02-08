@@ -6,7 +6,6 @@ from rest_framework import exceptions
 
 from .auth_means import BaseAuthMean
 from .jwt_decode import jwt_multi_decode
-from .scopes import SCOPE_ADMIN
 
 from mds.authent.public_api import get_revocation_list
 
@@ -39,7 +38,7 @@ class RemoteUser:
 
     @property
     def is_staff(self):
-        return SCOPE_ADMIN in self._scopes
+        return False
 
     @property
     def scopes(self):

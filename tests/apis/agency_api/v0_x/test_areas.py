@@ -2,7 +2,7 @@ import datetime
 import pytest
 
 from mds import factories
-from mds.access_control.scopes import SCOPE_VEHICLE
+from mds.access_control.scopes import SCOPE_AGENCY_API
 from tests.auth_helpers import auth_header, BASE_NUM_QUERIES
 
 
@@ -11,7 +11,7 @@ def test_areas_metadata(client):
     provider = factories.Provider(name="Test provider")
     response = client.options(
         "/mds/v0.x/service_areas/",
-        **auth_header(SCOPE_VEHICLE, provider_id=provider.id),
+        **auth_header(SCOPE_AGENCY_API, provider_id=provider.id),
     )
     assert response.status_code == 200
     assert response._headers["allow"][1] == "GET, HEAD, OPTIONS"
@@ -31,13 +31,13 @@ def test_areas_detail(client, django_assert_num_queries):
 
     response = client.get(
         "/mds/v0.x/service_areas/foo/bar/",
-        **auth_header(SCOPE_VEHICLE, provider_id=provider.id),
+        **auth_header(SCOPE_AGENCY_API, provider_id=provider.id),
     )
     assert response.status_code == 404
 
     response = client.get(
         "/mds/v0.x/service_areas/{}/".format(area.pk),
-        **auth_header(SCOPE_VEHICLE, provider_id=other_provider.id),
+        **auth_header(SCOPE_AGENCY_API, provider_id=other_provider.id),
     )
     assert response.status_code == 404
 
@@ -47,7 +47,7 @@ def test_areas_detail(client, django_assert_num_queries):
     with django_assert_num_queries(n):
         response = client.get(
             "/mds/v0.x/service_areas/{}/".format(area.pk),
-            **auth_header(SCOPE_VEHICLE, provider_id=provider.id),
+            **auth_header(SCOPE_AGENCY_API, provider_id=provider.id),
         )
     assert response.status_code == 200
     assert response.data == {
@@ -75,7 +75,7 @@ def test_areas_list(client, django_assert_num_queries):
     with django_assert_num_queries(n):
         response = client.get(
             "/mds/v0.x/service_areas/",
-            **auth_header(SCOPE_VEHICLE, provider_id=provider.id),
+            **auth_header(SCOPE_AGENCY_API, provider_id=provider.id),
         )
     assert response.status_code == 200
     assert len(response.data) == 5

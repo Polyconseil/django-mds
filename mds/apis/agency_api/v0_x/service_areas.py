@@ -5,7 +5,7 @@ from rest_framework import viewsets
 
 from mds import models
 from mds.access_control.permissions import require_scopes
-from mds.access_control.scopes import SCOPE_VEHICLE
+from mds.access_control.scopes import SCOPE_AGENCY_API
 
 
 class MultiPolygonField(serializers.Field):
@@ -34,7 +34,7 @@ class AreaSerializer(serializers.ModelSerializer):
 
 
 class AreaViewSet(viewsets.ReadOnlyModelViewSet):
-    permission_classes = (require_scopes(SCOPE_VEHICLE),)
+    permission_classes = (require_scopes(SCOPE_AGENCY_API),)
     queryset = models.Area.objects.prefetch_related("polygons").all()
     lookup_field = "id"
     serializer_class = AreaSerializer

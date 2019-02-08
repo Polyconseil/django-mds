@@ -11,7 +11,7 @@ from django.contrib.gis.geos import Point
 from mds import enums
 from mds import models
 from mds.access_control.permissions import require_scopes
-from mds.access_control.scopes import SCOPE_VEHICLE
+from mds.access_control.scopes import SCOPE_AGENCY_API
 from mds.apis import utils
 
 
@@ -193,7 +193,7 @@ class DeviceViewSet(
 ):
 
     queryset = models.Device.objects.with_latest_event()
-    permission_classes = (require_scopes(SCOPE_VEHICLE),)
+    permission_classes = (require_scopes(SCOPE_AGENCY_API),)
     lookup_field = "id"
     serializer_class = DeviceSerializer
     serializers_mapping = {
