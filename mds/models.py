@@ -65,9 +65,7 @@ def api_configuration_default():
 
     Some provider implementations can be picky, configure these special cases here.
     """
-    return {
-        "trailing_slash": False,  # Some providers endpoint won't reply without it
-    }
+    return {"trailing_slash": False}  # Some providers endpoint won't reply without it
 
 
 class Provider(models.Model):
