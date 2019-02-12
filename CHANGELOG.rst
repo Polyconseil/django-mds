@@ -4,7 +4,7 @@ Changelog
 0.4.13 (unreleased)
 -------------------
 
-- Nothing changed yet.
+- Rename provider to provider_name, add provider_id in prv_api/devices serializer
 
 
 0.4.12 (2019-02-08)

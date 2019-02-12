@@ -52,7 +52,8 @@ def test_device_list_basic(client, django_assert_num_queries):
 
     expected_device = {
         "id": uuid1,
-        "provider": "Test provider",
+        "provider_id": str(provider.id),
+        "provider_name": "Test provider",
         "identification_number": "1AAAAA",
         "model": "Testa_Model_S",
         "status": "available",
@@ -65,7 +66,8 @@ def test_device_list_basic(client, django_assert_num_queries):
     }
     expected_device2 = {
         "id": uuid2,
-        "provider": "Test another provider",
+        "provider_id": str(provider2.id),
+        "provider_name": "Test another provider",
         "identification_number": "3CCCCC",
         "model": "Testa_Model_X",
         "status": "unavailable",

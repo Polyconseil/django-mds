@@ -46,7 +46,10 @@ class DeviceSerializer(serializers.ModelSerializer):
         child=serializers.ChoiceField(enums.choices(enums.DEVICE_PROPULSION)),
         help_text="Propulsion type(s)",
     )
-    provider = serializers.CharField(
+    provider_id = serializers.UUIDField(
+        source="provider.id", help_text="ID of the service provider of the device"
+    )
+    provider_name = serializers.CharField(
         source="provider.name", help_text="Name of the service provider of the device"
     )
     registration_date = serializers.DateTimeField(help_text="Device registration date")
@@ -72,7 +75,8 @@ class DeviceSerializer(serializers.ModelSerializer):
         model = models.Device
         fields = (
             "id",
-            "provider",
+            "provider_id",
+            "provider_name",
             "model",
             "identification_number",
             "category",
