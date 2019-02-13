@@ -91,7 +91,7 @@ PROVIDER_EVENT_TYPE_REASON_TO_AGENCY_EVENT_TYPE = {
     "user_drop_off": EVENT_TYPE.trip_end.name,
     "rebalance_drop_off": EVENT_TYPE.rebalance_drop_off.name,
     "maintenance_drop_off": EVENT_TYPE.maintenance_drop_off.name,
-    "user_pick_up": EVENT_TYPE.reserve.name,
+    "user_pick_up": EVENT_TYPE.trip_start.name,
     "maintenance": EVENT_TYPE.maintenance.name,
     "low_battery": EVENT_TYPE.low_battery.name,
     "service_end": EVENT_TYPE.service_end.name,
