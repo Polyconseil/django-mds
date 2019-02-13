@@ -96,7 +96,7 @@ def test_several_providers(client, django_assert_num_queries):
     provider2 = factories.Provider(base_api_url="http://provider2")
     device2 = factories.Device(provider=provider2)
     expected_event2 = factories.EventRecord.build(
-        event_type=enums.EVENT_TYPE.reserve.name
+        event_type=enums.EVENT_TYPE.trip_start.name
     )
     stdout, stderr = io.StringIO(), io.StringIO()
 
