@@ -214,8 +214,33 @@ class CustomSwaggerAutoSchema(SwaggerAutoSchema):
 
 
 class CustomFilterInspector(FilterInspector):
-    def _convert_field_to_parameter(self, field_name, field):
+    def _convert_range_field_to_parameters(self, field_name, field):
+        """ Generate two separate query parameters for range filters """
+        if isinstance(field, filters.NumberFilter):
+            type_ = drf_yasg.openapi.TYPE_NUMBER
+        else:
+            type_ = drf_yasg.openapi.TYPE_STRING
+        common_params = dict(
+            in_=drf_yasg.openapi.IN_QUERY, required=field.extra["required"], type=type_
+        )
+        return (
+            drf_yasg.openapi.Parameter(
+                name=f"{field_name}_{field.field_class.widget.suffixes[0]}",
+                description=f'{field.extra.get("help_text", "range")} (lower bound)',
+                **common_params,
+            ),
+            drf_yasg.openapi.Parameter(
+                name=f"{field_name}_{field.field_class.widget.suffixes[1]}",
+                description=f'{field.extra.get("help_text", "range")} (upper bound)',
+                **common_params,
+            ),
+        )
+
+    def _convert_field_to_parameters(self, field_name, field):
         extra_param = {}
+        if isinstance(field, filters.RangeFilter):
+            return self._convert_range_field_to_parameters(field_name, field)
+
         if isinstance(field, filters.MultipleChoiceFilter):
             type_ = drf_yasg.openapi.TYPE_ARRAY
             extra_param["items"] = drf_yasg.openapi.Items(
@@ -236,13 +261,15 @@ class CustomFilterInspector(FilterInspector):
                 extra_param["items"] = drf_yasg.openapi.Items(
                     type=subtype, enum=extra_param.pop("enum", None)
                 )
-        return drf_yasg.openapi.Parameter(
-            name=field_name,
-            in_=drf_yasg.openapi.IN_QUERY,
-            required=field.extra["required"],
-            description=field.extra.get("help_text", ""),
-            type=type_,
-            **extra_param
+        return (
+            drf_yasg.openapi.Parameter(
+                name=field_name,
+                in_=drf_yasg.openapi.IN_QUERY,
+                required=field.extra["required"],
+                description=field.extra.get("help_text", ""),
+                type=type_,
+                **extra_param,
+            ),
         )
 
     def get_filter_parameters(self, filter_backend):
@@ -252,14 +279,11 @@ class CustomFilterInspector(FilterInspector):
         queryset = self.view.get_queryset()
         filterset_class = filter_backend.get_filterset_class(self.view, queryset)
 
-        return (
-            []
-            if not filterset_class
-            else [
-                self._convert_field_to_parameter(field_name, field)
-                for field_name, field in filterset_class.base_filters.items()
-            ]
-        )
+        parameters = []
+        if filterset_class:
+            for field_name, field in filterset_class.base_filters.items():
+                parameters += self._convert_field_to_parameters(field_name, field)
+        return parameters
 
 
 # Filters #########################################################
@@ -271,3 +295,13 @@ class UUIDInFilter(filters.BaseInFilter, filters.UUIDFilter):
 
 class ChoicesInFilter(filters.BaseInFilter, filters.ChoiceFilter):
     pass
+
+
+class DateTimeRangeOverlapFilter(filters.IsoDateTimeFromToRangeFilter):
+    # Handles datetime range overlap filter
+    def filter(self, qs, value):
+        if not value:
+            return qs
+
+        lookup = "%s__%s" % (self.field_name, "overlap")
+        return self.get_method(qs)(**{lookup: (value.start, value.stop)})
