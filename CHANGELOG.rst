@@ -5,6 +5,7 @@ Changelog
 -------------------
 
 - Fix schema auto-generation for range filters
+- Added denormalization of battery percentage in device.
 
 
 0.4.13 (2019-02-13)

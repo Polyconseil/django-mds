@@ -127,6 +127,7 @@ class Device(models.Model):
     manufacturer = UnboundedCharField(default=str)
 
     # denormalized fields, the source of truth for this data is in the EventRecord table.
+    dn_battery_pct = models.FloatField(null=True)
     dn_gps_point = gis_models.PointField(null=True)
     dn_gps_timestamp = models.DateTimeField(null=True)
     dn_status = UnboundedCharField(
