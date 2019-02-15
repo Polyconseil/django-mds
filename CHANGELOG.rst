@@ -1,7 +1,7 @@
 Changelog
 =========
 
-0.4.14 (unreleased)
+0.4.14 (2019-02-15)
 -------------------
 
 - Fix schema auto-generation for range filters
