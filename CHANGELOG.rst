@@ -4,7 +4,7 @@ Changelog
 0.4.15 (unreleased)
 -------------------
 
-- Nothing changed yet.
+- Move schema utils to their own module to avoid a circular import.
 
 
 0.4.14 (2019-02-15)

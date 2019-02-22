@@ -104,7 +104,7 @@ REST_FRAMEWORK = {
     )
 }
 SWAGGER_SETTINGS = {
-    "DEFAULT_AUTO_SCHEMA_CLASS": "mds.apis.utils.CustomSwaggerAutoSchema",
+    "DEFAULT_AUTO_SCHEMA_CLASS": "mds.apis.schema.CustomSwaggerAutoSchema",
     "SECURITY_DEFINITIONS": {
         "Bearer": {"type": "apiKey", "name": "Authorization", "in": "header"}
     },
