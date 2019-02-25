@@ -1,3 +1,7 @@
+# Contact informations
+
+You are a city, a mobility provider or you simply want to know more about our MDS tools: send us a mail at contact@bluesystems.fr
+
 # django-mds - MDS compliant mobility data service
 
 [![Build Status](https://travis-ci.org/Polyconseil/django-mds.svg?branch=master)](https://travis-ci.org/Polyconseil/django-mds)
