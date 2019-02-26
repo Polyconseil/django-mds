@@ -91,13 +91,6 @@ class Command(management.BaseCommand):
                     status_change["event_type_reason"]
                 ]
 
-                battery_pct = status_change.get("battery_pct")
-                # XXX There is no event for a recharged battery in the current version of the API.
-                # Agreed on a convention with BlueLA but until it's fully deployed,
-                # pretend we know when the "complete_charge" transition happens.
-                if event_type == "low_battery" and battery_pct >= 0.4:
-                    event_type = "battery_ok"
-
                 # Filtering on start_time *should* be implemented
                 # So consider timestamps as unique per device
                 device.event_records.get_or_create(
@@ -117,7 +110,7 @@ class Command(management.BaseCommand):
                                     "lat": event_location["geometry"]["coordinates"][1],
                                     # XXX altitude, etc.?
                                 },
-                                "battery_pct": battery_pct,
+                                "battery_pct": status_change.get("battery_pct"),
                             },
                         },
                     ),
