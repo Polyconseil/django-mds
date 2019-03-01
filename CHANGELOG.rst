@@ -4,7 +4,7 @@ Changelog
 0.4.16 (unreleased)
 -------------------
 
-- Nothing changed yet.
+- Added indexes to polygon and area models, also added alphabetical ordering for polygon and area lists
 
 
 0.4.15 (2019-02-22)
