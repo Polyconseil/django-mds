@@ -5,6 +5,7 @@ Changelog
 -------------------
 
 - Added indexes to polygon and area models, also added alphabetical ordering for polygon and area lists
+- Update agency_api to MDS 0.3.0 specs.
 
 
 0.4.15 (2019-02-22)

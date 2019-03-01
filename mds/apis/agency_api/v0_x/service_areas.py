@@ -3,9 +3,11 @@ import json
 from rest_framework import serializers
 from rest_framework import viewsets
 
+from mds import enums
 from mds import models
 from mds.access_control.permissions import require_scopes
 from mds.access_control.scopes import SCOPE_AGENCY_API
+from mds.apis import utils
 
 
 class MultiPolygonField(serializers.Field):
@@ -26,11 +28,25 @@ class AreaSerializer(serializers.ModelSerializer):
     service_area_id = serializers.UUIDField(
         source="id", help_text="Unique Area identifier (UUID)"
     )
-    service_area = MultiPolygonField(source="polygons.all")
+    start_date = utils.UnixTimestampMilliseconds(
+        source="creation_date",
+        help_text="Date at which this service area became effective",
+    )
+    end_date = utils.UnixTimestampMilliseconds(
+        source="deletion_date",
+        required=False,
+        help_text="If exists, Date at which this service area was replaced.",
+    )
+    area = MultiPolygonField(source="polygons.all")
+    type = serializers.ChoiceField(
+        source="area_type",
+        choices=enums.choices(enums.AREA_TYPE),
+        default="unrestricted",
+    )
 
     class Meta:
         model = models.Area
-        fields = ("service_area_id", "service_area")
+        fields = ("service_area_id", "start_date", "end_date", "area", "type")
 
 
 class AreaViewSet(viewsets.ReadOnlyModelViewSet):

@@ -68,6 +68,11 @@ class Command(management.BaseCommand):
         while next_url:
             data = self.get_data(provider, next_url)
             for status_change in data["data"]["status_changes"]:
+                # The list of event types and even the naming don't match between
+                # the provider and agency APIs, so translate one to the other
+                event_type = enums.PROVIDER_EVENT_TYPE_REASON_TO_AGENCY_EVENT_TYPE[
+                    status_change["event_type_reason"]
+                ]
                 device, created = models.Device.objects.get_or_create(
                     pk=status_change["device_id"],
                     defaults={
@@ -75,6 +80,7 @@ class Command(management.BaseCommand):
                         "identification_number": status_change["vehicle_id"],
                         "category": status_change["vehicle_type"],
                         "propulsion": status_change["propulsion_type"],
+                        "dn_status": enums.EVENT_TYPE_TO_DEVICE_STATUS[event_type],
                     },
                 )
                 if created:
@@ -84,12 +90,6 @@ class Command(management.BaseCommand):
 
                 event_location = status_change["event_location"]
                 assert event_location["geometry"]["type"] == "Point"
-
-                # The list of event types and even the naming don't match between
-                # the provider and agency APIs, so translate one to the other
-                event_type = enums.PROVIDER_EVENT_TYPE_REASON_TO_AGENCY_EVENT_TYPE[
-                    status_change["event_type_reason"]
-                ]
 
                 # Filtering on start_time *should* be implemented
                 # So consider timestamps as unique per device

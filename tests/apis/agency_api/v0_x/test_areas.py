@@ -21,7 +21,8 @@ def test_areas_metadata(client):
 def test_areas_detail(client, django_assert_num_queries):
     provider = factories.Provider(name="Test provider")
     area = factories.Area(
-        creation_date=datetime.datetime(2012, 1, 1, tzinfo=datetime.timezone.utc),
+        creation_date=datetime.datetime(2016, 1, 1, tzinfo=datetime.timezone.utc),
+        deletion_date=datetime.datetime(2017, 1, 1, tzinfo=datetime.timezone.utc),
         providers=[provider],
     )
     other_provider = factories.Provider(name="Test other provider")
@@ -52,12 +53,15 @@ def test_areas_detail(client, django_assert_num_queries):
     assert response.status_code == 200
     assert response.data == {
         "service_area_id": str(area.pk),
-        "service_area": {
+        "start_date": 1_451_606_400_000,
+        "end_date": 1_483_228_800_000,
+        "area": {
             "coordinates": [
                 [[[0.0, 0.0], [0.0, 50.0], [50.0, 50.0], [50.0, 0.0], [0.0, 0.0]]]
             ],
             "type": "MultiPolygon",
         },
+        "type": "unrestricted",
     }
 
 

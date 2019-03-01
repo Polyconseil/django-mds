@@ -7,6 +7,18 @@ from rest_framework import pagination
 from rest_framework import serializers
 from rest_framework.response import Response
 
+from rest_framework import status
+from rest_framework.exceptions import APIException
+from django.utils.translation import pgettext_lazy
+
+# Errors #######################################################
+
+
+class AlreadyRegisteredError(APIException):
+    status_code = status.HTTP_409_CONFLICT
+    default_detail = pgettext_lazy("API Error", "Already registered")
+    default_code = "already_registered"
+
 
 # Pagination ###################################################
 

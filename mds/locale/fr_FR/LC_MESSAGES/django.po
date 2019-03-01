@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-01-22 13:22+0000\n"
+"POT-Creation-Date: 2019-03-01 11:31+0000\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: fr_FR\n"
@@ -22,9 +22,24 @@ msgstr "La signature a expiré"
 msgid "Error decoding signature."
 msgstr "Erreur de décodage de la signature"
 
+msgid "Expired or revoked token"
+msgstr "Jeton expiré ou révoqué"
+
 #, python-format
 msgid "Invalid payload, missing fields: %(fields)s"
 msgstr "Contenu invalide, champs manquants: %(fields)s"
+
+#, python-format
+msgid "No application known for owner %s"
+msgstr "Pas d'application connue pour %s"
+
+#, python-format
+msgid "No access token known for %s"
+msgstr "Pas de jeton d'accès pour %s"
+
+msgctxt "API Error"
+msgid "Already registered"
+msgstr "Déjà enregistré"
 
 msgctxt "Device status"
 msgid "Available"
@@ -43,6 +58,18 @@ msgid "Removed"
 msgstr "Supprimé"
 
 msgctxt "Device status"
+msgid "Trip"
+msgstr "Parcours"
+
+msgctxt "Device status"
+msgid "Elsewhere"
+msgstr "Ailleurs"
+
+msgctxt "Device status"
+msgid "Inactive"
+msgstr "Inactif"
+
+msgctxt "Device status"
 msgid "Unknown"
 msgstr "Inconnu"
 
@@ -57,6 +84,14 @@ msgstr "Trottinette"
 msgctxt "Device category"
 msgid "Car"
 msgstr "Voiture"
+
+msgctxt "Device propulsion"
+msgid "Human"
+msgstr "Manuelle"
+
+msgctxt "Device propulsion"
+msgid "Electric Assist"
+msgstr "Assistance électrique"
 
 msgctxt "Device propulsion"
 msgid "Electric"
@@ -75,7 +110,7 @@ msgid "Trip end"
 msgstr "Fin de parcours"
 
 msgctxt "Event type"
-msgid "Rebalance drop_off"
+msgid "Rebalance drop off"
 msgstr "Dépôt pour rééquilibrage"
 
 msgctxt "Event type"
@@ -134,6 +169,10 @@ msgctxt "Event type"
 msgid "Received telemetry"
 msgstr "Télémétrie reçue"
 
+msgctxt "Event type"
+msgid "Battery OK"
+msgstr "Batterie OK"
+
 msgctxt "Event source"
 msgid "push"
 msgstr "push"
@@ -141,3 +180,19 @@ msgstr "push"
 msgctxt "Event source"
 msgid "pull"
 msgstr "pull"
+
+msgctxt "Area type"
+msgid "Unrestricted"
+msgstr "Non restreint"
+
+msgctxt "Area type"
+msgid "Restricted"
+msgstr "Restreint"
+
+msgctxt "Area type"
+msgid "Preferred pick up"
+msgstr "Préféré pour retrait"
+
+msgctxt "Area type"
+msgid "Preferred drop off"
+msgstr "Préféré pour dépôt"

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-01-22 13:22+0000\n"
+"POT-Creation-Date: 2019-03-01 11:31+0000\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: en_US\n"
@@ -22,8 +22,23 @@ msgstr ""
 msgid "Error decoding signature."
 msgstr ""
 
+msgid "Expired or revoked token"
+msgstr ""
+
 #, python-format
 msgid "Invalid payload, missing fields: %(fields)s"
+msgstr ""
+
+#, python-format
+msgid "No application known for owner %s"
+msgstr ""
+
+#, python-format
+msgid "No access token known for %s"
+msgstr ""
+
+msgctxt "API Error"
+msgid "Already registered"
 msgstr ""
 
 msgctxt "Device status"
@@ -43,6 +58,18 @@ msgid "Removed"
 msgstr ""
 
 msgctxt "Device status"
+msgid "Trip"
+msgstr ""
+
+msgctxt "Device status"
+msgid "Elsewhere"
+msgstr ""
+
+msgctxt "Device status"
+msgid "Inactive"
+msgstr ""
+
+msgctxt "Device status"
 msgid "Unknown"
 msgstr ""
 
@@ -56,6 +83,14 @@ msgstr ""
 
 msgctxt "Device category"
 msgid "Car"
+msgstr ""
+
+msgctxt "Device propulsion"
+msgid "Human"
+msgstr ""
+
+msgctxt "Device propulsion"
+msgid "Electric Assist"
 msgstr ""
 
 msgctxt "Device propulsion"
@@ -75,7 +110,7 @@ msgid "Trip end"
 msgstr ""
 
 msgctxt "Event type"
-msgid "Rebalance drop_off"
+msgid "Rebalance drop off"
 msgstr ""
 
 msgctxt "Event type"
@@ -134,10 +169,30 @@ msgctxt "Event type"
 msgid "Received telemetry"
 msgstr ""
 
+msgctxt "Event type"
+msgid "Battery OK"
+msgstr ""
+
 msgctxt "Event source"
 msgid "push"
 msgstr ""
 
 msgctxt "Event source"
 msgid "pull"
+msgstr ""
+
+msgctxt "Area type"
+msgid "Unrestricted"
+msgstr ""
+
+msgctxt "Area type"
+msgid "Restricted"
+msgstr ""
+
+msgctxt "Area type"
+msgid "Preferred pick up"
+msgstr ""
+
+msgctxt "Area type"
+msgid "Preferred drop off"
 msgstr ""

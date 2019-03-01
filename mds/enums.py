@@ -16,6 +16,9 @@ DEVICE_STATUS = enum.Enum(
         ("reserved", pgettext_lazy("Device status", "Reserved")),
         ("unavailable", pgettext_lazy("Device status", "Unavailable")),
         ("removed", pgettext_lazy("Device status", "Removed")),
+        ("trip", pgettext_lazy("Device status", "Trip")),
+        ("elsewhere", pgettext_lazy("Device status", "Elsewhere")),
+        ("inactive", pgettext_lazy("Device status", "Inactive")),
         ("unknown", pgettext_lazy("Device status", "Unknown")),
     ],
 )
@@ -31,6 +34,8 @@ DEVICE_CATEGORY = enum.Enum(
 DEVICE_PROPULSION = enum.Enum(
     "Device propulsion",
     [
+        ("human", pgettext_lazy("Device propulsion", "Human")),
+        ("electric_assist", pgettext_lazy("Device propulsion", "Electric Assist")),
         ("electric", pgettext_lazy("Device propulsion", "Electric")),
         ("combustion", pgettext_lazy("Device propulsion", "Combustion")),
     ],
@@ -41,7 +46,7 @@ EVENT_TYPE = enum.Enum(
     [
         ("service_start", pgettext_lazy("Event type", "Service start")),
         ("trip_end", pgettext_lazy("Event type", "Trip end")),
-        ("rebalance_drop_off", pgettext_lazy("Event type", "Rebalance drop_off")),
+        ("rebalance_drop_off", pgettext_lazy("Event type", "Rebalance drop off")),
         ("maintenance_drop_off", pgettext_lazy("Event type", "Maintenance drop off")),
         ("cancel_reservation", pgettext_lazy("Event type", "Cancel reservation")),
         ("reserve", pgettext_lazy("Event type", "Reserve")),
@@ -70,16 +75,16 @@ EVENT_TYPE_TO_DEVICE_STATUS = {
     EVENT_TYPE.maintenance_drop_off.name: DEVICE_STATUS.available.name,
     EVENT_TYPE.cancel_reservation.name: DEVICE_STATUS.available.name,
     EVENT_TYPE.reserve.name: DEVICE_STATUS.reserved.name,
-    EVENT_TYPE.trip_start.name: DEVICE_STATUS.reserved.name,
-    EVENT_TYPE.trip_enter.name: DEVICE_STATUS.reserved.name,
-    EVENT_TYPE.trip_leave.name: DEVICE_STATUS.reserved.name,
-    EVENT_TYPE.register.name: DEVICE_STATUS.unknown.name,
+    EVENT_TYPE.trip_start.name: DEVICE_STATUS.trip.name,
+    EVENT_TYPE.trip_enter.name: DEVICE_STATUS.trip.name,
+    EVENT_TYPE.trip_leave.name: DEVICE_STATUS.elsewhere.name,
+    EVENT_TYPE.register.name: DEVICE_STATUS.unavailable.name,
     EVENT_TYPE.low_battery.name: DEVICE_STATUS.unavailable.name,
     EVENT_TYPE.maintenance.name: DEVICE_STATUS.unavailable.name,
-    EVENT_TYPE.service_end.name: DEVICE_STATUS.unavailable.name,
-    EVENT_TYPE.rebalance_pick_up.name: DEVICE_STATUS.reserved.name,
-    EVENT_TYPE.maintenance_pick_up.name: DEVICE_STATUS.reserved.name,
-    EVENT_TYPE.deregister.name: DEVICE_STATUS.unknown.name,
+    EVENT_TYPE.service_end.name: DEVICE_STATUS.removed.name,
+    EVENT_TYPE.rebalance_pick_up.name: DEVICE_STATUS.removed.name,
+    EVENT_TYPE.maintenance_pick_up.name: DEVICE_STATUS.removed.name,
+    EVENT_TYPE.deregister.name: DEVICE_STATUS.inactive.name,
     EVENT_TYPE.telemetry.name: DEVICE_STATUS.unknown.name,
     EVENT_TYPE.battery_ok.name: DEVICE_STATUS.available.name,
 }
@@ -109,5 +114,15 @@ EVENT_SOURCE = enum.Enum(
         ("push", pgettext_lazy("Event source", "push")),
         # pull agency <- provider API
         ("pull", pgettext_lazy("Event source", "pull")),
+    ],
+)
+
+AREA_TYPE = enum.Enum(
+    "Area type",
+    [
+        ("unrestricted", pgettext_lazy("Area type", "Unrestricted")),
+        ("restricted", pgettext_lazy("Area type", "Restricted")),
+        ("preferred_pick_up", pgettext_lazy("Area type", "Preferred pick up")),
+        ("preferred_drop_off", pgettext_lazy("Area type", "Preferred drop off")),
     ],
 )

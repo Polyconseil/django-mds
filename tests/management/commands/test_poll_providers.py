@@ -34,13 +34,13 @@ def test_poll_provider_batch(client):
     """A single provider with two pages of status changes."""
     provider = factories.Provider()
     # The first device received already exists
-    device1 = factories.Device(provider=provider)
+    device1 = factories.Device(provider=provider, dn_status="available")
     expected_event1 = factories.EventRecord.build(
         event_type=enums.EVENT_TYPE.service_start.name,
         properties__trip_id="e7a9d3aa-68ea-4666-8adf-7bad40e49805",
     )
     # The second device received is unknown
-    expected_device2 = factories.Device.build()
+    expected_device2 = factories.Device.build(dn_status="removed")
     expected_event2 = factories.EventRecord.build(
         event_type=enums.EVENT_TYPE.trip_end.name
     )
@@ -66,7 +66,7 @@ def test_poll_provider_batch(client):
                 provider,
                 expected_device2,
                 expected_event2,
-                event_type_reason="user_drop_off",
+                event_type_reason="maintenance_pick_up",
             ),
         )
         call_command("poll_providers", stdout=stdout, stderr=stderr)
@@ -79,10 +79,10 @@ def test_poll_provider_batch(client):
     # The second device was created on the fly
     assert "Device %s was created" % expected_device2.pk in stdout.getvalue()
     device2 = models.Device.objects.get(pk=expected_device2.pk)
-    assert_device_equal(device2, expected_device2)
-
     event2 = device2.event_records.get()
+
     assert_event_equal(event2, expected_event2)
+    assert_device_equal(device2, expected_device2)
 
 
 @pytest.mark.django_db
@@ -122,10 +122,7 @@ def test_several_providers(client, django_assert_num_queries):
             m.get(
                 urllib.parse.urljoin(provider2.base_api_url, "/status_changes"),
                 json=make_response(
-                    provider2,
-                    device2,
-                    expected_event2,
-                    event_type_reason="user_pick_up",
+                    provider2, device2, expected_event2, event_type_reason="maintenance"
                 ),
             )
             call_command("poll_providers", stdout=stdout, stderr=stderr)
