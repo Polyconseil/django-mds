@@ -50,6 +50,10 @@ JWT secret key or public key should be given through environment configuration `
 
 See dedicated README in [front/README.md](https://github.com/Polyconseil/django-mds/blob/master/front/README.md)
 
+### How-to's
+
+- [How to test a provider implementation against django-mds](docs/how-to-test-a-provider-implementation.md)
+
 ## Release
 
 We use [semantic versioning](https://semver.org/) and zest.releaser for the actual release:
