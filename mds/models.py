@@ -32,14 +32,6 @@ class UnboundedCharField(models.TextField):
         return super().formfield(**kwargs)
 
 
-class ProviderModel(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4)
-    provider = models.UUIDField()
-
-    class Meta:
-        abstract = True
-
-
 def agency_api_authentication_default():
     """Default value for the authentication of the Agency API use by the provider.
 
