@@ -35,11 +35,11 @@ A [City of LA MDS Specification](https://github.com/CityOfLosAngeles/mobility-da
 
 * Install and configure requirements (see above)
 * Run `pip install .[dev]` to install dependencies
-* You need following env variables: `MDS_DB_NAME`, `MDS_DB_USER` and `MDS_DB_PASSWORD`
+* You need the following env variables: `MDS_DB_NAME`, `MDS_DB_USER` and `MDS_DB_PASSWORD`
 * To initialize the database, run `python manage.py migrate`
 * To start the backend locally, run `MDS_DEV_DEBUG=1 python manage.py runserver`
 
-A sample environment configuration is provided in `.env.local`
+A sample environment configuration is provided in `.env.example`
 
 #### Authentication
 
