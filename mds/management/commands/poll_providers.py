@@ -1,4 +1,3 @@
-import datetime
 import logging
 import traceback
 import urllib.parse
@@ -11,10 +10,10 @@ from django.db.models.aggregates import Max
 from oauthlib.oauth2 import BackendApplicationClient
 import requests
 from requests_oauthlib import OAuth2Session
-import pytz
 
 from mds import enums
 from mds import models
+from mds import utils
 
 
 NOT_PROVIDED = object()
@@ -60,7 +59,7 @@ class Command(management.BaseCommand):
             next_url = "%s?%s" % (
                 next_url,
                 urllib.parse.urlencode(
-                    {"start_time": int(max_timestamp.timestamp() * 1000)}
+                    {"start_time": utils.to_mds_timestamp(max_timestamp)}
                 ),
             )
 
@@ -94,9 +93,7 @@ class Command(management.BaseCommand):
                 # Filtering on start_time *should* be implemented
                 # So consider timestamps as unique per device
                 device.event_records.get_or_create(
-                    timestamp=datetime.datetime.fromtimestamp(
-                        status_change["event_time"] / 1000, pytz.utc
-                    ),
+                    timestamp=utils.from_mds_timestamp(status_change["event_time"]),
                     defaults=dict(
                         source="pull",  # pulled by agency
                         point=geos.Point(event_location["geometry"]["coordinates"]),

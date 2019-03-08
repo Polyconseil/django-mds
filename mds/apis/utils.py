@@ -11,6 +11,9 @@ from rest_framework import status
 from rest_framework.exceptions import APIException
 from django.utils.translation import pgettext_lazy
 
+import mds.utils
+
+
 # Errors #######################################################
 
 
@@ -132,12 +135,10 @@ class PolygonSerializer(BaseGeometrySerializer):
 
 class UnixTimestampMilliseconds(serializers.IntegerField):
     def to_representation(self, value: datetime.datetime):
-        td = value - datetime.datetime(1970, 1, 1, tzinfo=datetime.timezone.utc)
-        return int(td.total_seconds() * 1000 + td.microseconds / 1000)
+        return mds.utils.to_mds_timestamp(value)
 
     def to_internal_value(self, value: int):
-        dt = datetime.datetime(1970, 1, 1, tzinfo=datetime.timezone.utc)
-        return dt + datetime.timedelta(microseconds=value * 1000)
+        return mds.utils.from_mds_timestamp(value)
 
 
 # Schema #########################################################
