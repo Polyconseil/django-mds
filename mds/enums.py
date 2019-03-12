@@ -102,8 +102,9 @@ PROVIDER_EVENT_TYPE_REASON_TO_AGENCY_EVENT_TYPE = {
     "service_end": EVENT_TYPE.service_end.name,
     "rebalance_pick_up": EVENT_TYPE.rebalance_pick_up.name,
     "maintenance_pick_up": EVENT_TYPE.maintenance_pick_up.name,
-    # XXX Added to fill a hole in the provider API
+    # TODO Clean up when MDS 0.3.0 finally makes its mind
     "battery_ok": EVENT_TYPE.battery_ok.name,
+    "battery_charged": EVENT_TYPE.battery_ok.name,
 }
 
 

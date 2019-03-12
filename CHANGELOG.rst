@@ -5,7 +5,7 @@ Changelog
 ------------------
 
 - Fix conversion of datetime objects to MDS timestamps in the APIs.
-- Nothing changed yet.
+- Also take into account "battery_charged" event type from providers.
 
 
 0.5.0 (2019-03-01)
