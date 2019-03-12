@@ -1,7 +1,7 @@
 Changelog
 =========
 
-0.5.1 (unreleased)
+0.5.1 (2019-03-12)
 ------------------
 
 - Fix conversion of datetime objects to MDS timestamps in the APIs.
