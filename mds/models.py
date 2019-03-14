@@ -79,6 +79,9 @@ class Provider(models.Model):
         default=agency_api_authentication_default,
         verbose_name="API Agency Authentication",
     )
+    # We may poll a provider, e.g. LADOT sandbox that replies for many providers
+    # but has no device itself. So we cannot rely on checking their latest record
+    last_start_time_polled = models.DateTimeField(blank=True, null=True)
 
 
 class DeviceQueryset(models.QuerySet):

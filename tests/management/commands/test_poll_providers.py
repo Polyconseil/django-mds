@@ -77,7 +77,7 @@ def test_poll_provider_batch(client):
     assert_event_equal(event1, expected_event1)
 
     # The second device was created on the fly
-    assert "Device %s was created" % expected_device2.pk in stdout.getvalue()
+    assert "Devices created: %s" % expected_device2.pk in stdout.getvalue()
     device2 = models.Device.objects.get(pk=expected_device2.pk)
     event2 = device2.event_records.get()
 
@@ -100,13 +100,14 @@ def test_several_providers(client, django_assert_num_queries):
     )
     stdout, stderr = io.StringIO(), io.StringIO()
 
-    n = 1  # List of providers
+    n = 1  # List of provider IDs
+    n += 1  # List of device IDs
+    n += 1  # List of providers
     n += (
         2  # Savepoint/release for each provider
-        + 1  # Max timestamp for each provider
-        + 1  # Does each device exist?
-        + 1  # Does each event record exist?
-        + 3  # Savepoint/insert/release for each record
+        + 1  # Insert missing devices
+        + 1  # Insert missing event records
+        + 1  # Update last start time polled
     ) * 2  # For each provider
     with django_assert_num_queries(n):
         with requests_mock.Mocker() as m:
@@ -141,6 +142,8 @@ def test_follow_up(client):
     event = factories.EventRecord()
     device = event.device
     provider = device.provider
+    provider.last_start_time_polled = event.timestamp
+    provider.save()
     expected_event = factories.EventRecord.build(
         event_type=enums.EVENT_TYPE.service_end.name, timestamp=timezone.now()
     )

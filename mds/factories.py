@@ -712,7 +712,7 @@ class ProviderStatusChange(factory.DictFactory):
 class ProviderStatusChangesBody(factory.DictFactory):
     """Expected response from the provider API."""
 
-    version = "x.y.z"
+    version = "0.3.0"
     data = factory.Dict(
         {"status_changes": factory.List([factory.SubFactory(ProviderStatusChange)])}
     )
