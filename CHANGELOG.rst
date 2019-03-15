@@ -4,7 +4,8 @@ Changelog
 0.5.3 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Fix conversion of datetime objects to MDS timestamps in the APIs.
+- Created separate RetrieveDeviceSerializer with areas methodField
 
 
 0.5.2 (2019-03-15)

@@ -33,7 +33,7 @@ class DeviceFilter(filters.FilterSet):
         ]
 
 
-class DeviceSerializer(serializers.ModelSerializer):
+class BaseDeviceSerializer(serializers.ModelSerializer):
     id = serializers.UUIDField(help_text="Unique device identifier (UUID)")
     model = serializers.CharField(required=False, help_text="Vehicle model")
     identification_number = serializers.CharField(
@@ -89,10 +89,28 @@ class DeviceSerializer(serializers.ModelSerializer):
         )
 
 
-class DeviceViewSet(viewsets.ReadOnlyModelViewSet):
+class RetrieveDeviceSerializer(BaseDeviceSerializer):
+    areas = serializers.SerializerMethodField()
+
+    def get_areas(self, obj):
+        if not obj.dn_gps_point:
+            return []
+        areas = (
+            models.Area.objects.filter(polygons__geom__contains=obj.dn_gps_point)
+            .order_by("label", "id")
+            .distinct("label", "id")
+        )
+        return list(areas.values("id", "label"))
+
+    class Meta:
+        model = models.Device
+        fields = BaseDeviceSerializer.Meta.fields + ("areas",)
+
+
+class DeviceViewSet(utils.MultiSerializerViewSetMixin, viewsets.ReadOnlyModelViewSet):
     permission_classes = (require_scopes(SCOPE_PRV_API),)
     lookup_field = "id"
-    serializer_class = DeviceSerializer
+    serializer_class = BaseDeviceSerializer
     pagination_class = utils.LimitOffsetPagination
     filter_backends = (filters.DjangoFilterBackend,)
 
@@ -100,3 +118,7 @@ class DeviceViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = (
         models.Device.objects.with_latest_event().select_related("provider").all()
     )
+    serializers_mapping = {
+        "list": {"response": BaseDeviceSerializer},
+        "retrieve": {"response": RetrieveDeviceSerializer},
+    }
