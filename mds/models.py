@@ -62,7 +62,7 @@ def api_configuration_default():
 
 class Provider(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4)
-    name = UnboundedCharField(default=str)
+    name = UnboundedCharField(default="")
     logo_b64 = UnboundedCharField(null=True, blank=True, default=None)
     device_category = UnboundedCharField(choices=enums.choices(enums.DEVICE_CATEGORY))
     base_api_url = UnboundedCharField(default="", verbose_name="Base API URL")
@@ -114,12 +114,12 @@ class Device(models.Model):
     identification_number = UnboundedCharField()
 
     category = UnboundedCharField(choices=enums.choices(enums.DEVICE_CATEGORY))
-    model = UnboundedCharField(default=str)
+    model = UnboundedCharField(default="")
     propulsion = pg_fields.ArrayField(
         UnboundedCharField(choices=enums.choices(enums.DEVICE_PROPULSION))
     )
     year_manufactured = models.IntegerField(null=True)
-    manufacturer = UnboundedCharField(default=str)
+    manufacturer = UnboundedCharField(default="")
 
     # denormalized fields, the source of truth for this data is in the EventRecord table.
     dn_battery_pct = models.FloatField(null=True)
