@@ -1,7 +1,7 @@
 Changelog
 =========
 
-0.5.2 (unreleased)
+0.5.2 (2019-03-15)
 ------------------
 
 - Almost rewritten the provider poller with support for MDS 0.3.
