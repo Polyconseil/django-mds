@@ -4,7 +4,7 @@ Changelog
 0.5.2 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Almost rewritten the provider poller with support for MDS 0.3.
 
 
 0.5.1 (2019-03-12)
@@ -12,7 +12,6 @@ Changelog
 
 - Fix conversion of datetime objects to MDS timestamps in the APIs.
 - Also take into account "battery_charged" event type from providers.
-- Almost rewritten the provider poller with support for MDS 0.3.
 
 
 0.5.0 (2019-03-01)
