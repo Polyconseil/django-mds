@@ -188,7 +188,7 @@ class Polygon(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4)
     creation_date = models.DateTimeField(default=utils.timezone.now)
     deletion_date = models.DateTimeField(null=True, blank=True)
-    label = UnboundedCharField(null=True, blank=True, db_index=True)
+    label = UnboundedCharField(default="", blank=True, db_index=True)
     geom = gis_models.PolygonField()
     properties = pg_fields.JSONField(default=dict, encoder=encoders.JSONEncoder)
 
@@ -199,7 +199,7 @@ class Area(models.Model):
         default=datetime.datetime(2012, 1, 1, tzinfo=datetime.timezone.utc)
     )
     deletion_date = models.DateTimeField(null=True, blank=True)
-    label = UnboundedCharField(null=True, blank=True, db_index=True)
+    label = UnboundedCharField(default="", blank=True, db_index=True)
     polygons = models.ManyToManyField(Polygon, blank=True, related_name="areas")
     providers = models.ManyToManyField(Provider, blank=True, related_name="areas")
     color = models.CharField(
