@@ -8,6 +8,9 @@ Changelog
 - Fix conversion of datetime objects to MDS timestamps in the APIs.
 - Create separate RetrieveDeviceSerializer with areas methodField.
 - Add provider_logo in RetrieveDeviceSerializer.
+- Workaround for providers mistakenly swapping longitude and latitude in points.
+- Don't fail should a provider send a 3D point.
+
 
 0.5.2 (2019-03-15)
 ------------------

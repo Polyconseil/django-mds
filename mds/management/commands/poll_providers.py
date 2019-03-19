@@ -147,7 +147,9 @@ class Command(management.BaseCommand):
 
             # A transaction for each "page" of data
             with transaction.atomic():
-                last_start_time_polled = self.process_status_changes(status_changes)
+                last_start_time_polled = self.process_status_changes(
+                    status_changes, provider
+                )
                 provider.last_start_time_polled = last_start_time_polled
                 provider.save()
 
@@ -196,10 +198,10 @@ class Command(management.BaseCommand):
         body = response.json()
         return body
 
-    def process_status_changes(self, status_changes):
+    def process_status_changes(self, status_changes, provider):
         if self.verbosity > 1:
             self.stdout.write("Processing...")
-        self.prepare_status_changes(status_changes)
+        self.prepare_status_changes(status_changes, provider)
         self.create_missing_providers(status_changes)
         self.create_missing_devices(status_changes)
         self.create_event_records(status_changes)
@@ -210,7 +212,7 @@ class Command(management.BaseCommand):
         )
         return last_start_time_polled
 
-    def prepare_status_changes(self, status_changes):
+    def prepare_status_changes(self, status_changes, provider):
         """Some preliminary checks/addenda"""
 
         for status_change in status_changes:
@@ -239,6 +241,11 @@ class Command(management.BaseCommand):
             event_location = status_change["event_location"]
             if event_location:
                 assert event_location["geometry"]["type"] == "Point"
+                # Some providers may get the (lng, lat) order wrong
+                if provider.api_configuration.get("swap_lng_lat"):
+                    lat, lng = event_location["geometry"]["coordinates"][:2]
+                    event_location["geometry"]["coordinates"][0] = lng
+                    event_location["geometry"]["coordinates"][1] = lat
             else:  # Spec violation!
                 self.stderr.write(
                     "Warning: device %s has no event_location" % device_id
@@ -356,28 +363,33 @@ def create_device(status_change):
 
 
 def create_event_record(status_change):
+    properties = {"trip_id": status_change.get("associated_trip")}
+
     event_location = status_change["event_location"]
     if event_location:
-        point = geos.Point(event_location["geometry"]["coordinates"], srid=4326).ewkt
-    else:
-        point = None
-    properties = {"trip_id": status_change.get("associated_trip")}
-    if event_location:
+        # GeoJSON Point Feature
+        try:
+            longitude, latitude, altitude = event_location["geometry"]["coordinates"]
+        except ValueError:
+            longitude, latitude = event_location["geometry"]["coordinates"]
+            altitude = None
+        point = geos.Point(longitude, latitude, altitude, srid=4326)
         properties["telemetry"] = {
             "timestamp": event_location["properties"]["timestamp"],
-            "gps": {
-                "lng": event_location["geometry"]["coordinates"][0],
-                "lat": event_location["geometry"]["coordinates"][1],
-                # XXX altitude, etc.?
-            },
+            "gps": {"lng": longitude, "lat": latitude},
+            # No coordinates, no battery charge saved
             "battery_pct": status_change.get("battery_pct"),
         }
+        if altitude:
+            properties["telemetry"]["gps"]["altitude"] = altitude
+    else:  # Spec violation!
+        point = None
 
     return {
         "device_id": status_change["device_id"],
         "timestamp": utils.from_mds_timestamp(status_change["event_time"]),
         "source": "pull",  # pulled by agency,
-        "point": point,
+        "point": point.ewkt if point else None,
         "event_type": status_change["agency_event_type"],
         "properties": json.dumps(properties),
         "saved_at": timezone.now(),
