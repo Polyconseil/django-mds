@@ -1,7 +1,7 @@
 Changelog
 =========
 
-0.5.3 (unreleased)
+0.5.3 (2019-03-19)
 ------------------
 
 - Gracefully handle absence of status changes in ``poll_providers`` command.
