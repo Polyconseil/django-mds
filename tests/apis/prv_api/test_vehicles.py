@@ -106,6 +106,7 @@ def test_device_list_basic(client, django_assert_num_queries):
     n += 1  # query to get areas of device
     n += 1  # query latest_event
     expected_device["areas"] = []
+    expected_device["provider_logo"] = None
 
     with django_assert_num_queries(n):
         response = client.get(

@@ -6,6 +6,8 @@ from mds.access_control.permissions import require_scopes
 from mds.access_control.scopes import SCOPE_PRV_API
 from mds.apis import utils
 
+from typing import List, Dict
+
 
 class DeviceFilter(filters.FilterSet):
     id = filters.CharFilter(lookup_expr="icontains")
@@ -33,7 +35,7 @@ class DeviceFilter(filters.FilterSet):
         ]
 
 
-class BaseDeviceSerializer(serializers.ModelSerializer):
+class DeviceSerializer(serializers.ModelSerializer):
     id = serializers.UUIDField(help_text="Unique device identifier (UUID)")
     model = serializers.CharField(required=False, help_text="Vehicle model")
     identification_number = serializers.CharField(
@@ -89,10 +91,14 @@ class BaseDeviceSerializer(serializers.ModelSerializer):
         )
 
 
-class RetrieveDeviceSerializer(BaseDeviceSerializer):
+class RetrieveDeviceSerializer(DeviceSerializer):
     areas = serializers.SerializerMethodField()
+    provider_logo = serializers.CharField(
+        source="provider.logo_b64",
+        help_text="logo in base 64 of the service provider of the device",
+    )
 
-    def get_areas(self, obj):
+    def get_areas(self, obj) -> List[Dict[str, str]]:
         if not obj.dn_gps_point:
             return []
         areas = (
@@ -104,13 +110,13 @@ class RetrieveDeviceSerializer(BaseDeviceSerializer):
 
     class Meta:
         model = models.Device
-        fields = BaseDeviceSerializer.Meta.fields + ("areas",)
+        fields = DeviceSerializer.Meta.fields + ("areas", "provider_logo")
 
 
 class DeviceViewSet(utils.MultiSerializerViewSetMixin, viewsets.ReadOnlyModelViewSet):
     permission_classes = (require_scopes(SCOPE_PRV_API),)
     lookup_field = "id"
-    serializer_class = BaseDeviceSerializer
+    serializer_class = DeviceSerializer
     pagination_class = utils.LimitOffsetPagination
     filter_backends = (filters.DjangoFilterBackend,)
 
@@ -119,6 +125,6 @@ class DeviceViewSet(utils.MultiSerializerViewSetMixin, viewsets.ReadOnlyModelVie
         models.Device.objects.with_latest_event().select_related("provider").all()
     )
     serializers_mapping = {
-        "list": {"response": BaseDeviceSerializer},
+        "list": {"response": DeviceSerializer},
         "retrieve": {"response": RetrieveDeviceSerializer},
     }

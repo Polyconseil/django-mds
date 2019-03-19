@@ -6,8 +6,8 @@ Changelog
 
 - Gracefully handle absence of status changes in ``poll_providers`` command.
 - Fix conversion of datetime objects to MDS timestamps in the APIs.
-- Created separate RetrieveDeviceSerializer with areas methodField
-
+- Create separate RetrieveDeviceSerializer with areas methodField.
+- Add provider_logo in RetrieveDeviceSerializer.
 
 0.5.2 (2019-03-15)
 ------------------
