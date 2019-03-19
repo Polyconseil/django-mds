@@ -65,23 +65,28 @@ class Provider(models.Model):
     name = UnboundedCharField(default="")
     logo_b64 = UnboundedCharField(null=True, blank=True, default=None)
     device_category = UnboundedCharField(choices=enums.choices(enums.DEVICE_CATEGORY))
-    base_api_url = UnboundedCharField(default="", verbose_name="Base API URL")
+
+    # The following fields are for us pulling data from the provider
+    base_api_url = UnboundedCharField(default="", verbose_name="Base Provider API URL")
     oauth2_url = UnboundedCharField(
         default="", verbose_name="OAuth2 URL (if different)"
     )
     api_authentication = pg_fields.JSONField(
-        default=api_authentication_default, verbose_name="API Authentication"
+        default=api_authentication_default, verbose_name="Provider API Authentication"
     )
     api_configuration = pg_fields.JSONField(
-        default=api_configuration_default, verbose_name="API Configuration"
-    )
-    agency_api_authentication = pg_fields.JSONField(
-        default=agency_api_authentication_default,
-        verbose_name="API Agency Authentication",
+        default=api_configuration_default, verbose_name="Provider API Configuration"
     )
     # We may poll a provider, e.g. LADOT sandbox that replies for many providers
-    # but has no device itself. So we cannot rely on checking their latest record
+    # but has no device itself.
+    # So we cannot just rely on checking the latest event record saved.
     last_start_time_polled = models.DateTimeField(blank=True, null=True)
+
+    # The following fields are for the provider pushing data to us
+    agency_api_authentication = pg_fields.JSONField(
+        default=agency_api_authentication_default,
+        verbose_name="Agency API Authentication",
+    )
 
 
 class DeviceQueryset(models.QuerySet):
