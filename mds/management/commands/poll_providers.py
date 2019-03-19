@@ -276,11 +276,7 @@ class Command(management.BaseCommand):
                     category,
                     model,
                     propulsion,
-                    manufacturer,
-                    dn_battery_pct,
-                    dn_gps_point,
-                    dn_gps_timestamp,
-                    dn_status
+                    manufacturer
                 ) VALUES (
                     %(id)s,
                     %(provider_id)s,
@@ -289,11 +285,7 @@ class Command(management.BaseCommand):
                     %(category)s,
                     %(model)s,
                     %(propulsion)s,
-                    %(manufacturer)s,
-                    %(dn_battery_pct)s,
-                    %(dn_gps_point)s,
-                    %(dn_gps_timestamp)s,
-                    %(dn_status)s
+                    %(manufacturer)s
                 ) ON CONFLICT DO NOTHING
                 """,
                 (
@@ -346,22 +338,6 @@ def create_device(status_change):
     identification_number = status_change["vehicle_id"]
     if not identification_number:  # Spec violation!
         identification_number = "test-%s" % str(device_id).split("-", 1)
-    # XXX Is it even the role of the poller?
-    dn_battery_pct = status_change.get("battery_pct")
-    event_location = status_change["event_location"]
-    if event_location:
-        dn_gps_point = geos.Point(
-            event_location["geometry"]["coordinates"], srid=4326
-        ).ewkt
-    else:
-        dn_gps_point = None
-    dn_gps_timestamp = utils.from_mds_timestamp(status_change["event_time"])
-    agency_event_type = status_change["agency_event_type"]
-    dn_status = (
-        enums.EVENT_TYPE_TO_DEVICE_STATUS[agency_event_type]
-        if agency_event_type
-        else None
-    )
 
     return {
         "id": device_id,
@@ -374,10 +350,6 @@ def create_device(status_change):
         "model": "",
         "propulsion": status_change["propulsion_type"],
         "manufacturer": "",
-        "dn_battery_pct": dn_battery_pct,
-        "dn_gps_point": dn_gps_point,
-        "dn_gps_timestamp": dn_gps_timestamp,
-        "dn_status": dn_status,
     }
 
 

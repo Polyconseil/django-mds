@@ -34,13 +34,13 @@ def test_poll_provider_batch(client):
     """A single provider with two pages of status changes."""
     provider = factories.Provider()
     # The first device received already exists
-    device1 = factories.Device(provider=provider, dn_status="available")
+    device1 = factories.Device(provider=provider)
     expected_event1 = factories.EventRecord.build(
         event_type=enums.EVENT_TYPE.service_start.name,
         properties__trip_id="e7a9d3aa-68ea-4666-8adf-7bad40e49805",
     )
     # The second device received is unknown
-    expected_device2 = factories.Device.build(dn_status="removed")
+    expected_device2 = factories.Device.build()
     expected_event2 = factories.EventRecord.build(
         event_type=enums.EVENT_TYPE.trip_end.name
     )
@@ -231,7 +231,6 @@ def assert_device_equal(device, expected_device):
     if device.model:
         assert device.model == expected_device.model
     assert device.propulsion == expected_device.propulsion
-    assert device.dn_status == expected_device.dn_status
 
 
 def assert_event_equal(event, expected_event):
