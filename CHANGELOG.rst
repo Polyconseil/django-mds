@@ -4,6 +4,7 @@ Changelog
 0.5.3 (unreleased)
 ------------------
 
+- Gracefully handle absence of status changes in ``poll_providers`` command.
 - Fix conversion of datetime objects to MDS timestamps in the APIs.
 - Created separate RetrieveDeviceSerializer with areas methodField
 

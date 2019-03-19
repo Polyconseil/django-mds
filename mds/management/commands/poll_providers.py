@@ -142,6 +142,8 @@ class Command(management.BaseCommand):
             # Translate older versions of data
             translated_data = translate_data(body["data"], body["version"])
             status_changes = translated_data["status_changes"]
+            if not status_changes:
+                break
 
             # A transaction for each "page" of data
             with transaction.atomic():
