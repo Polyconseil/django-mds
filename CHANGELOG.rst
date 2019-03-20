@@ -4,7 +4,7 @@ Changelog
 0.5.4 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Postponed RetrieveDeviceSerializer to the next release.
 
 
 0.5.3 (2019-03-19)
@@ -12,7 +12,6 @@ Changelog
 
 - Gracefully handle absence of status changes in ``poll_providers`` command.
 - Fix conversion of datetime objects to MDS timestamps in the APIs.
-- Create separate RetrieveDeviceSerializer with areas methodField.
 - Add provider_logo in RetrieveDeviceSerializer.
 - Workaround for providers mistakenly swapping longitude and latitude in points.
 - Don't fail should a provider send a 3D point.

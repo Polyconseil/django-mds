@@ -6,8 +6,6 @@ from mds.access_control.permissions import require_scopes
 from mds.access_control.scopes import SCOPE_PRV_API
 from mds.apis import utils
 
-from typing import List, Dict
-
 
 class DeviceFilter(filters.FilterSet):
     id = filters.CharFilter(lookup_expr="icontains")
@@ -35,7 +33,7 @@ class DeviceFilter(filters.FilterSet):
         ]
 
 
-class DeviceSerializer(serializers.ModelSerializer):
+class BaseDeviceSerializer(serializers.ModelSerializer):
     id = serializers.UUIDField(help_text="Unique device identifier (UUID)")
     model = serializers.CharField(required=False, help_text="Vehicle model")
     identification_number = serializers.CharField(
@@ -91,14 +89,10 @@ class DeviceSerializer(serializers.ModelSerializer):
         )
 
 
-class RetrieveDeviceSerializer(DeviceSerializer):
+class RetrieveDeviceSerializer(BaseDeviceSerializer):
     areas = serializers.SerializerMethodField()
-    provider_logo = serializers.CharField(
-        source="provider.logo_b64",
-        help_text="logo in base 64 of the service provider of the device",
-    )
 
-    def get_areas(self, obj) -> List[Dict[str, str]]:
+    def get_areas(self, obj):
         if not obj.dn_gps_point:
             return []
         areas = (
@@ -110,13 +104,13 @@ class RetrieveDeviceSerializer(DeviceSerializer):
 
     class Meta:
         model = models.Device
-        fields = DeviceSerializer.Meta.fields + ("areas", "provider_logo")
+        fields = BaseDeviceSerializer.Meta.fields + ("areas",)
 
 
 class DeviceViewSet(utils.MultiSerializerViewSetMixin, viewsets.ReadOnlyModelViewSet):
     permission_classes = (require_scopes(SCOPE_PRV_API),)
     lookup_field = "id"
-    serializer_class = DeviceSerializer
+    serializer_class = BaseDeviceSerializer
     pagination_class = utils.LimitOffsetPagination
     filter_backends = (filters.DjangoFilterBackend,)
 
@@ -125,6 +119,6 @@ class DeviceViewSet(utils.MultiSerializerViewSetMixin, viewsets.ReadOnlyModelVie
         models.Device.objects.with_latest_event().select_related("provider").all()
     )
     serializers_mapping = {
-        "list": {"response": DeviceSerializer},
+        "list": {"response": BaseDeviceSerializer},
         "retrieve": {"response": RetrieveDeviceSerializer},
     }
