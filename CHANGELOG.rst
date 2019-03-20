@@ -4,7 +4,7 @@ Changelog
 0.5.5 (unreleased)
 ------------------
 
-- Create separate RetrieveDeviceSerializer with areas methodField.
+- Postponed another incompatible serializer change.
 
 
 0.5.4 (2019-03-20)

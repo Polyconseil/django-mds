@@ -103,11 +103,7 @@ def test_device_list_basic(client, django_assert_num_queries):
 
     n = BASE_NUM_QUERIES
     n += 1  # query on devices
-    n += 1  # query to get areas of device
     n += 1  # query latest_event
-    expected_device["areas"] = []
-    expected_device["provider_logo"] = None
-
     with django_assert_num_queries(n):
         response = client.get(
             "/prv/vehicles/%s/" % device.id,

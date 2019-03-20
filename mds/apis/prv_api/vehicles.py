@@ -91,29 +91,7 @@ class DeviceSerializer(serializers.ModelSerializer):
         )
 
 
-class RetrieveDeviceSerializer(DeviceSerializer):
-    areas = serializers.SerializerMethodField()
-    provider_logo = serializers.CharField(
-        source="provider.logo_b64",
-        help_text="logo in base 64 of the service provider of the device",
-    )
-
-    def get_areas(self, obj) -> List[Dict[str, str]]:
-        if not obj.dn_gps_point:
-            return []
-        areas = (
-            models.Area.objects.filter(polygons__geom__contains=obj.dn_gps_point)
-            .order_by("label", "id")
-            .distinct("label", "id")
-        )
-        return list(areas.values("id", "label"))
-
-    class Meta:
-        model = models.Device
-        fields = DeviceSerializer.Meta.fields + ("areas", "provider_logo")
-
-
-class DeviceViewSet(utils.MultiSerializerViewSetMixin, viewsets.ReadOnlyModelViewSet):
+class DeviceViewSet(viewsets.ReadOnlyModelViewSet):
     permission_classes = (require_scopes(SCOPE_PRV_API),)
     lookup_field = "id"
     serializer_class = DeviceSerializer
@@ -124,7 +102,3 @@ class DeviceViewSet(utils.MultiSerializerViewSetMixin, viewsets.ReadOnlyModelVie
     queryset = (
         models.Device.objects.with_latest_event().select_related("provider").all()
     )
-    serializers_mapping = {
-        "list": {"response": DeviceSerializer},
-        "retrieve": {"response": RetrieveDeviceSerializer},
-    }
