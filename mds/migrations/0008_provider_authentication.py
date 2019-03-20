@@ -20,7 +20,7 @@ class Migration(migrations.Migration):
             model_name="provider",
             name="api_authentication",
             field=django.contrib.postgres.fields.jsonb.JSONField(
-                default=mds.models.api_authentication_default,
+                default=mds.models.provider_api_authentication_default,
                 verbose_name="API Authentication",
             ),
         ),
@@ -28,7 +28,7 @@ class Migration(migrations.Migration):
             model_name="provider",
             name="api_configuration",
             field=django.contrib.postgres.fields.jsonb.JSONField(
-                default=mds.models.api_configuration_default,
+                default=mds.models.provider_api_configuration_default,
                 verbose_name="API Configuration",
             ),
         ),

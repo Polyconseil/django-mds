@@ -299,6 +299,7 @@ def test_device_telemetry(client, django_assert_num_queries):
     n = BASE_NUM_QUERIES
     n += 1  # select devices
     n += 1  # insert records
+    n += 1  # check provider configuration
     with django_assert_num_queries(n):
         response = client.post(
             "/mds/v0.x/vehicles/telemetry/",

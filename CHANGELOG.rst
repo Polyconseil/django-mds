@@ -4,7 +4,7 @@ Changelog
 0.5.7 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Help providers to fix longitude and latitude.
 
 
 0.5.6 (2019-03-20)

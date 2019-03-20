@@ -33,7 +33,7 @@ class UnboundedCharField(models.TextField):
 
 
 def agency_api_authentication_default():
-    """Default value for the authentication of the Agency API use by the provider.
+    """Default value for the ``agency_api_authentication`` field.
 
     Other keys are specific to each type:
     - token: "header" and "token"
@@ -42,7 +42,12 @@ def agency_api_authentication_default():
     return {"type": "none"}
 
 
-def api_authentication_default():
+def agency_api_configuration_default():
+    """Default value for the ``agency_api_configuration`` field."""
+    return {}
+
+
+def provider_api_authentication_default():
     """Default value for the API authentication field of a provider.
 
     Other keys are specific to each type:
@@ -52,7 +57,7 @@ def api_authentication_default():
     return {"type": "none"}
 
 
-def api_configuration_default():
+def provider_api_configuration_default():
     """Default value for the API configuration field of a provider.
 
     Some provider implementations can be picky, configure these special cases here.
@@ -77,10 +82,12 @@ class Provider(models.Model):
         default="", verbose_name="OAuth2 URL (if different)"
     )
     api_authentication = pg_fields.JSONField(
-        default=api_authentication_default, verbose_name="Provider API Authentication"
+        default=provider_api_authentication_default,
+        verbose_name="Provider API Authentication",
     )
     api_configuration = pg_fields.JSONField(
-        default=api_configuration_default, verbose_name="Provider API Configuration"
+        default=provider_api_configuration_default,
+        verbose_name="Provider API Configuration",
     )
     # We may poll a provider, e.g. LADOT sandbox that replies for many providers
     # but has no device itself.
@@ -91,6 +98,10 @@ class Provider(models.Model):
     agency_api_authentication = pg_fields.JSONField(
         default=agency_api_authentication_default,
         verbose_name="Agency API Authentication",
+    )
+    agency_api_configuration = pg_fields.JSONField(
+        default=agency_api_configuration_default,
+        verbose_name="Agency API Configuration",
     )
 
     def __str__(self):
