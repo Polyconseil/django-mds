@@ -71,7 +71,7 @@ def short_uuid4(uid):
 
 class Provider(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4)
-    name = UnboundedCharField(default="")
+    name = UnboundedCharField(blank=True, default="")
     logo_b64 = UnboundedCharField(null=True, blank=True, default=None)
     device_category = UnboundedCharField(choices=enums.choices(enums.DEVICE_CATEGORY))
 
@@ -136,20 +136,21 @@ class Device(models.Model):
     identification_number = UnboundedCharField()
 
     category = UnboundedCharField(choices=enums.choices(enums.DEVICE_CATEGORY))
-    model = UnboundedCharField(default="")
+    model = UnboundedCharField(blank=True, default="")
     propulsion = pg_fields.ArrayField(
         UnboundedCharField(choices=enums.choices(enums.DEVICE_PROPULSION))
     )
-    year_manufactured = models.IntegerField(null=True)
-    manufacturer = UnboundedCharField(default="")
+    year_manufactured = models.IntegerField(blank=True, null=True)
+    manufacturer = UnboundedCharField(blank=True, default="")
 
-    # denormalized fields, the source of truth for this data is in the EventRecord table.
+    # denormalized fields - the source of truth is in the EventRecord table.
     # /!\ These fields are for internal usage and may disappear anytime
-    dn_battery_pct = models.FloatField(null=True)
-    dn_gps_point = gis_models.PointField(null=True)
-    dn_gps_timestamp = models.DateTimeField(null=True)
+    dn_battery_pct = models.FloatField(blank=True, null=True)
+    dn_gps_point = gis_models.PointField(blank=True, null=True)
+    dn_gps_timestamp = models.DateTimeField(blank=True, null=True)
     dn_status = UnboundedCharField(
-        null=True, choices=enums.choices(enums.DEVICE_STATUS), default=None
+        choices=enums.choices(enums.DEVICE_STATUS),
+        default=enums.DEVICE_STATUS.unknown.name,
     )
 
     objects = DeviceQueryset.as_manager()
@@ -183,12 +184,10 @@ class Device(models.Model):
 
 class EventRecord(models.Model):
     timestamp = models.DateTimeField(db_index=True)
-    point = gis_models.PointField(null=True)
+    point = gis_models.PointField(blank=True, null=True)
     saved_at = models.DateTimeField(default=utils.timezone.now)
-    source = models.CharField(
-        choices=enums.choices(enums.EVENT_SOURCE),
-        default=enums.EVENT_SOURCE.push.name,
-        max_length=16,
+    source = UnboundedCharField(
+        choices=enums.choices(enums.EVENT_SOURCE), default=enums.EVENT_SOURCE.push.name
     )
     device = models.ForeignKey(
         Device, related_name="event_records", on_delete=models.CASCADE
@@ -233,11 +232,10 @@ class Area(models.Model):
     label = UnboundedCharField(default="", blank=True, db_index=True)
     polygons = models.ManyToManyField(Polygon, blank=True, related_name="areas")
     providers = models.ManyToManyField(Provider, blank=True, related_name="areas")
-    color = models.CharField(
-        max_length=8, default="#FFFFFF", help_text="hexa representation"
-    )
+    color = UnboundedCharField(default="#FFFFFF", help_text="hexa representation")
     area_type = UnboundedCharField(
-        choices=enums.choices(enums.AREA_TYPE), default="unrestricted"
+        choices=enums.choices(enums.AREA_TYPE),
+        default=enums.AREA_TYPE.unrestricted.name,
     )
 
     def __str__(self):
