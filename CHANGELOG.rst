@@ -1,7 +1,7 @@
 Changelog
 =========
 
-0.5.5 (unreleased)
+0.5.5 (2019-03-20)
 ------------------
 
 - Postponed another incompatible serializer change.
