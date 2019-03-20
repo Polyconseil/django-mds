@@ -1,7 +1,7 @@
 Changelog
 =========
 
-0.5.4 (unreleased)
+0.5.4 (2019-03-20)
 ------------------
 
 - Postponed RetrieveDeviceSerializer to the next release.
