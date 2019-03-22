@@ -6,7 +6,6 @@ This is the opposite of provider pushing their data to the agency API.
 import json
 import logging
 import threading
-import traceback
 import urllib.parse
 import uuid
 
