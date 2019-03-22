@@ -220,6 +220,59 @@ def test_device_event(client):
 
 
 @pytest.mark.django_db
+def test_device_event_inverted_coordinates(client):
+    provider = factories.Provider(id="aaaa0000-61fd-4cce-8113-81af1de90942")
+    device_id = "bbbb0000-61fd-4cce-8113-81af1de90942"
+    device = factories.Device(id=device_id, provider=provider)
+
+    data = {
+        "event_type": "service_end",
+        "telemetry": {
+            "device_id": device_id,
+            "timestamp": 1_325_376_000_000,
+            "gps": {
+                "lat": -118.279_678,  # Not within [-90 90]
+                "lng": 34.07068,  # This is the latitude
+                "altitude": 30.0,
+                "heading": 245.2,
+                "speed": 32.3,
+                "hdop": 2.0,
+                "satellites": 6,
+            },
+            "charge": 0.54,
+        },
+        "timestamp": 1_325_376_000_000,
+        "trip_id": None,
+    }
+
+    # test auth
+    assert device.event_records.all().count() == 0
+    response = client.post(
+        "/mds/v0.x/vehicles/%s/event/" % device_id,
+        data=data,
+        content_type="application/json",
+        **auth_header(SCOPE_AGENCY_API, provider_id=provider.id),
+    )
+    assert response.status_code == 400
+    assert "Latitude is outside [-90 90]: -118.279678" in str(response.data)
+
+    # Flag the provider
+    provider.agency_api_configuration["swap_lat_lng"] = True
+    provider.save()
+
+    response = client.post(
+        "/mds/v0.x/vehicles/%s/event/" % device_id,
+        data=data,
+        content_type="application/json",
+        **auth_header(SCOPE_AGENCY_API, provider_id=provider.id),
+    )
+    assert response.status_code == 201
+    assert response.data == {"device_id": device_id, "status": "removed"}
+    # Stored as (lng lat) as expected
+    assert device.event_records.all()[0].point.wkt == "POINT (-118.279678 34.07068)"
+
+
+@pytest.mark.django_db
 def test_device_telemetry(client, django_assert_num_queries):
     provider = factories.Provider(id="aaaa0000-61fd-4cce-8113-81af1de90942")
     provider2 = factories.Provider(id="aaaa0000-61fd-4cce-8113-81af1de90943")

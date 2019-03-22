@@ -113,6 +113,26 @@ class GPSSerializer(serializers.Serializer):
         required=False, min_value=0, help_text="Number of GPS satellites"
     )
 
+    def validate(self, value):
+        attrs = super().validate(value)
+
+        # Some providers may mistake latitude and longitude
+        provider = self.context.get("provider")
+        if provider and provider.agency_api_configuration.get("swap_lat_lng"):
+            attrs["lat"], attrs["lng"] = attrs["lng"], attrs["lat"]
+
+        # Now we can validate (this will not catch valid inversions)
+        if attrs["lat"] < -90.0 or attrs["lat"] > 90.0:
+            raise ValidationError(
+                {"lat": "Latitude is outside [-90 90]: %s" % attrs["lat"]}
+            )
+        if attrs["lng"] < -180.0 or attrs["lng"] > 180.0:
+            raise ValidationError(
+                {"lng": "Longitude is outside [-180 180]: %s" % attrs["lng"]}
+            )
+
+        return attrs
+
 
 def gps_to_gis_point(gps_data):
     if gps_data:
@@ -199,28 +219,6 @@ class DeviceTelemetryInputSerializer(serializers.Serializer):
                 {"data.device_id": "Unknown ids: %s" % " ".join(unknown_ids)}
             )
 
-        # Some providers may mistake latitude and longitude
-        provider = models.Provider.objects.get(pk=provider_id)
-        for telemetry in validated_data["data"]:
-            gps_data = telemetry.get("gps")
-            if gps_data:
-                latitude, longitude = gps_data["lat"], gps_data["lng"]
-                if provider.agency_api_configuration.get("swap_lat_lng"):
-                    latitude, longitude = longitude, latitude
-                    gps_data["lat"], gps_data["lng"] = latitude, longitude
-                # Now we can validate
-                if latitude < -90.0 or latitude > 90.0:
-                    raise ValidationError(
-                        {"data.gps.lat": "Latitude is outside [-90 90]: %s" % latitude}
-                    )
-                if longitude < -180.0 or longitude > 180.0:
-                    raise ValidationError(
-                        {
-                            "data.gps.lng": "Longitude is outside [-180 180]: %s"
-                            % longitude
-                        }
-                    )
-
         to_create = [
             models.EventRecord(
                 timestamp=telemetry["timestamp"],
@@ -279,9 +277,14 @@ class DeviceViewSet(
         if not device:
             return Response(data={}, status=404)
 
+        provider = models.Provider.objects.get(pk=provider_id)
         request_serializer = self.get_serializer(
             data=request.data,
-            context={"device": device, "request_or_response": "request"},
+            context={
+                "device": device,
+                "request_or_response": "request",
+                "provider": provider,
+            },
         )
         request_serializer.is_valid(raise_exception=True)
         instance = request_serializer.save()
@@ -294,6 +297,8 @@ class DeviceViewSet(
     def telemetry(self, request):
         context = self.get_serializer_context()  # adds the request to the context
         context["request_or_response"] = "request"
+        provider_id = request.user.provider_id
+        context["provider"] = models.Provider.objects.get(pk=provider_id)
         serializer = self.get_serializer(data=request.data, context=context)
         serializer.is_valid(raise_exception=True)
         instance = serializer.save()
