@@ -106,8 +106,7 @@ class Command(management.BaseCommand):
                 self.poll_status_changes(provider)
             except Exception:  # pylint: disable=broad-except
                 logger.exception("Error in polling provider %s", provider.name)
-                self.stderr.write("Polling failed!")
-                self.stderr.write(traceback.format_exc())
+                self.stdout.write("Polling failed!")
                 # Try the next provider anyway
                 continue
 
@@ -227,9 +226,7 @@ class Command(management.BaseCommand):
             try:
                 event_type_reason = status_change["event_type_reason"]
             except KeyError:  # Spec violation!
-                self.stderr.write(
-                    "Warning: device %s has no event_type_reason" % device_id
-                )
+                logger.warning("Device %s has no event_type_reason", device_id)
                 # Let recording the device fail with a null value, but only that one in the batch
                 agency_event_type = None
             else:
@@ -247,9 +244,7 @@ class Command(management.BaseCommand):
                     event_location["geometry"]["coordinates"][0] = lng
                     event_location["geometry"]["coordinates"][1] = lat
             else:  # Spec violation!
-                self.stderr.write(
-                    "Warning: device %s has no event_location" % device_id
-                )
+                logger.warning("Device %s has no event_location", device_id)
 
     def create_missing_providers(self, status_changes):
         """Make sure all providers mentioned exist"""
