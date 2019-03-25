@@ -77,9 +77,11 @@ class Provider(models.Model):
     device_category = UnboundedCharField(choices=enums.choices(enums.DEVICE_CATEGORY))
 
     # The following fields are for us pulling data from the provider
-    base_api_url = UnboundedCharField(default="", verbose_name="Base Provider API URL")
+    base_api_url = UnboundedCharField(
+        default="", blank=True, verbose_name="Base Provider API URL"
+    )
     oauth2_url = UnboundedCharField(
-        default="", verbose_name="OAuth2 URL (if different)"
+        default="", blank=True, verbose_name="OAuth2 URL (if different)"
     )
     api_authentication = pg_fields.JSONField(
         default=provider_api_authentication_default,
