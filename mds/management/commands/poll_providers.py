@@ -199,7 +199,7 @@ class Command(management.BaseCommand):
     def process_status_changes(self, status_changes, provider):
         if self.verbosity > 1:
             self.stdout.write("Processing...")
-        self.prepare_status_changes(status_changes, provider)
+        status_changes = self.validate_status_changes(status_changes, provider)
         self.create_missing_providers(status_changes)
         self.create_missing_devices(status_changes)
         self.create_event_records(status_changes)
@@ -210,8 +210,9 @@ class Command(management.BaseCommand):
         )
         return last_start_time_polled
 
-    def prepare_status_changes(self, status_changes, provider):
+    def validate_status_changes(self, status_changes, provider):
         """Some preliminary checks/addenda"""
+        validated_status_changes = []
 
         for status_change in status_changes:
             status_change["provider_id"] = uuid.UUID(status_change["provider_id"])
@@ -226,12 +227,20 @@ class Command(management.BaseCommand):
                 event_type_reason = status_change["event_type_reason"]
             except KeyError:  # Spec violation!
                 logger.warning("Device %s has no event_type_reason", device_id)
-                # Let recording the device fail with a null value, but only that one in the batch
-                agency_event_type = None
-            else:
+                # Ignore just that status change to avoid rejecting the whole batch
+                continue
+            try:
                 agency_event_type = enums.PROVIDER_EVENT_TYPE_REASON_TO_AGENCY_EVENT_TYPE[
                     event_type_reason
                 ]
+            except KeyError:  # Spec violation!
+                logger.warning(
+                    'Device %s has unknown "%s" event_type_reason',
+                    device_id,
+                    event_type_reason,
+                )
+                # Ignore just that status change to avoid rejecting the whole batch
+                continue
             status_change["agency_event_type"] = agency_event_type
 
             event_location = status_change["event_location"]
@@ -244,6 +253,11 @@ class Command(management.BaseCommand):
                     event_location["geometry"]["coordinates"][1] = lat
             else:  # Spec violation!
                 logger.warning("Device %s has no event_location", device_id)
+                # This time, accept a status change with no location
+
+            validated_status_changes.append(status_change)
+
+        return validated_status_changes
 
     def create_missing_providers(self, status_changes):
         """Make sure all providers mentioned exist"""

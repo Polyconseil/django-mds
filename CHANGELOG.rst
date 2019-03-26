@@ -4,6 +4,7 @@ Changelog
 0.5.8 (unreleased)
 ------------------
 
+- Invalid status changes no longer fail the whole polling.
 - Work around coordinates swapping at a lower level and validate them.
 
 
