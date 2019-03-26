@@ -1,7 +1,7 @@
 Changelog
 =========
 
-0.5.8 (unreleased)
+0.5.8 (2019-03-26)
 ------------------
 
 - Invalid status changes no longer fail the whole polling.
