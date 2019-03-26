@@ -4,7 +4,7 @@ Changelog
 0.5.8 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Work around coordinates swapping at a lower level and validate them.
 
 
 0.5.7 (2019-03-21)
