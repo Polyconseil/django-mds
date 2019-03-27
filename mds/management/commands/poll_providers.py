@@ -3,6 +3,7 @@ Pulling data for registered providers
 
 This is the opposite of provider pushing their data to the agency API.
 """
+import datetime
 import json
 import logging
 import threading
@@ -199,15 +200,34 @@ class Command(management.BaseCommand):
     def process_status_changes(self, status_changes, provider):
         if self.verbosity > 1:
             self.stdout.write("Processing...")
+
+        # What is the latest event recorded in that series? (order is not asserted in the specs)
+        try:
+            last_start_time_polled = utils.from_mds_timestamp(
+                max(status_change["event_time"] for status_change in status_changes)
+            )
+        except (KeyError, ValueError):
+            # Data so bad there is no or nothing but invalid event times
+            logger.exception(
+                "No valid event_time found in status_changes series: %s", status_changes
+            )
+            # How can we prevent from asking them again next time?
+            if provider.last_start_time_polled:
+                return provider.last_start_time_polled + datetime.timedelta(
+                    milliseconds=1
+                )
+            # The provider really doesn't help!
+            return timezone.now()
+
         status_changes = self.validate_status_changes(status_changes, provider)
+        if not status_changes:
+            # None were valid, we won't ask them again
+            return last_start_time_polled
+
         self.create_missing_providers(status_changes)
         self.create_missing_devices(status_changes)
         self.create_event_records(status_changes)
 
-        # Returning the latest event recorded (order is not asserted in the specs)
-        last_start_time_polled = utils.from_mds_timestamp(
-            max(status_change["event_time"] for status_change in status_changes)
-        )
         return last_start_time_polled
 
     def validate_status_changes(self, status_changes, provider):
@@ -219,7 +239,7 @@ class Command(management.BaseCommand):
             status_change["device_id"] = device_id = uuid.UUID(
                 status_change["device_id"]
             )
-            status_change["event_time"] = int(status_change["event_time"])
+            status_change["event_time"] = round(status_change["event_time"])
 
             # The list of event types and even the naming don't match between
             # the provider and agency APIs, so translate one to the other

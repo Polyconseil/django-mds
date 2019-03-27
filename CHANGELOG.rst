@@ -4,7 +4,7 @@ Changelog
 0.5.9 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Fix polling when the batch does not contain any valid data.
 
 
 0.5.8 (2019-03-26)
