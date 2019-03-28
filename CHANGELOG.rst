@@ -4,7 +4,7 @@ Changelog
 0.5.10 (unreleased)
 -------------------
 
-- Nothing changed yet.
+- Fix the slowness when retrieving a device via private vehicle API
 
 
 0.5.9 (2019-03-28)

@@ -30,6 +30,7 @@ def test_device_list_basic(client, django_assert_num_queries):
         dn_status="available",
         dn_gps_point="Point(40 15.0)",
         dn_gps_timestamp=today,
+        dn_battery_pct=0.5,
     )
     factories.Device(
         id=uuid2,
@@ -42,6 +43,7 @@ def test_device_list_basic(client, django_assert_num_queries):
         dn_status="unavailable",
         dn_gps_point=None,
         dn_gps_timestamp=None,
+        dn_battery_pct=None,
     )
 
     # Add some telemetries on the first device
@@ -84,7 +86,6 @@ def test_device_list_basic(client, django_assert_num_queries):
 
     n = BASE_NUM_QUERIES
     n += 1  # query on devices
-    n += 1  # query latest events
     n += 1  # count on devices
     with django_assert_num_queries(n):
         response = client.get(
@@ -104,7 +105,6 @@ def test_device_list_basic(client, django_assert_num_queries):
     n = BASE_NUM_QUERIES
     n += 1  # query on devices
     n += 1  # query to get areas of device
-    n += 1  # query latest_event
     expected_device["areas"] = []
     expected_device["provider_logo"] = None
 

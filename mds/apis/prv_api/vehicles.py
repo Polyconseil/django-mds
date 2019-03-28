@@ -68,9 +68,7 @@ class DeviceSerializer(serializers.ModelSerializer):
         allow_null=True,
     )
     battery = serializers.FloatField(
-        source="latest_event.properties.telemetry.battery_pct",
-        help_text="Percentage between 0 and 1",
-        allow_null=True,
+        source="dn_battery_pct", help_text="Percentage between 0 and 1", allow_null=True
     )
 
     class Meta:
@@ -121,9 +119,7 @@ class DeviceViewSet(utils.MultiSerializerViewSetMixin, viewsets.ReadOnlyModelVie
     filter_backends = (filters.DjangoFilterBackend,)
 
     filterset_class = DeviceFilter
-    queryset = (
-        models.Device.objects.with_latest_event().select_related("provider").all()
-    )
+    queryset = models.Device.objects.select_related("provider").all()
     serializers_mapping = {
         "list": {"response": DeviceSerializer},
         "retrieve": {"response": RetrieveDeviceSerializer},
