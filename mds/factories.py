@@ -1,17 +1,16 @@
 import datetime
-import random
 import zlib
 
 import factory
 
 from django.contrib.gis import geos
 from django.contrib.gis.geos.geometry import GEOSGeometry
-from django.contrib.gis.geos.point import Point
 from django.utils import timezone
 import pytz
 
 from . import models
 from . import enums
+from . import utils
 
 
 district10 = GEOSGeometry(
@@ -551,19 +550,6 @@ district10 = GEOSGeometry(
 )
 
 
-def get_random_point():
-    """Returns a random point in district10
-    """
-    while True:
-        point = Point(
-            random.uniform(-118.390_913_577_786_55, -118.282_293_999_832_76),
-            random.uniform(34.003_633_999_758_26, 34.079_881_247_644_08),
-        )
-        if district10.contains(point):
-            break
-    return point
-
-
 class Provider(factory.DjangoModelFactory):
     class Meta:
         model = models.Provider
@@ -588,7 +574,7 @@ class Device(factory.DjangoModelFactory):
     category = factory.Iterator(choice.name for choice in enums.DEVICE_CATEGORY)
     propulsion = factory.Iterator([choice.name] for choice in enums.DEVICE_PROPULSION)
 
-    dn_gps_point = factory.LazyFunction(get_random_point)
+    dn_gps_point = factory.LazyFunction(lambda: utils.get_random_point(district10))
     dn_gps_timestamp = factory.LazyFunction(timezone.now)
     dn_status = factory.Iterator(choice.name for choice in enums.DEVICE_STATUS)
 
@@ -699,7 +685,7 @@ class ProviderStatusChange(factory.DictFactory):
                 {
                     "type": "Point",
                     "coordinates": factory.LazyFunction(
-                        lambda: list(get_random_point().coords)
+                        lambda: list(utils.get_random_point(district10).coords)
                     ),
                 }
             ),
