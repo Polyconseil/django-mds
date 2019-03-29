@@ -1,7 +1,7 @@
 Changelog
 =========
 
-0.5.11 (unreleased)
+0.5.11 (2019-03-29)
 -------------------
 
 - Fix device name bike -> bicycle for MDS compliancy
