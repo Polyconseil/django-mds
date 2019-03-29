@@ -254,7 +254,7 @@ class DeviceViewSet(
     viewsets.GenericViewSet,
 ):
 
-    queryset = models.Device.objects.with_latest_event()
+    queryset = models.Device.objects.with_latest_events()
     permission_classes = (require_scopes(SCOPE_AGENCY_API),)
     lookup_field = "id"
     serializer_class = DeviceSerializer

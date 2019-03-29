@@ -5,6 +5,7 @@ Changelog
 -------------------
 
 - Fix the slowness when retrieving a device via private vehicle API
+- Fix with_latest_events query that is taking too much time, used in Agency API
 
 
 0.5.9 (2019-03-28)

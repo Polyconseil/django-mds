@@ -9,7 +9,7 @@ from django import forms, utils
 from django.contrib.gis.db import models as gis_models
 from django.contrib.postgres import fields as pg_fields
 from django.db import models
-from django.db.models import OuterRef, Subquery, Prefetch
+from django.db.models import Prefetch
 from django.utils import timezone
 
 from rest_framework.utils import encoders
@@ -109,21 +109,18 @@ class Provider(models.Model):
 
 
 class DeviceQueryset(models.QuerySet):
-    def with_latest_event(self):
-        return self.prefetch_related(
-            Prefetch(
-                "event_records",
-                queryset=EventRecord.objects.filter(
-                    id__in=Subquery(
-                        EventRecord.objects.filter(device_id=OuterRef("device_id"))
-                        .exclude(event_type="telemetry")
-                        .order_by("-timestamp")
-                        .values_list("id", flat=True)[:1]
-                    )
-                ),
-                to_attr="_latest_event",
-            )
+    def with_latest_events(self):
+        prefetched_events = Prefetch(
+            "event_records",
+            # Excluding telemetry because MDS Agency separates event from telemetry and the "latest_event" does not count telemetries as events
+            queryset=EventRecord.objects.exclude(event_type="telemetry").order_by(
+                "-timestamp"
+            ),
+            to_attr="_latest_events",
         )
+        # Here, we can't limit the query set, so in order to limit, we have to use a property latest_event (go see the property in the model)
+        prefetch_related = self.prefetch_related(prefetched_events)
+        return prefetch_related
 
 
 class Device(models.Model):
@@ -165,11 +162,15 @@ class Device(models.Model):
 
     @property
     def latest_event(self):
-        if hasattr(self, "_latest_event"):
+        if hasattr(self, "_latest_events"):
             # don't do a query in this case, the telemetry was prefetched.
-            return self._latest_event[0] if self._latest_event else None
-        device = Device.objects.filter(pk=self.pk).with_latest_event().get()
-        return device.latest_event
+            return self._latest_events[0] if self._latest_events else None
+        latest_events = (
+            EventRecord.objects.filter(device_id=self.id)
+            .exclude(event_type="telemetry")
+            .order_by("-timestamp")
+        )
+        return latest_events.first()
 
     @property
     def gps_point_as_geojson(self):
