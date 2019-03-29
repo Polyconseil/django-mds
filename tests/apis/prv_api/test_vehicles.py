@@ -121,7 +121,7 @@ def test_device_list_basic(client, django_assert_num_queries):
 def test_device_list_filters(client, django_assert_num_queries):
     factories.Device.create_batch(3, category="car", dn_status="available")
     factories.Device.create_batch(3, category="scooter", dn_status="unavailable")
-    factories.Device.create_batch(3, category="bike", dn_status="unavailable")
+    factories.Device.create_batch(3, category="bicycle", dn_status="unavailable")
 
     response = client.get("/prv/vehicles/?category=car", **auth_header(SCOPE_PRV_API))
     assert response.status_code == 200

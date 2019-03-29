@@ -2,7 +2,7 @@ import { prepRequest } from "./commons";
 
 export interface IVehicleResponse {
   unique_id: string;
-  type: "car" | "scooter" | "bicycle" | "car station" | "bike station";
+  type: "car" | "scooter" | "bicycle" | "car station" | "bicycle station";
   provider_id: string;
   current: {
     position: { lat: number; lng: number };
@@ -13,7 +13,7 @@ export interface IVehicleResponse {
 
 export interface IVehicleDetailResponse {
   unique_id: string;
-  type: "car" | "scooter" | "bicycle" | "car station" | "bike station";
+  type: "car" | "scooter" | "bicycle" | "car station" | "bicycle station";
   provider_id: string;
   current: {
     position: { lat: number; lng: number };
@@ -251,7 +251,7 @@ function randomVehicle(): IVehicleResponse {
       status: "available"
     },
     provider_id: "Metro Bike",
-    type: "bike station",
+    type: "bicycle station",
     unique_id: uniqueId(),
     extra: {
       capacity: 20,

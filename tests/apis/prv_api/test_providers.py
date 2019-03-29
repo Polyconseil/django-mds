@@ -21,7 +21,7 @@ def test_provider_basic(client, django_assert_num_queries):
     factories.Provider(
         id=uuid.UUID("ccccccc0-1342-413b-8e89-db802b2f83f6"),
         name="Test provider 3",
-        device_category="bike",
+        device_category="bicycle",
     )
 
     response = client.get("/prv/providers/")
@@ -62,7 +62,7 @@ def test_provider_basic(client, django_assert_num_queries):
         "id": "ccccccc0-1342-413b-8e89-db802b2f83f6",
         "name": "Test provider 3",
         "logo_b64": None,
-        "device_category": "bike",
+        "device_category": "bicycle",
         "base_api_url": "http://provider",
         "api_configuration": {"trailing_slash": False},
         "api_authentication": {"type": "none"},

@@ -23,7 +23,7 @@ const SCOOTER_ICON = L.icon({
   popupAnchor: [20, -25]
 });
 
-const BIKE_ICON = L.icon({
+const BICYCLE_ICON = L.icon({
   iconUrl: "/bicycle_picto.png",
 
   iconAnchor: [0, 25],
@@ -39,8 +39,8 @@ const CARSTATION_ICON = L.icon({
   popupAnchor: [12, -24]
 });
 
-const BIKESTATION_ICON = L.icon({
-  iconUrl: "/bikestation_picto.svg",
+const BICYCLESTATION_ICON = L.icon({
+  iconUrl: "/bicyclestation_picto.svg",
 
   iconAnchor: [12, 30],
   iconSize: [43, 43],
@@ -108,7 +108,7 @@ class AssetsViewer extends React.Component<IPositionRouteProps> {
           ` +
           `
             <tr><td style="text-align: right;">${
-              vehicle.type === "car station" ? "Cars" : "Bikes"
+              vehicle.type === "car station" ? "Cars" : "Bicycles"
             }:</td><td>${vehicle.extra.availability}</td></tr>
           `;
       }
@@ -120,10 +120,10 @@ class AssetsViewer extends React.Component<IPositionRouteProps> {
             : vehicle.type === "scooter"
             ? SCOOTER_ICON
             : vehicle.type === "bicycle"
-            ? BIKE_ICON
+            ? BICYCLE_ICON
             : vehicle.type === "car station"
             ? CARSTATION_ICON
-            : BIKESTATION_ICON
+            : BICYCLESTATION_ICON
       })
         .bindPopup(popupHTML)
         .addTo(map)

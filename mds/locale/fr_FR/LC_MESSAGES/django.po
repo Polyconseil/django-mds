@@ -74,7 +74,7 @@ msgid "Unknown"
 msgstr "Inconnu"
 
 msgctxt "Device category"
-msgid "Bike"
+msgid "Bicycle"
 msgstr "Vélo"
 
 msgctxt "Device category"

@@ -26,7 +26,7 @@ DEVICE_STATUS = enum.Enum(
 DEVICE_CATEGORY = enum.Enum(
     "Device category",
     [
-        ("bike", pgettext_lazy("Device category", "Bike")),
+        ("bicycle", pgettext_lazy("Device category", "Bicycle")),
         ("scooter", pgettext_lazy("Device category", "Scooter")),
         ("car", pgettext_lazy("Device category", "Car")),
     ],
