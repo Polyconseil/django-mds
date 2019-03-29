@@ -157,7 +157,7 @@ class DeviceTelemetrySerializer(serializers.Serializer):
     )
     charge = serializers.FloatField(
         required=False,
-        source="dn_battery_pct",
+        source="battery_pct",
         min_value=0,
         max_value=1,
         help_text="Percent battery charge of vehicle, expressed between 0 and 1",
