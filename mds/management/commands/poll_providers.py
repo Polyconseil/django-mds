@@ -201,12 +201,9 @@ class Command(management.BaseCommand):
         if self.verbosity > 1:
             self.stdout.write("Processing...")
 
-        # What is the latest event recorded in that series? (order is not asserted in the specs)
-        try:
-            last_start_time_polled = utils.from_mds_timestamp(
-                max(status_change["event_time"] for status_change in status_changes)
-            )
-        except (KeyError, ValueError):
+        # We already had the surprise of not receiving a integer timestamp but its string representation
+        status_changes = self.validate_event_times(status_changes)
+        if not status_changes:
             # Data so bad there is no or nothing but invalid event times
             logger.exception(
                 "No valid event_time found in status_changes series: %s", status_changes
@@ -219,16 +216,38 @@ class Command(management.BaseCommand):
             # The provider really doesn't help!
             return timezone.now()
 
+        # What is the latest event recorded in that series? (order is not asserted in the specs)
+        last_event_time_polled = utils.from_mds_timestamp(
+            max(status_change["event_time"] for status_change in status_changes)
+        )
+
         status_changes = self.validate_status_changes(status_changes, provider)
         if not status_changes:
-            # None were valid, we won't ask them again
-            return last_start_time_polled
+            # None were valid, we won't ask that series again
+            # (provided status changes are ordered by event_time ascending)
+            return last_event_time_polled
 
         self.create_missing_providers(status_changes)
         self.create_missing_devices(status_changes)
         self.create_event_records(status_changes)
 
-        return last_start_time_polled
+        return last_event_time_polled
+
+    def validate_event_times(self, status_changes):
+        """I need this one done before validating the rest of the data."""
+        validated_status_changes = []
+
+        for status_change in status_changes:
+            try:
+                status_change["event_time"] = int(status_change["event_time"])
+            except (KeyError, ValueError):
+                logger.warning(
+                    "status_change %s has no valid event_time", status_change
+                )
+                continue
+            validated_status_changes.append(status_change)
+
+        return validated_status_changes
 
     def validate_status_changes(self, status_changes, provider):
         """Some preliminary checks/addenda"""
@@ -239,7 +258,6 @@ class Command(management.BaseCommand):
             status_change["device_id"] = device_id = uuid.UUID(
                 status_change["device_id"]
             )
-            status_change["event_time"] = round(status_change["event_time"])
 
             # The list of event types and even the naming don't match between
             # the provider and agency APIs, so translate one to the other
