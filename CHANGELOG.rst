@@ -1,7 +1,7 @@
 Changelog
 =========
 
-0.5.12 (unreleased)
+0.5.12 (2019-04-05)
 -------------------
 
 - Embed compiled translations in releases
