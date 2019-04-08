@@ -6,6 +6,8 @@ Changelog
 
 - Delete creation_date and deletion_date fields on Area and Polygon
 - Fix slowness when listing vehicles on django admin
+- Save a register event on device create.
+
 
 0.5.13 (2019-04-12)
 -------------------
@@ -13,6 +15,7 @@ Changelog
 - Add token authentication by specifying token in browser url
 - Fix compiled translations not embedding in releases
 - Events pushed by providers now take precedence over pulled ones.
+
 
 0.5.12 (2019-04-05)
 -------------------

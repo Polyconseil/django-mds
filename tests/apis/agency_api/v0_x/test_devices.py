@@ -170,6 +170,9 @@ def test_device_add(client):
     assert response.status_code == 201
     assert response.data == {}
     assert models.Device.objects.count() == 1
+    device = models.Device.objects.get()
+    assert device.event_records.count() == 1
+    assert device.event_records.first().event_type == enums.EVENT_TYPE.register.name
 
 
 @pytest.mark.django_db
