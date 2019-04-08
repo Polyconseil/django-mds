@@ -107,7 +107,7 @@ class Provider(models.Model):
     )
 
     def __str__(self):
-        return "{} ({})".format(self.name, short_uuid4(self.id))
+        return "{} ({})".format(self.name or "Provider object", short_uuid4(self.id))
 
 
 class DeviceQueryset(models.QuerySet):
@@ -228,7 +228,7 @@ class Polygon(models.Model):
     properties = pg_fields.JSONField(default=dict, encoder=encoders.JSONEncoder)
 
     def __str__(self):
-        return "{} ({})".format(self.label, short_uuid4(self.id))
+        return "{} ({})".format(self.label or "Polygon object", short_uuid4(self.id))
 
 
 class Area(models.Model):
@@ -248,4 +248,4 @@ class Area(models.Model):
     )
 
     def __str__(self):
-        return "{} ({})".format(self.label, short_uuid4(self.id))
+        return "{} ({})".format(self.label or "Area object", short_uuid4(self.id))
