@@ -10,6 +10,7 @@ Changelog
 0.5.12 (2019-04-05)
 -------------------
 
+- Move to an "upsert" pattern to write event pushing
 - Embed compiled translations in releases
 - Added new functionalities when listing on django admin site
 

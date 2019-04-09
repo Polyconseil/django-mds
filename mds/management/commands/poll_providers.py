@@ -4,7 +4,6 @@ Pulling data for registered providers
 This is the opposite of provider pushing their data to the agency API.
 """
 import datetime
-import json
 import logging
 import threading
 import urllib.parse
@@ -358,34 +357,13 @@ class Command(management.BaseCommand):
 
     def create_event_records(self, status_changes):
         """Now record the... records"""
-
-        # Timestamps are unique per device, ignore duplicates
-        with connection.cursor() as cursor:
-            # Using "upsert"
-            cursor.executemany(
-                """INSERT INTO mds_eventrecord (
-                    device_id,
-                    timestamp,
-                    source,
-                    point,
-                    event_type,
-                    properties,
-                    saved_at
-                ) VALUES (
-                    %(device_id)s,
-                    %(timestamp)s,
-                    %(source)s,
-                    %(point)s,
-                    %(event_type)s,
-                    %(properties)s,
-                    %(saved_at)s
-                ) ON CONFLICT DO NOTHING
-                """,
-                (
-                    create_event_record(status_change)
-                    for status_change in status_changes
-                ),
-            )
+        utils.upsert_event_records(
+            (create_event_record(status_change) for status_change in status_changes),
+            "pull",
+            # Timestamps are unique per device, ignore duplicates
+            # Events already pushed by the provider will always have precedence
+            on_conflict_update=False,
+        )
 
 
 def create_device(status_change):
@@ -431,15 +409,13 @@ def create_event_record(status_change):
     else:  # Spec violation!
         point = None
 
-    return {
-        "device_id": status_change["device_id"],
-        "timestamp": utils.from_mds_timestamp(status_change["event_time"]),
-        "source": "pull",  # pulled by agency,
-        "point": point.ewkt if point else None,
-        "event_type": status_change["agency_event_type"],
-        "properties": json.dumps(properties),
-        "saved_at": timezone.now(),
-    }
+    return models.EventRecord(
+        device_id=status_change["device_id"],
+        timestamp=utils.from_mds_timestamp(status_change["event_time"]),
+        point=point,
+        event_type=status_change["agency_event_type"],
+        properties=properties,
+    )
 
 
 def translate_data(data, version):

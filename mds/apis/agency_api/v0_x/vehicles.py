@@ -11,9 +11,10 @@ from django.db.utils import IntegrityError
 
 from mds import enums
 from mds import models
+from mds import utils
 from mds.access_control.permissions import require_scopes
 from mds.access_control.scopes import SCOPE_AGENCY_API
-from mds.apis import utils
+from mds.apis import utils as apis_utils
 
 
 class DeviceSerializer(serializers.Serializer):
@@ -54,7 +55,7 @@ class DeviceSerializer(serializers.Serializer):
         help_text="Last Vehicle Event.",
         allow_null=True,
     )
-    updated = utils.UnixTimestampMilliseconds(
+    updated = apis_utils.UnixTimestampMilliseconds(
         source="latest_event.saved_at",
         help_text="Date of last event update as Unix Timestamp (milliseconds).",
         allow_null=True,
@@ -96,7 +97,7 @@ class DeviceRegisterSerializer(serializers.Serializer):
             )
         except IntegrityError:
             detail = f"A vehicle with id={validated_data['id']} is already registered"
-            raise utils.AlreadyRegisteredError({"already_registered": detail})
+            raise apis_utils.AlreadyRegisteredError({"already_registered": detail})
 
 
 class GPSSerializer(serializers.Serializer):
@@ -152,7 +153,7 @@ class DeviceTelemetrySerializer(serializers.Serializer):
 
     device_id = serializers.UUIDField()
     gps = GPSSerializer()
-    timestamp = utils.UnixTimestampMilliseconds(
+    timestamp = apis_utils.UnixTimestampMilliseconds(
         help_text="Unix timestamp in milliseconds"
     )
     charge = serializers.FloatField(
@@ -170,7 +171,7 @@ class DeviceEventSerializer(serializers.Serializer):
     event_type = serializers.ChoiceField(
         choices=enums.choices(enums.EVENT_TYPE), help_text="Vehicle event."
     )
-    timestamp = utils.UnixTimestampMilliseconds(
+    timestamp = apis_utils.UnixTimestampMilliseconds(
         help_text="Timestamp of the last event update"
     )
     telemetry = DeviceTelemetrySerializer(
@@ -187,7 +188,7 @@ class DeviceEventSerializer(serializers.Serializer):
 
     def create(self, validated_data):
         device = self.context["device"]
-        return models.EventRecord.objects.create(
+        event_record = models.EventRecord(
             timestamp=validated_data["timestamp"],
             point=gps_to_gis_point(validated_data["telemetry"].get("gps", {})),
             device_id=device.id,
@@ -196,6 +197,12 @@ class DeviceEventSerializer(serializers.Serializer):
                 "telemetry": validated_data["telemetry"],
                 "trip_id": validated_data.get("trip_id"),
             },
+        )
+        utils.upsert_event_records([event_record], "push", on_conflict_update=True)
+
+        # We don't get the created event record but we need to return it
+        return models.EventRecord.objects.get(
+            device=device, timestamp=validated_data["timestamp"]
         )
 
 
@@ -233,7 +240,7 @@ class DeviceTelemetryInputSerializer(serializers.Serializer):
                 {"data.device_id": "Unknown ids: %s" % " ".join(unknown_ids)}
             )
 
-        to_create = [
+        event_records = (
             models.EventRecord(
                 timestamp=telemetry["timestamp"],
                 point=gps_to_gis_point(telemetry.get("gps", {})),
@@ -242,12 +249,15 @@ class DeviceTelemetryInputSerializer(serializers.Serializer):
                 properties={"telemetry": telemetry, "trip_id": None},
             )
             for telemetry in validated_data["data"]
-        ]
-        return models.EventRecord.objects.bulk_create(to_create)
+        )
+        utils.upsert_event_records(event_records, "push", on_conflict_update=True)
+
+        # We don't have the created event records, but we'll return an empty response anyway
+        return []
 
 
 class DeviceViewSet(
-    utils.MultiSerializerViewSetMixin,
+    apis_utils.MultiSerializerViewSetMixin,
     mixins.ListModelMixin,
     mixins.RetrieveModelMixin,
     mixins.CreateModelMixin,
@@ -263,7 +273,7 @@ class DeviceViewSet(
         "retrieve": {"response": DeviceSerializer},
         "create": {
             "request": DeviceRegisterSerializer,
-            "response": utils.EmptyResponseSerializer,
+            "response": apis_utils.EmptyResponseSerializer,
         },
         "event": {
             "request": DeviceEventSerializer,
@@ -271,7 +281,7 @@ class DeviceViewSet(
         },
         "telemetry": {
             "request": DeviceTelemetryInputSerializer,
-            "response": utils.EmptyResponseSerializer,
+            "response": apis_utils.EmptyResponseSerializer,
         },
     }
 
