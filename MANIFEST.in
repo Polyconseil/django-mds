@@ -1,6 +1,9 @@
 include LICENSE README.md CHANGELOG.rst
+recursive-include mds/locale *
+
 exclude  manage.py
 exclude .env.example
+exclude prerelease_script.py
 
 graft mds
 prune front

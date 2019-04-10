@@ -5,6 +5,7 @@ Changelog
 -------------------
 
 - Add token authentication by specifying token in browser url
+- Fix compiled translations not embedding in releases
 
 
 0.5.12 (2019-04-05)
