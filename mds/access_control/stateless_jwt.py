@@ -29,7 +29,9 @@ class StatelessJwtAuthentication(BaseAuthentication):
         auth_header = get_authorization_header(request)
 
         if not auth_header:
-            return None
+            # only check on GET method
+            # for other methods such as POST, you would usually specify the header and the token in it
+            return request.GET.get("token", None)
 
         auth_header_prefix = "Bearer ".lower()
         auth = smart_text(auth_header)
