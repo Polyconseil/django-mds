@@ -706,14 +706,10 @@
   pk: 6441b544-0be1-4ec1-aa70-729fe1cebe97
   fields:
     label: "test_area"
-    creation_date: 2018-08-01T00:00:00Z
-    deletion_date: null
 - model: mds.polygon
   pk: 6441b544-0be1-4ec1-aa70-439fe1cebe97
   fields:
     label: "test_polygon"
-    creation_date: 2018-08-01T00:00:00Z
-    deletion_date: null
     geom:
       SRID=4326;POLYGON ((-118.2843063056015 34.06371498771665, -118.2842040002129
       34.06370000073153, -118.2841039999419 34.06367000044555, -118.2839099990901

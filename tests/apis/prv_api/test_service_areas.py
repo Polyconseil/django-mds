@@ -43,7 +43,7 @@ def test_area_creation(client):
 @pytest.mark.django_db
 def test_area_get(client):
     area_id = uuid.uuid4()
-    area = Area(id=area_id, label="test_area", creation_date="2012-01-01T00:00:00Z")
+    area = Area(id=area_id, label="test_area")
 
     response = client.get(
         "{}{}/".format(AREA_BASE_URL, str(area_id)), **auth_header(SCOPE_PRV_API)
@@ -51,20 +51,12 @@ def test_area_get(client):
     assert response.status_code == 200
     data = dict(response.data)
     poly = list(map(dict, data.pop("polygons")))
-    assert data == {
-        "id": str(area_id),
-        "creation_date": "2012-01-01T00:00:00Z",
-        "label": "test_area",
-        "deletion_date": None,
-        "color": "#FFFFFF",
-    }
+    assert data == {"id": str(area_id), "label": "test_area", "color": "#FFFFFF"}
     assert poly == [
         {
             "id": str(area.polygons.get().id),
             "areas": [area_id],
             "label": "",
-            "creation_date": "2018-08-01T00:00:00Z",
-            "deletion_date": None,
             "geom": {
                 "coordinates": [
                     [[0.0, 0.0], [0.0, 50.0], [50.0, 50.0], [50.0, 0.0], [0.0, 0.0]]
@@ -78,7 +70,7 @@ def test_area_get(client):
 @pytest.mark.django_db
 def test_area_patch(client):
     area_id = str(uuid.uuid4())
-    area = Area(id=area_id, label="test_area", creation_date="2012-01-01T00:00:00Z")
+    area = Area(id=area_id, label="test_area")
 
     response = client.patch(
         "{}{}/".format(AREA_BASE_URL, area_id),
@@ -94,7 +86,7 @@ def test_area_patch(client):
 @pytest.mark.django_db
 def test_area_update(client):
     area_id = str(uuid.uuid4())
-    area = Area(id=area_id, label="test_area", creation_date="2012-01-01T00:00:00Z")
+    area = Area(id=area_id, label="test_area")
 
     response = client.put(
         "{}{}/".format(AREA_BASE_URL, area_id),
@@ -155,12 +147,7 @@ def test_all_polygons_get(client):
 def test_polygon_creation(client):
     response = client.post(
         POLY_BASE_URL,
-        data={
-            "label": "test",
-            "creation_date": "2012-01-01T00:00:00Z",
-            "geom": MOCK_GEOJSON,
-            "areas": [],
-        },
+        data={"label": "test", "geom": MOCK_GEOJSON, "areas": []},
         content_type="application/json",
         **auth_header(SCOPE_PRV_API),
     )
@@ -171,13 +158,7 @@ def test_polygon_creation(client):
 @pytest.mark.django_db
 def test_polygon_get(client):
     polygon_id = str(uuid.uuid4())
-    Polygon(
-        id=polygon_id,
-        label="test",
-        properties={},
-        creation_date="2012-01-01T00:00:00Z",
-        geom=str(MOCK_GEOJSON),
-    )
+    Polygon(id=polygon_id, label="test", properties={}, geom=str(MOCK_GEOJSON))
 
     response = client.get(
         "{}{}/".format(POLY_BASE_URL, polygon_id), **auth_header(SCOPE_PRV_API)
@@ -187,8 +168,6 @@ def test_polygon_get(client):
         "id": polygon_id,
         "areas": [],
         "label": "test",
-        "creation_date": "2012-01-01T00:00:00Z",
-        "deletion_date": None,
         "geom": MOCK_GEOJSON,
     }
 
@@ -196,13 +175,7 @@ def test_polygon_get(client):
 @pytest.mark.django_db
 def test_polygon_patch(client):
     polygon_id = str(uuid.uuid4())
-    poly = Polygon(
-        id=polygon_id,
-        label="test",
-        properties={},
-        creation_date="2012-01-01T00:00:00Z",
-        geom=str(MOCK_GEOJSON),
-    )
+    poly = Polygon(id=polygon_id, label="test", properties={}, geom=str(MOCK_GEOJSON))
 
     response = client.patch(
         "{}{}/".format(POLY_BASE_URL, polygon_id),
@@ -218,13 +191,7 @@ def test_polygon_patch(client):
 @pytest.mark.django_db
 def test_polygon_update(client):
     polygon_id = str(uuid.uuid4())
-    poly = Polygon(
-        id=polygon_id,
-        label="test",
-        properties={},
-        creation_date="2012-01-01T00:00:00Z",
-        geom=str(MOCK_GEOJSON),
-    )
+    poly = Polygon(id=polygon_id, label="test", properties={}, geom=str(MOCK_GEOJSON))
 
     response = client.put(
         "{}{}/".format(POLY_BASE_URL, polygon_id),
@@ -236,12 +203,7 @@ def test_polygon_update(client):
 
     response = client.put(
         "{}{}/".format(POLY_BASE_URL, polygon_id),
-        data={
-            "label": "test 2",
-            "creation_date": "2012-01-01T00:00:00Z",
-            "geom": MOCK_GEOJSON,
-            "areas": [],
-        },
+        data={"label": "test 2", "geom": MOCK_GEOJSON, "areas": []},
         content_type="application/json",
         **auth_header(SCOPE_PRV_API),
     )

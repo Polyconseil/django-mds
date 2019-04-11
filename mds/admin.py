@@ -61,13 +61,11 @@ def get_devices_queryset_search_results(self, search_term):
 
 @admin.register(models.Area)
 class AreaAdmin(admin.ModelAdmin):
-    list_display = ["id", "creation_date", "deletion_date", "label"]
-    list_filter = ["creation_date", "deletion_date"]
-    ordering = ["-creation_date"]
+    list_display = ["id", "label"]
+    ordering = ["label"]
 
 
 @admin.register(models.Polygon)
 class PolygonAdmin(admin.ModelAdmin):
-    list_display = ["id", "creation_date", "deletion_date", "label"]
-    list_filter = ["creation_date", "deletion_date"]
-    ordering = ["-creation_date"]
+    list_display = ["id", "label"]
+    ordering = ["label"]

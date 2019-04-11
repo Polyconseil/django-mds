@@ -53,15 +53,11 @@ class PolygonResponseSerializer(serializers.Serializer):
 
     id = serializers.UUIDField(help_text="Unique Polygon identifier (UUID)")
     label = serializers.CharField(help_text="Name of the polygon")
-    creation_date = serializers.DateTimeField(help_text="Polygon creation date")
-    deletion_date = serializers.DateTimeField(
-        required=False, help_text="Polygon deletion date"
-    )
     geom = utils.PolygonSerializer(help_text="GeoJSON Polygon")
     areas = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
 
     class Meta:
-        fields = ("id", "label", "creation_date", "deletion_date", "geom", "areas")
+        fields = ("id", "label", "geom", "areas")
 
 
 class PolygonsImportRequestSerializer(serializers.Serializer):
@@ -178,16 +174,11 @@ class AreaResponseSerializer(serializers.Serializer):
 
     id = serializers.UUIDField(help_text="Unique Area identifier (UUID)")
     label = serializers.CharField(help_text="Name of the Area")
-    creation_date = serializers.DateTimeField(help_text="Area creation date")
-    deletion_date = serializers.DateTimeField(
-        required=False, help_text="Area deletion date"
-    )
-    label = serializers.CharField(help_text="Name of the Area")
     polygons = PolygonResponseSerializer(many=True)
     color = serializers.CharField(help_text="Color of the Area")
 
     class Meta:
-        fields = ("id", "label", "creation_date", "deletion_date", "polygons", "color")
+        fields = ("id", "label", "polygons", "color")
 
 
 class AreaViewSet(utils.MultiSerializerViewSetMixin, viewsets.ModelViewSet):
