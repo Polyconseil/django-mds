@@ -1,7 +1,7 @@
 Changelog
 =========
 
-0.5.13 (unreleased)
+0.5.13 (2019-04-12)
 -------------------
 
 - Add token authentication by specifying token in browser url
