@@ -89,6 +89,7 @@ class Command(management.BaseCommand):
     def handle(self, *args, **options):
         self.verbosity = options["verbosity"]
         self.token_cache = {}
+        # These are sets of UUIDs
         self.providers = set(models.Provider.objects.values_list("pk", flat=True))
         self.devices = set(models.Device.objects.values_list("pk", flat=True))
 
@@ -349,11 +350,13 @@ class Command(management.BaseCommand):
             )
 
         devices_added = [
-            str(status_change["device_id"]) for status_change in with_missing_devices
+            status_change["device_id"] for status_change in with_missing_devices
         ]
         if devices_added:
             self.devices.update(devices_added)
-            self.stdout.write("Devices created: %s" % ", ".join(devices_added))
+            self.stdout.write(
+                "Devices created: %s" % ", ".join(str(uid) for uid in devices_added)
+            )
 
     def create_event_records(self, status_changes):
         """Now record the... records"""
