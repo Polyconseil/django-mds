@@ -150,7 +150,7 @@ class Command(management.BaseCommand):
                     status_changes, provider
                 )
                 provider.last_start_time_polled = last_start_time_polled
-                provider.save()
+                provider.save(update_fields=["last_start_time_polled"])
 
             next_url = body.get("links", {}).get("next")
 
