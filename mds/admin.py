@@ -23,6 +23,7 @@ class DeviceAdmin(admin.ModelAdmin):
     list_display = ["id", "provider_name", "identification_number", "category"]
     list_filter = ["provider", "category"]
     search_fields = ["id", "identification_number"]
+    list_select_related = ["provider"]
 
     def provider_name(self, obj):
         return obj.provider.name

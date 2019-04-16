@@ -5,7 +5,7 @@ Changelog
 -------------------
 
 - Delete creation_date and deletion_date fields on Area and Polygon
-
+- Fix slowness when listing vehicles on django admin
 
 0.5.13 (2019-04-12)
 -------------------
