@@ -1,7 +1,7 @@
 Changelog
 =========
 
-0.5.14 (unreleased)
+0.5.14 (2019-04-16)
 -------------------
 
 - Delete creation_date and deletion_date fields on Area and Polygon
