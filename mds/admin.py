@@ -21,7 +21,7 @@ class ProviderAdmin(admin.ModelAdmin):
 @admin.register(models.Device)
 class DeviceAdmin(admin.ModelAdmin):
     list_display = ["id", "provider_name", "identification_number", "category"]
-    list_filter = ["provider", "model", "category"]
+    list_filter = ["provider", "category"]
     search_fields = ["id", "identification_number"]
 
     def provider_name(self, obj):
