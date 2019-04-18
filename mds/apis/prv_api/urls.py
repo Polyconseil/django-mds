@@ -1,11 +1,8 @@
-from rest_framework import routers
 from django.conf.urls import include
 from django.urls import path
+from rest_framework import routers
 
-from . import providers
-from . import service_areas
-from . import vehicles
-from . import authent
+from . import authent, provider_api, providers, service_areas, vehicles
 
 
 def get_prv_router():
@@ -19,6 +16,9 @@ def get_prv_router():
     prv_router.register(r"service_areas", service_areas.AreaViewSet)
     prv_router.register(r"polygons", service_areas.PolygonViewSet)
     prv_router.register(r"vehicles", vehicles.DeviceViewSet, basename="device")
+    prv_router.register(
+        r"provider_api", provider_api.ProviderApiViewSet, basename="provider_api"
+    )
     return prv_router
 
 
