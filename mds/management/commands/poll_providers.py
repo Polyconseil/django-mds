@@ -4,17 +4,21 @@ Pulling data for registered providers
 This is the opposite of provider pushing their data to the agency API.
 """
 import datetime
+import json
 import logging
 import threading
 import urllib.parse
 import uuid
 
+from django.conf import settings
 from django.contrib.gis import geos
 from django.core import management
+from django.core.cache import caches
 from django.db import connection
 from django.db import transaction
 from django.utils import timezone
 
+from cryptography import fernet
 from oauthlib.oauth2 import BackendApplicationClient
 import requests
 from requests_oauthlib import OAuth2Session
@@ -27,15 +31,14 @@ from mds import utils
 
 
 ACCEPTED_MDS_VERSIONS = ["0.2", "0.3"]
+CACHE_KEY_PATTERN = "mds:oauth2-token:%s"  # Provider ID added
+
+cache = caches[settings.POLLER_TOKEN_CACHE]
 
 logger = logging.getLogger(__name__)
 
 
 class OAuth2Store(threading.local):
-    def __init__(self):
-        super().__init__()
-        self.token_cache = {}
-
     def get_client(self, provider):
         """Authenticate using the Backend Application Flow from OAuth2."""
         client_id = provider.api_authentication["client_id"]
@@ -45,13 +48,17 @@ class OAuth2Store(threading.local):
 
     def _get_access_token(self, provider):
         """Fetch and cache the token."""
-        if provider not in self.token_cache:
-            self.token_cache[provider] = self._fetch_access_token(provider)
-        return self.token_cache[provider]
+        key = CACHE_KEY_PATTERN % provider.pk
+        token = self._decrypt_token(cache.get(key, ""))
+        if token:
+            return token
+        token = self._fetch_access_token(provider)
+        cache.set(key, self._encrypt_token(token), timeout=token["expires_in"] - 10)
+        return token
 
     @retry(stop_max_attempt_number=2)
     def _fetch_access_token(self, provider):
-        """Fetch an access token from the provider"""
+        """Fetch a new access token from the provider"""
         client_id = provider.api_authentication["client_id"]
         client_secret = provider.api_authentication["client_secret"]
         client = BackendApplicationClient(client_id=client_id)
@@ -79,6 +86,26 @@ class OAuth2Store(threading.local):
         )
         return token
 
+    @staticmethod
+    def _encrypt_token(token):
+        encoded = json.dumps(token).encode("utf8")  # Fernet needs bytes
+        return fernet.Fernet(settings.POLLER_TOKEN_ENCRYPTION_KEY).encrypt(encoded)
+
+    @staticmethod
+    def _decrypt_token(encrypted):
+        try:
+            encoded = fernet.Fernet(settings.POLLER_TOKEN_ENCRYPTION_KEY).decrypt(
+                encrypted
+            )
+        except fernet.InvalidToken:  # The encryption key, not our token!
+            return None
+        else:
+            return json.loads(encoded)
+
+    def flush_token(self, provider):
+        key = CACHE_KEY_PATTERN % provider.pk
+        cache.delete(key)
+
 
 oauth2_store = OAuth2Store()
 
@@ -88,7 +115,6 @@ class Command(management.BaseCommand):
 
     def handle(self, *args, **options):
         self.verbosity = options["verbosity"]
-        self.token_cache = {}
         # These are sets of UUIDs
         self.providers = set(models.Provider.objects.values_list("pk", flat=True))
         self.devices = set(models.Device.objects.values_list("pk", flat=True))
@@ -105,6 +131,8 @@ class Command(management.BaseCommand):
             try:
                 self.poll_status_changes(provider)
             except Exception:  # pylint: disable=broad-except
+                if settings.DEBUG:
+                    raise
                 logger.exception("Error in polling provider %s", provider.name)
                 self.stdout.write("Polling failed!")
                 # Try the next provider anyway
@@ -176,8 +204,9 @@ class Command(management.BaseCommand):
         if self.verbosity > 1:
             self.stdout.write("Polling provider on URL %s" % url)
         response = client.get(url, timeout=30, headers=headers)
-        # When we get a 401 with oauth2, we should try renewing the access token,
-        # but when we try every minute, we're just delaying that retrial
+        # Token may be expired sooner than expected, retry in one minute
+        if response.status_code in (401, 403):
+            oauth2_store.flush_token(provider)
         response.raise_for_status()
 
         # Servers should send what version of the API was served
