@@ -77,7 +77,6 @@ def test_poll_provider_batch(client):
     assert_event_equal(event1, expected_event1)
 
     # The second device was created on the fly
-    assert "Devices created: %s" % expected_device2.pk in stdout.getvalue()
     device2 = models.Device.objects.get(pk=expected_device2.pk)
     event2 = device2.event_records.get()
 
@@ -100,8 +99,8 @@ def test_several_providers(client, django_assert_num_queries):
     )
     stdout, stderr = io.StringIO(), io.StringIO()
 
-    n = 1  # List of provider IDs
-    n += 1  # List of device IDs
+    n = 2  # List of provider IDs (for each provider)
+    n += 2  # List of device IDs (for each provider)
     n += 1  # List of providers
     n += (
         2  # Savepoint/release for each provider
