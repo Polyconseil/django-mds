@@ -6,7 +6,7 @@ This is the opposite of provider pushing their data to the agency API.
 from django.core import management
 
 from mds import models
-from mds.provider_api import poller
+from mds.provider_poller import poller
 
 
 class Command(management.BaseCommand):

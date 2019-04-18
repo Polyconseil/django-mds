@@ -10,9 +10,9 @@ from django.contrib.gis.geos import Point
 from django.db.utils import IntegrityError
 from django.utils import timezone
 
+from mds import db_helpers
 from mds import enums
 from mds import models
-from mds import utils
 from mds.access_control.permissions import require_scopes
 from mds.access_control.scopes import SCOPE_AGENCY_API
 from mds.apis import utils as apis_utils
@@ -205,7 +205,7 @@ class DeviceEventSerializer(serializers.Serializer):
                 "trip_id": validated_data.get("trip_id"),
             },
         )
-        utils.upsert_event_records([event_record], "push", on_conflict_update=True)
+        db_helpers.upsert_event_records([event_record], "push", on_conflict_update=True)
 
         # We don't get the created event record but we need to return it
         return models.EventRecord.objects.get(
@@ -257,7 +257,7 @@ class DeviceTelemetryInputSerializer(serializers.Serializer):
             )
             for telemetry in validated_data["data"]
         )
-        utils.upsert_event_records(event_records, "push", on_conflict_update=True)
+        db_helpers.upsert_event_records(event_records, "push", on_conflict_update=True)
 
         # We don't have the created event records, but we'll return an empty response anyway
         return []

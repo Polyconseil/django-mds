@@ -88,20 +88,20 @@ def test_poll_provider_batch(client):
 def test_several_providers(client, django_assert_num_queries):
     """Two providers this time."""
     provider1 = factories.Provider(base_api_url="http://provider1")
-    device1 = factories.Device(provider=provider1)
+    device1 = factories.Device.build(provider=provider1)
     expected_event1 = factories.EventRecord.build(
         event_type=enums.EVENT_TYPE.rebalance_drop_off.name
     )
     provider2 = factories.Provider(base_api_url="http://provider2")
-    device2 = factories.Device(provider=provider2)
+    device2 = factories.Device.build(provider=provider2)
     expected_event2 = factories.EventRecord.build(
         event_type=enums.EVENT_TYPE.trip_start.name
     )
     stdout, stderr = io.StringIO(), io.StringIO()
 
-    n = 2  # List of provider IDs (for each provider)
+    n = 1  # List of providers
+    n += 2  # List of provider IDs (for each provider)
     n += 2  # List of device IDs (for each provider)
-    n += 1  # List of providers
     n += (
         2  # Savepoint/release for each provider
         + 1  # Insert missing devices

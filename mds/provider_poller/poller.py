@@ -9,13 +9,13 @@ import urllib.parse
 import uuid
 
 from django.contrib.gis import geos
-from django.db import connection
 from django.db import transaction
 from django.utils import timezone
 
 import requests
 from retrying import retry
 
+from mds import db_helpers
 from mds import enums
 from mds import models
 from mds import utils
@@ -240,21 +240,28 @@ class StatusChangesPoller:
     def _create_missing_providers(self, status_changes):
         """Make sure all providers mentioned exist"""
 
-        for status_change in status_changes:
-            provider_id = status_change["provider_id"]
-            if provider_id not in self.provider_uids:
-                try:
-                    name = status_change["provider_name"]
-                except KeyError:  # Spec violation!
-                    logger.warning("Provider %s has no name", provider_id)
-                    name = ""
-                device_category = status_change["vehicle_type"]
+        with_missing_providers = [
+            status_change
+            for status_change in status_changes
+            if status_change["provider_id"] not in self.provider_uids
+        ]
 
-                models.Provider.objects.create(
-                    pk=provider_id, name=name, device_category=device_category
+        if with_missing_providers:
+            db_helpers.upsert_providers(
+                (
+                    _create_provider(status_change)
+                    for status_change in with_missing_providers
                 )
-                self.provider_uids.add(provider_id)
-                logger.info("Provider %s %s was created.", name, provider_id)
+            )
+
+            providers_added = [
+                status_change["provider_id"] for status_change in with_missing_providers
+            ]
+            self.provider_uids.update(providers_added)
+
+            logger.info(
+                "Providers created: %s", ", ".join(str(uid) for uid in providers_added)
+            )
 
     def _create_missing_devices(self, status_changes):
         """Make sure all devices mentioned exist"""
@@ -265,48 +272,26 @@ class StatusChangesPoller:
             if status_change["device_id"] not in self.device_uids
         ]
 
-        with connection.cursor() as cursor:
-            cursor.executemany(
-                """INSERT INTO mds_device (
-                    id,
-                    provider_id,
-                    registration_date,
-                    identification_number,
-                    category,
-                    model,
-                    propulsion,
-                    manufacturer,
-                    dn_status
-                ) VALUES (
-                    %(id)s,
-                    %(provider_id)s,
-                    %(registration_date)s,
-                    %(identification_number)s,
-                    %(category)s,
-                    %(model)s,
-                    %(propulsion)s,
-                    %(manufacturer)s,
-                    %(dn_status)s
-                ) ON CONFLICT DO NOTHING
-                """,
+        if with_missing_devices:
+            db_helpers.upsert_devices(
                 (
                     _create_device(status_change)
                     for status_change in with_missing_devices
-                ),
+                )
             )
 
-        devices_added = [
-            status_change["device_id"] for status_change in with_missing_devices
-        ]
-        if devices_added:
+            devices_added = [
+                status_change["device_id"] for status_change in with_missing_devices
+            ]
             self.device_uids.update(devices_added)
+
             logger.info(
                 "Devices created: %s", ", ".join(str(uid) for uid in devices_added)
             )
 
     def _create_event_records(self, status_changes):
         """Now record the... records"""
-        utils.upsert_event_records(
+        db_helpers.upsert_event_records(
             (_create_event_record(status_change) for status_change in status_changes),
             "pull",
             # Timestamps are unique per device, ignore duplicates
@@ -315,25 +300,35 @@ class StatusChangesPoller:
         )
 
 
+def _create_provider(status_change):
+    provider_id = status_change["provider_id"]
+    try:
+        name = status_change["provider_name"]
+    except KeyError:  # Spec violation!
+        logger.warning("Provider %s has no name", provider_id)
+        name = ""
+
+    return models.Provider(
+        id=provider_id, name=name, device_category=status_change["vehicle_type"]
+    )
+
+
 def _create_device(status_change):
     device_id = status_change["device_id"]
     identification_number = status_change["vehicle_id"]
     if not identification_number:  # Spec violation!
+        logger.warning("Device %s has no identification number", device_id)
         identification_number = "test-%s" % str(device_id).split("-", 1)
 
-    return {
-        "id": device_id,
+    return models.Device(
+        id=device_id,
         # Don't assume the device received belongs to the provider requested
         # The LA sandbox contains data for several providers
-        "provider_id": status_change["provider_id"],
-        "registration_date": timezone.now(),
-        "identification_number": identification_number,
-        "category": status_change["vehicle_type"],
-        "model": "",
-        "propulsion": status_change["propulsion_type"],
-        "manufacturer": "",
-        "dn_status": enums.DEVICE_STATUS.unknown.name,
-    }
+        provider_id=status_change["provider_id"],
+        identification_number=identification_number,
+        category=status_change["vehicle_type"],
+        propulsion=status_change["propulsion_type"],
+    )
 
 
 def _create_event_record(status_change):
