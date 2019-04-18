@@ -84,10 +84,12 @@ class Provider(models.Model):
     )
     api_authentication = pg_fields.JSONField(
         default=provider_api_authentication_default,
+        blank=True,
         verbose_name="Provider API Authentication",
     )
     api_configuration = pg_fields.JSONField(
         default=provider_api_configuration_default,
+        blank=True,
         verbose_name="Provider API Configuration",
     )
     # We may poll a provider, e.g. LADOT sandbox that replies for many providers
@@ -98,10 +100,12 @@ class Provider(models.Model):
     # The following fields are for the provider pushing data to us
     agency_api_authentication = pg_fields.JSONField(
         default=agency_api_authentication_default,
+        blank=True,
         verbose_name="Agency API Authentication",
     )
     agency_api_configuration = pg_fields.JSONField(
         default=agency_api_configuration_default,
+        blank=True,
         verbose_name="Agency API Configuration",
     )
 
