@@ -332,7 +332,11 @@ class Command(management.BaseCommand):
         for status_change in status_changes:
             provider_id = status_change["provider_id"]
             if provider_id not in self.providers:
-                name = status_change["provider_name"]
+                try:
+                    name = status_change["provider_name"]
+                except KeyError:  # Spec violation!
+                    logger.warning("Provider %s has no name", provider_id)
+                    name = ""  # Allowed by the model
                 device_category = status_change["vehicle_type"]
 
                 models.Provider.objects.create(
