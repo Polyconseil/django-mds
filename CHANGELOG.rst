@@ -1,7 +1,7 @@
 Changelog
 =========
 
-0.5.15 (unreleased)
+0.5.15 (2019-04-19)
 -------------------
 
 - Add an aggregated "provider poll" endpoint (private and MDS 0.3.0 compliant).
