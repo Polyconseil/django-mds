@@ -1,7 +1,7 @@
 Changelog
 =========
 
-0.5.16 (unreleased)
+0.5.16 (2019-04-19)
 -------------------
 
 - Fix regression in the poller extracted from the management command.
