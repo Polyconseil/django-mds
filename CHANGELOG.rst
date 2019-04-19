@@ -5,6 +5,9 @@ Changelog
 -------------------
 
 - Add an aggregated "provider poll" endpoint (private and MDS 0.3.0 compliant).
+- Fix admin on optional fields that were deemed required.
+- Refactoring the poller for concurrent runs.
+- Multiples fixes for the poller: persistent token and spec deviation robustness.
 
 
 0.5.14 (2019-04-16)
