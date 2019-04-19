@@ -27,7 +27,7 @@ def _encrypt_token(token):
 def _decrypt_token(encrypted):
     try:
         encoded = fernet.Fernet(settings.POLLER_TOKEN_ENCRYPTION_KEY).decrypt(encrypted)
-    except fernet.InvalidToken:  # The encryption key, not our token!
+    except (fernet.InvalidToken, TypeError):  # The encryption key, not our token!
         return None
     else:
         return json.loads(encoded)
@@ -51,7 +51,7 @@ class OAuth2Store(threading.local):
         if token:
             logger.debug("Token already in cache")
             return token
-        token = self._fetch_access_token(self.provider)
+        token = self._fetch_access_token()
         cache.set(key, _encrypt_token(token), timeout=token["expires_in"] - 10)
         logger.debug("Token stored in cache")
         return token
