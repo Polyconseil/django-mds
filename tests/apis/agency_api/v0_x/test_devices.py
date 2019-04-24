@@ -1,4 +1,5 @@
 import datetime
+import uuid
 
 import pytest
 
@@ -22,8 +23,8 @@ def test_devices_metadata(client):
 @pytest.mark.django_db
 def test_device_list_basic(client, django_assert_num_queries):
     today = datetime.datetime(2012, 1, 1, tzinfo=datetime.timezone.utc)
-    uuid1 = "aaaaaaa1-1342-413b-8e89-db802b2f83f6"
-    uuid2 = "ccccccc3-1342-413b-8e89-db802b2f83f6"
+    uuid1 = uuid.UUID("aaaaaaa1-1342-413b-8e89-db802b2f83f6")
+    uuid2 = uuid.UUID("ccccccc3-1342-413b-8e89-db802b2f83f6")
 
     provider = factories.Provider(name="Test provider")
     provider2 = factories.Provider(name="Test another provider")
@@ -72,7 +73,7 @@ def test_device_list_basic(client, django_assert_num_queries):
     )
 
     expected_device = {
-        "device_id": uuid1,
+        "device_id": str(uuid1),
         "provider_id": str(provider.id),
         "vehicle_id": "1AAAAA",
         "model": "Testa_Model_S",
@@ -86,7 +87,7 @@ def test_device_list_basic(client, django_assert_num_queries):
     }
 
     expected_device2 = {
-        "device_id": uuid2,
+        "device_id": str(uuid2),
         "provider_id": str(provider.id),
         "vehicle_id": "3CCCCC",
         "model": "Testa_Model_X",
@@ -141,12 +142,14 @@ def test_device_list_basic(client, django_assert_num_queries):
 
 
 @pytest.mark.django_db
-def test_device_add(client):
-    provider = factories.Provider(id="aaaa0000-61fd-4cce-8113-81af1de90942")
-    device_id = "bbbb0000-61fd-4cce-8113-81af1de90942"
+def test_device_register(client):
+    provider = factories.Provider(id=uuid.UUID("aaaa0000-61fd-4cce-8113-81af1de90942"))
+    device_id = uuid.UUID("bbbb0000-61fd-4cce-8113-81af1de90942")
+
+    assert models.Device.objects.count() == 0
 
     data = {
-        "device_id": device_id,
+        "device_id": str(device_id),
         "vehicle_id": "foo",
         "type": "scooter",
         "propulsion": ["electric"],
@@ -155,12 +158,12 @@ def test_device_add(client):
         "model": "IDFX 3000",
     }
 
-    assert models.Device.objects.count() == 0
-    # test auth
+    # Test auth
     response = client.post(
         "/mds/v0.x/vehicles/", data=data, content_type="application/json"
     )
     assert response.status_code == 401
+
     response = client.post(
         "/mds/v0.x/vehicles/",
         data=data,
@@ -169,22 +172,24 @@ def test_device_add(client):
     )
     assert response.status_code == 201
     assert response.data == {}
-    assert models.Device.objects.count() == 1
-    device = models.Device.objects.get()
-    assert device.event_records.count() == 1
-    assert device.event_records.first().event_type == enums.EVENT_TYPE.register.name
+
+    device = models.Device.objects.get()  # Also tests unicity
+    assert device.provider == provider
+    # A "register" event was also created
+    event_record = device.event_records.get()
+    assert event_record.event_type == enums.EVENT_TYPE.register.name
 
 
 @pytest.mark.django_db
 def test_device_event(client):
-    provider = factories.Provider(id="aaaa0000-61fd-4cce-8113-81af1de90942")
-    device_id = "bbbb0000-61fd-4cce-8113-81af1de90942"
+    provider = factories.Provider(id=uuid.UUID("aaaa0000-61fd-4cce-8113-81af1de90942"))
+    device_id = uuid.UUID("bbbb0000-61fd-4cce-8113-81af1de90942")
     device = factories.Device(id=device_id, provider=provider)
 
     data = {
         "event_type": "service_end",
         "telemetry": {
-            "device_id": device_id,
+            "device_id": str(device_id),
             "timestamp": 1_325_376_000_000,
             "gps": {
                 "lat": 0.0,
@@ -218,20 +223,20 @@ def test_device_event(client):
         **auth_header(SCOPE_AGENCY_API, provider_id=provider.id),
     )
     assert response.status_code == 201
-    assert response.data == {"device_id": device_id, "status": "removed"}
+    assert response.data == {"device_id": str(device_id), "status": "removed"}
     assert device.event_records.all().count() == 1
 
 
 @pytest.mark.django_db
 def test_device_event_inverted_coordinates(client):
-    provider = factories.Provider(id="aaaa0000-61fd-4cce-8113-81af1de90942")
-    device_id = "bbbb0000-61fd-4cce-8113-81af1de90942"
+    provider = factories.Provider(id=uuid.UUID("aaaa0000-61fd-4cce-8113-81af1de90942"))
+    device_id = uuid.UUID("bbbb0000-61fd-4cce-8113-81af1de90942")
     device = factories.Device(id=device_id, provider=provider)
 
     data = {
         "event_type": "service_end",
         "telemetry": {
-            "device_id": device_id,
+            "device_id": str(device_id),
             "timestamp": 1_325_376_000_000,
             "gps": {
                 "lat": -118.279_678,  # Not within [-90 90]
@@ -270,25 +275,25 @@ def test_device_event_inverted_coordinates(client):
         **auth_header(SCOPE_AGENCY_API, provider_id=provider.id),
     )
     assert response.status_code == 201
-    assert response.data == {"device_id": device_id, "status": "removed"}
+    assert response.data == {"device_id": str(device_id), "status": "removed"}
     # Stored as (lng lat) as expected
     assert device.event_records.all()[0].point.wkt == "POINT (-118.279678 34.07068)"
 
 
 @pytest.mark.django_db
 def test_device_telemetry(client, django_assert_num_queries):
-    provider = factories.Provider(id="aaaa0000-61fd-4cce-8113-81af1de90942")
-    provider2 = factories.Provider(id="aaaa0000-61fd-4cce-8113-81af1de90943")
-    device_id = "bbbb0000-61fd-4cce-8113-81af1de9094%s"
-    factories.Device(id=device_id % 1, provider=provider)
-    factories.Device(id=device_id % 2, provider=provider)
+    provider = factories.Provider(id=uuid.UUID("aaaa0000-61fd-4cce-8113-81af1de90942"))
+    provider2 = factories.Provider(id=uuid.UUID("aaaa0000-61fd-4cce-8113-81af1de90943"))
+    device_id_pattern = "bbbb0000-61fd-4cce-8113-81af1de9094%s"
+    factories.Device(id=uuid.UUID(device_id_pattern % 1), provider=provider)
+    factories.Device(id=uuid.UUID(device_id_pattern % 2), provider=provider)
 
-    factories.Device(id=device_id % 3, provider=provider2)
+    factories.Device(id=uuid.UUID(device_id_pattern % 3), provider=provider2)
 
     data = {
         "data": [
             {
-                "device_id": device_id % 1,
+                "device_id": device_id_pattern % 1,
                 "timestamp": 1_325_376_000_000,
                 "gps": {
                     "lat": 0.0,
@@ -301,7 +306,7 @@ def test_device_telemetry(client, django_assert_num_queries):
                 },
             },
             {
-                "device_id": device_id % 2,
+                "device_id": device_id_pattern % 2,
                 "timestamp": 1_325_376_001_000,
                 "gps": {
                     "lat": 0.0,
@@ -317,7 +322,7 @@ def test_device_telemetry(client, django_assert_num_queries):
         ]
     }
     other_device_data = {
-        "device_id": device_id % 3,
+        "device_id": device_id_pattern % 3,
         "timestamp": 1_325_376_003_000,
         "gps": {
             "lat": 0.0,
@@ -334,7 +339,7 @@ def test_device_telemetry(client, django_assert_num_queries):
     # test auth
     assert (
         models.EventRecord.objects.filter(
-            device_id__in=[device_id % i for i in range(1, 4)]
+            device_id__in=[device_id_pattern % i for i in range(1, 4)]
         ).count()
         == 0
     )
@@ -368,7 +373,7 @@ def test_device_telemetry(client, django_assert_num_queries):
     assert (
         models.EventRecord.objects.filter(
             event_type="telemetry",
-            device_id__in=[device_id % i for i in range(1, 4)],
+            device_id__in=[device_id_pattern % i for i in range(1, 4)],
             source=enums.EVENT_SOURCE.push.name,
         ).count()
         == 2
