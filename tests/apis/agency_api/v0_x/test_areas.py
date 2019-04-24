@@ -1,5 +1,7 @@
 import pytest
 
+from django.urls import reverse
+
 from mds import factories
 from mds.access_control.scopes import SCOPE_AGENCY_API
 from tests.auth_helpers import auth_header, BASE_NUM_QUERIES
@@ -9,7 +11,7 @@ from tests.auth_helpers import auth_header, BASE_NUM_QUERIES
 def test_areas_metadata(client):
     provider = factories.Provider(name="Test provider")
     response = client.options(
-        "/mds/v0.x/service_areas/",
+        reverse("agency:area-list"),
         **auth_header(SCOPE_AGENCY_API, provider_id=provider.id),
     )
     assert response.status_code == 200
@@ -22,17 +24,17 @@ def test_areas_detail(client, django_assert_num_queries):
     area = factories.Area(providers=[provider])
     other_provider = factories.Provider(name="Test other provider")
 
-    response = client.get("/mds/v0.x/service_areas/%s/" % area.pk)
+    response = client.get(reverse("agency:area-detail", args=[area.pk]))
     assert response.status_code == 401
 
     response = client.get(
-        "/mds/v0.x/service_areas/foo/bar/",
+        reverse("agency:area-detail", args=["foobar"]),
         **auth_header(SCOPE_AGENCY_API, provider_id=provider.id),
     )
-    assert response.status_code == 404
+    assert response.status_code == 404  # Testing DRF?!
 
     response = client.get(
-        "/mds/v0.x/service_areas/{}/".format(area.pk),
+        reverse("agency:area-detail", args=[area.pk]),
         **auth_header(SCOPE_AGENCY_API, provider_id=other_provider.id),
     )
     assert response.status_code == 404
@@ -42,7 +44,7 @@ def test_areas_detail(client, django_assert_num_queries):
     n += 1  # query on polygons
     with django_assert_num_queries(n):
         response = client.get(
-            "/mds/v0.x/service_areas/{}/".format(area.pk),
+            reverse("agency:area-detail", args=[area.pk]),
             **auth_header(SCOPE_AGENCY_API, provider_id=provider.id),
         )
     assert response.status_code == 200
@@ -63,7 +65,7 @@ def test_areas_list(client, django_assert_num_queries):
     provider = factories.Provider(name="Test provider")
     factories.Area.create_batch(5, providers=[provider])
 
-    response = client.get("/mds/v0.x/service_areas/")
+    response = client.get(reverse("agency:area-list"))
     assert response.status_code == 401
 
     n = BASE_NUM_QUERIES
@@ -71,7 +73,7 @@ def test_areas_list(client, django_assert_num_queries):
     n += 1  # query on polygons
     with django_assert_num_queries(n):
         response = client.get(
-            "/mds/v0.x/service_areas/",
+            reverse("agency:area-list"),
             **auth_header(SCOPE_AGENCY_API, provider_id=provider.id),
         )
     assert response.status_code == 200

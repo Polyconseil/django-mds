@@ -1,6 +1,8 @@
 import datetime
 import uuid
 
+from django.urls import reverse
+
 import pytest
 
 from mds import enums
@@ -14,7 +16,8 @@ from tests.auth_helpers import auth_header, BASE_NUM_QUERIES
 def test_devices_metadata(client):
     provider = factories.Provider(name="Test provider")
     response = client.options(
-        "/mds/v0.x/vehicles/", **auth_header(SCOPE_AGENCY_API, provider_id=provider.id)
+        reverse("agency:device-list"),
+        **auth_header(SCOPE_AGENCY_API, provider_id=provider.id),
     )
     assert response.status_code == 200
     assert response._headers["allow"][1] == "GET, POST, HEAD, OPTIONS"
@@ -101,7 +104,7 @@ def test_device_list_basic(client, django_assert_num_queries):
     }
 
     # test auth
-    response = client.get("/mds/v0.x/vehicles/")
+    response = client.get(reverse("agency:device-list"))
     assert response.status_code == 401
 
     n = BASE_NUM_QUERIES
@@ -109,7 +112,7 @@ def test_device_list_basic(client, django_assert_num_queries):
     n += 1  # query on last telemetry
     with django_assert_num_queries(n):
         response = client.get(
-            "/mds/v0.x/vehicles/",
+            reverse("agency:device-list"),
             **auth_header(SCOPE_AGENCY_API, provider_id=provider.id),
         )
     assert response.status_code == 200
@@ -119,7 +122,7 @@ def test_device_list_basic(client, django_assert_num_queries):
     assert expected_device2 in response.data
 
     # test auth
-    response = client.get("/mds/v0.x/vehicles/%s/" % device.id)
+    response = client.get(reverse("agency:device-detail", args=[device.id]))
     assert response.status_code == 401
 
     n = BASE_NUM_QUERIES
@@ -127,7 +130,7 @@ def test_device_list_basic(client, django_assert_num_queries):
     n += 1  # query on last telemetry
     with django_assert_num_queries(n):
         response = client.get(
-            "/mds/v0.x/vehicles/%s/" % device.id,
+            reverse("agency:device-detail", args=[device.id]),
             **auth_header(SCOPE_AGENCY_API, provider_id=provider.id),
         )
     assert response.status_code == 200
@@ -135,7 +138,7 @@ def test_device_list_basic(client, django_assert_num_queries):
 
     # cannot access other providers data
     response = client.get(
-        "/mds/v0.x/vehicles/%s/" % other_device.id,
+        reverse("agency:device-detail", args=[other_device.id]),
         **auth_header(SCOPE_AGENCY_API, provider_id=provider.id),
     )
     assert response.status_code == 404
@@ -160,12 +163,12 @@ def test_device_register(client):
 
     # Test auth
     response = client.post(
-        "/mds/v0.x/vehicles/", data=data, content_type="application/json"
+        reverse("agency:device-list"), data=data, content_type="application/json"
     )
     assert response.status_code == 401
 
     response = client.post(
-        "/mds/v0.x/vehicles/",
+        reverse("agency:device-list"),
         data=data,
         content_type="application/json",
         **auth_header(SCOPE_AGENCY_API, provider_id=provider.id),
@@ -209,7 +212,7 @@ def test_device_event(client):
     # test auth
     assert device.event_records.all().count() == 0
     response = client.post(
-        "/mds/v0.x/vehicles/%s/event/" % device_id,
+        reverse("agency:device-event", args=[device_id]),
         data=data,
         content_type="application/json",
     )
@@ -217,7 +220,7 @@ def test_device_event(client):
 
     # test nominal
     response = client.post(
-        "/mds/v0.x/vehicles/%s/event/" % device_id,
+        reverse("agency:device-event", args=[device_id]),
         data=data,
         content_type="application/json",
         **auth_header(SCOPE_AGENCY_API, provider_id=provider.id),
@@ -256,7 +259,7 @@ def test_device_event_inverted_coordinates(client):
     # test auth
     assert device.event_records.all().count() == 0
     response = client.post(
-        "/mds/v0.x/vehicles/%s/event/" % device_id,
+        reverse("agency:device-event", args=[device_id]),
         data=data,
         content_type="application/json",
         **auth_header(SCOPE_AGENCY_API, provider_id=provider.id),
@@ -269,7 +272,7 @@ def test_device_event_inverted_coordinates(client):
     provider.save()
 
     response = client.post(
-        "/mds/v0.x/vehicles/%s/event/" % device_id,
+        reverse("agency:device-event", args=[device_id]),
         data=data,
         content_type="application/json",
         **auth_header(SCOPE_AGENCY_API, provider_id=provider.id),
@@ -344,13 +347,13 @@ def test_device_telemetry(client, django_assert_num_queries):
         == 0
     )
     response = client.post(
-        "/mds/v0.x/vehicles/telemetry/", data=data, content_type="application/json"
+        reverse("agency:device-telemetry"), data=data, content_type="application/json"
     )
     assert response.status_code == 401
 
     # make sure providers can only update their telemetries
     response = client.post(
-        "/mds/v0.x/vehicles/telemetry/",
+        reverse("agency:device-telemetry"),
         data={"data": data["data"] + [other_device_data]},
         content_type="application/json",
         **auth_header(SCOPE_AGENCY_API, provider_id=provider.id),
@@ -363,7 +366,7 @@ def test_device_telemetry(client, django_assert_num_queries):
     n += 1  # check provider configuration
     with django_assert_num_queries(n):
         response = client.post(
-            "/mds/v0.x/vehicles/telemetry/",
+            reverse("agency:device-telemetry"),
             data=data,
             content_type="application/json",
             **auth_header(SCOPE_AGENCY_API, provider_id=provider.id),
