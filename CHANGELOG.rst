@@ -4,7 +4,7 @@ Changelog
 0.5.17 (unreleased)
 -------------------
 
-- Nothing changed yet.
+- Make trailing slash optional for private API urls.
 
 
 0.5.16 (2019-04-19)
