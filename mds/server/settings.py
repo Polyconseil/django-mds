@@ -1,13 +1,11 @@
 """
 Django settings
 """
-import base64
 import itertools
 import os
 
-from django.core.exceptions import ImproperlyConfigured
-
 from corsheaders.defaults import default_headers
+from cryptography import fernet
 import getconf
 
 from mds.access_control.auth_means import (
@@ -154,15 +152,4 @@ MIGRATION_MODULES = {
 
 # Poller configuration
 POLLER_TOKEN_CACHE = "default"
-
-POLLER_TOKEN_ENCRYPTION_KEY = CONFIG.getstr(
-    "poller.token_encryption_key",
-    # You obviously need to change it in production! I need one for tests
-    "8DhMPDYWFewVYz5m-zfwv4ebx4p4pF6-GvFQz8AOiRA=",
-).encode(  # Must be bytes
-    "ascii"
-)
-if len(base64.urlsafe_b64decode(POLLER_TOKEN_ENCRYPTION_KEY)) != 32:
-    raise ImproperlyConfigured(
-        "The encryption key must be a URL-safe base64-encoded 32-byte key."
-    )
+POLLER_TOKEN_ENCRYPTION_KEY = fernet.Fernet.generate_key()  # Reset on each restart
