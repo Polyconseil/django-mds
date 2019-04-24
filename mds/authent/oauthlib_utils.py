@@ -2,6 +2,7 @@ import datetime
 
 import oauthlib.oauth2
 import oauthlib.oauth2.rfc6749.tokens
+import oauth2_provider.oauth2_backends
 import oauth2_provider.models
 import oauth2_provider.oauth2_validators
 from oauth2_provider.scopes import BaseScopes
@@ -22,6 +23,16 @@ def signed_token_generator(request):
     # set claims on the request
     request.claims = payload
     return token
+
+
+class Backend(oauth2_provider.oauth2_backends.JSONOAuthLibCore):
+    def extract_body(self, request):
+        body = super().extract_body(request)
+        if not body:
+            body = oauth2_provider.oauth2_backends.OAuthLibCore.extract_body(
+                self, request
+            )
+        return body
 
 
 class Server(oauthlib.oauth2.Server):
