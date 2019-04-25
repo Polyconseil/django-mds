@@ -5,6 +5,7 @@ Changelog
 -------------------
 
 - Make trailing slash optional for private API urls.
+- Limit initial provider polling to a customizable number of days.
 
 
 0.5.16 (2019-04-19)

@@ -21,6 +21,7 @@ from mds import models
 from mds import utils
 from .oauth2_store import OAuth2Store
 from .translation import translate_data
+from .settings import PROVIDER_POLLER_LIMIT_DAYS
 
 
 ACCEPTED_MDS_VERSIONS = ["0.2", "0.3"]
@@ -58,6 +59,11 @@ class StatusChangesPoller:
         if self.provider.last_start_time_polled:
             params["start_time"] = utils.to_mds_timestamp(
                 self.provider.last_start_time_polled
+            )
+        # Otherwise limit polling
+        elif PROVIDER_POLLER_LIMIT_DAYS:
+            params["start_time"] = utils.to_mds_timestamp(
+                timezone.now() - datetime.timedelta(PROVIDER_POLLER_LIMIT_DAYS)
             )
 
         # Provider-specific params to optimise polling
