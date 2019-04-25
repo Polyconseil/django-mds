@@ -3,7 +3,6 @@ import logging
 import threading
 import urllib.parse
 
-from django.conf import settings
 from django.core.cache import caches
 
 from cryptography import fernet
@@ -11,22 +10,24 @@ from oauthlib.oauth2 import BackendApplicationClient
 from requests_oauthlib import OAuth2Session
 from retrying import retry
 
+from .settings import POLLER_TOKEN_CACHE, POLLER_TOKEN_ENCRYPTION_KEY
+
 
 CACHE_KEY_PATTERN = "mds:oauth2-token:%s"  # Provider ID added
 
-cache = caches[settings.POLLER_TOKEN_CACHE]
+cache = caches[POLLER_TOKEN_CACHE]
 
 logger = logging.getLogger(__name__)
 
 
 def _encrypt_token(token):
     encoded = json.dumps(token).encode("utf8")  # Fernet needs bytes
-    return fernet.Fernet(settings.POLLER_TOKEN_ENCRYPTION_KEY).encrypt(encoded)
+    return fernet.Fernet(POLLER_TOKEN_ENCRYPTION_KEY).encrypt(encoded)
 
 
 def _decrypt_token(encrypted):
     try:
-        encoded = fernet.Fernet(settings.POLLER_TOKEN_ENCRYPTION_KEY).decrypt(encrypted)
+        encoded = fernet.Fernet(POLLER_TOKEN_ENCRYPTION_KEY).decrypt(encrypted)
     except (fernet.InvalidToken, TypeError):  # The encryption key, not our token!
         return None
     else:

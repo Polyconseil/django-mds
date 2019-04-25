@@ -5,7 +5,6 @@ import itertools
 import os
 
 from corsheaders.defaults import default_headers
-from cryptography import fernet
 import getconf
 
 from mds.access_control.auth_means import (
@@ -149,7 +148,3 @@ MIGRATION_MODULES = {
     # ignore migrations and provide our own models.
     "oauth2_provider": None
 }
-
-# Poller configuration
-POLLER_TOKEN_CACHE = "default"
-POLLER_TOKEN_ENCRYPTION_KEY = fernet.Fernet.generate_key()  # Reset on each restart
