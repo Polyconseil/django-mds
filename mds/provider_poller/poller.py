@@ -44,15 +44,7 @@ class StatusChangesPoller:
             logger.info("Provider %s has no URL defined, skipping.", self.provider.name)
             return
 
-        logger.info("Polling provider %s... ", self.provider.name)
-
-        try:
-            self._poll_status_changes()
-        except Exception:  # pylint: disable=broad-except
-            logger.exception("Error in polling provider %s", self.provider.name)
-            return
-
-        logger.info("Polling provider %s succeeded.", self.provider.name)
+        self._poll_status_changes()
 
     def _poll_status_changes(self):
         next_url = urllib.parse.urljoin(self.provider.base_api_url, "status_changes")

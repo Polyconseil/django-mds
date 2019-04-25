@@ -69,7 +69,7 @@ def test_poll_provider_batch(client):
                 event_type_reason="maintenance_pick_up",
             ),
         )
-        call_command("poll_providers", stdout=stdout, stderr=stderr)
+        call_command("poll_providers", "--raise-on-error", stdout=stdout, stderr=stderr)
 
     assert_command_success(stdout, stderr)
 
@@ -125,7 +125,9 @@ def test_several_providers(client, django_assert_num_queries):
                     provider2, device2, expected_event2, event_type_reason="maintenance"
                 ),
             )
-            call_command("poll_providers", stdout=stdout, stderr=stderr)
+            call_command(
+                "poll_providers", "--raise-on-error", stdout=stdout, stderr=stderr
+            )
 
     assert_command_success(stdout, stderr)
 
@@ -166,7 +168,7 @@ def test_follow_up(client):
                 provider, device, expected_event, event_type_reason="service_end"
             ),
         )
-        call_command("poll_providers", stdout=stdout, stderr=stderr)
+        call_command("poll_providers", "--raise-on-error", stdout=stdout, stderr=stderr)
 
     assert_command_success(stdout, stderr)
 
