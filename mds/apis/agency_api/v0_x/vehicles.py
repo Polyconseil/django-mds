@@ -8,7 +8,6 @@ from rest_framework.response import Response
 
 from django.contrib.gis.geos import Point
 from django.db.utils import IntegrityError
-from django.utils import timezone
 
 from mds import db_helpers
 from mds import enums
@@ -93,15 +92,9 @@ class DeviceRegisterSerializer(serializers.Serializer):
     def create(self, validated_data):
         provider_id = self.context["request"].user.provider_id
         try:
-            device = models.Device.objects.create(
+            return models.Device.objects.create(
                 provider_id=provider_id, **validated_data
             )
-            models.EventRecord.objects.create(
-                timestamp=timezone.now(),
-                device=device,
-                event_type=enums.EVENT_TYPE.register.name,
-            )
-            return device
         except IntegrityError:
             detail = f"A vehicle with id={validated_data['id']} is already registered"
             raise apis_utils.AlreadyRegisteredError({"already_registered": detail})

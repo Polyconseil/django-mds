@@ -78,9 +78,12 @@ def test_poll_provider_batch(client):
 
     # The second device was created on the fly
     device2 = models.Device.objects.get(pk=expected_device2.pk)
-    event2 = device2.event_records.get()
+    # With a fake register event and the actual event
+    event2_register, event2_regular = device2.event_records.order_by("timestamp")
 
-    assert_event_equal(event2, expected_event2)
+    assert event2_register.event_type == enums.EVENT_TYPE.register.name
+    assert event2_register.properties == {"created_on_register": True}
+    assert_event_equal(event2_regular, expected_event2)
     assert_device_equal(device2, expected_device2)
 
 
@@ -105,6 +108,7 @@ def test_several_providers(client, django_assert_num_queries):
     n += (
         2  # Savepoint/release for each provider
         + 1  # Insert missing devices
+        + 1  # Insert fake register event
         + 1  # Insert missing event records
         + 1  # Update last start time polled
     ) * 2  # For each provider
@@ -131,10 +135,15 @@ def test_several_providers(client, django_assert_num_queries):
 
     assert_command_success(stdout, stderr)
 
-    event1 = device1.event_records.get()
-    assert_event_equal(event1, expected_event1)
-    event2 = device2.event_records.get()
-    assert_event_equal(event2, expected_event2)
+    event1_register, event1_regular = device1.event_records.order_by("timestamp")
+    assert event1_register.event_type == enums.EVENT_TYPE.register.name
+    assert event1_register.properties == {"created_on_register": True}
+    assert_event_equal(event1_regular, expected_event1)
+
+    event2_register, event2_regular = device2.event_records.order_by("timestamp")
+    assert event2_register.event_type == enums.EVENT_TYPE.register.name
+    assert event2_register.properties == {"created_on_register": True}
+    assert_event_equal(event2_regular, expected_event2)
 
 
 @pytest.mark.django_db

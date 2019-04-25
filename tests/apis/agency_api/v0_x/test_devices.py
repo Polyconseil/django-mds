@@ -178,9 +178,6 @@ def test_device_register(client):
 
     device = models.Device.objects.get()  # Also tests unicity
     assert device.provider == provider
-    # A "register" event was also created
-    event_record = device.event_records.get()
-    assert event_record.event_type == enums.EVENT_TYPE.register.name
 
 
 @pytest.mark.django_db

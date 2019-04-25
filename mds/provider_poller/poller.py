@@ -271,6 +271,14 @@ class StatusChangesPoller:
                     for status_change in with_missing_devices
                 )
             )
+            # Create fake register events to simulate device registration
+            db_helpers.upsert_event_records(
+                (
+                    _create_register_event_record(status_change)
+                    for status_change in with_missing_devices
+                ),
+                source=enums.EVENT_SOURCE.pull.name,
+            )
 
             devices_added = [
                 status_change["device_id"] for status_change in with_missing_devices
@@ -285,7 +293,7 @@ class StatusChangesPoller:
         """Now record the... records"""
         db_helpers.upsert_event_records(
             (_create_event_record(status_change) for status_change in status_changes),
-            "pull",
+            source=enums.EVENT_SOURCE.pull.name,
             # Timestamps are unique per device, ignore duplicates
             # Events already pushed by the provider will always have precedence
             on_conflict_update=False,
@@ -352,4 +360,25 @@ def _create_event_record(status_change):
         point=point,
         event_type=status_change["agency_event_type"],
         properties=properties,
+    )
+
+
+def _create_register_event_record(status_change):
+    """
+    As the goal of the poller is to catch up with the history of a provider,
+    simulate the registration of a device with a fake register event.
+
+    This fake event is flagged in its properties to tell it apart from real ones.
+
+    Should the device be unregistered and registered again according to the specs,
+    don't delete the fake events in the past.
+    """
+    return models.EventRecord(
+        device_id=status_change["device_id"],
+        # Another event for the same device with the same timestamp will be rejected
+        timestamp=utils.from_mds_timestamp(status_change["event_time"])
+        - datetime.timedelta(milliseconds=1),
+        event_type=enums.EVENT_TYPE.register.name,
+        properties={"created_on_register": True},
+        source=enums.EVENT_SOURCE.pull.name,
     )
