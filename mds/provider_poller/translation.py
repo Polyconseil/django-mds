@@ -1,5 +1,6 @@
 """
-Everything related to support older Provider API versions by translating them to the latest supported version.
+Everything related to support older Provider API versions
+by translating them to the latest supported version.
 """
 from semantic_version import Version
 

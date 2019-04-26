@@ -256,7 +256,8 @@ class DeviceTelemetryInputSerializer(serializers.Serializer):
             event_records, enums.EVENT_SOURCE.agency_api.name, on_conflict_update=True
         )
 
-        # We don't have the created event records, but we'll return an empty response anyway
+        # We don't have the created event records,
+        # but we will return an empty response anyway (cf. DeviceViewSet)
         return []
 
 

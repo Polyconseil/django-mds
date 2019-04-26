@@ -13,7 +13,7 @@ class Application(AbstractApplication):
         null=True,
         blank=True,
         db_index=True,
-        help_text="Unique identifier for the owner of the application, not necessarily a django User.",
+        help_text="Unique identifier for the owner of the application",
     )
     scopes = pg_fields.ArrayField(
         models.CharField(max_length=32), help_text="Application allowed scopes."

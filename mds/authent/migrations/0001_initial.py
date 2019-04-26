@@ -86,7 +86,7 @@ class Migration(migrations.Migration):
                     "owner",
                     models.UUIDField(
                         db_index=True,
-                        help_text="Unique identifier for the owner of the application, not necessarily a django User.",
+                        help_text="Unique identifier for the owner of the application",
                         null=True,
                     ),
                 ),

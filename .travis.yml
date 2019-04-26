@@ -16,5 +16,5 @@ before_script:
     - python manage.py migrate
 script:
     - black --check --exclude ./migrations mds tests
-    - flake8 --exclude=./mds/migrations
+    - flake8
     - pytest

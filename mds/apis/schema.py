@@ -23,7 +23,8 @@ def _call_view_method(
         except Exception:  # noqa
             drf_yasg.inspectors.base.logger.warning(
                 "view's %s raised exception during schema generation; use "
-                "`getattr(self, 'swagger_fake_view', False)` to detect and short-circuit this",
+                "`getattr(self, 'swagger_fake_view', False)` "
+                "to detect and short-circuit this",
                 type(view).__name__,
                 exc_info=True,
             )
@@ -56,9 +57,10 @@ class CustomSwaggerAutoSchema(SwaggerAutoSchema):
         )
 
     def get_request_serializer(self):
-        """Return the request serializer (used for parsing the request payload) for this endpoint.
+        """Return the request serializer for this endpoint.
 
-        :return: the request serializer, or one of :class:`.Schema`, :class:`.SchemaRef`, ``None``
+        :return: the request serializer, or one of :class:`.Schema`,
+                 :class:`.SchemaRef`, ``None``
         :rtype: rest_framework.serializers.Serializer
         """
         body_override = self._get_request_body_override()
@@ -72,8 +74,10 @@ class CustomSwaggerAutoSchema(SwaggerAutoSchema):
         return body_override
 
     def get_default_response_serializer(self):
-        """Return the default response serializer for this endpoint. This is derived from either the ``request_body``
-        override or the request serializer (:meth:`.get_view_serializer`).
+        """Return the default response serializer for this endpoint.
+
+        This is derived from either the ``request_body`` override
+        or the request serializer (:meth:`.get_view_serializer`).
 
         :return: response serializer, :class:`.Schema`, :class:`.SchemaRef`, ``None``
         """

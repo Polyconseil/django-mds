@@ -83,7 +83,7 @@ class ProviderApiViewSet(viewsets.ViewSet):
         end_time = request.query_params.get("end_time")
         # Only forward events that were first retrieved though providers'
         # `status_changes' endpoint
-        event_types = enums.PROVIDER_EVENT_TYPE_REASON_TO_AGENCY_EVENT_TYPE.values()
+        event_types = enums.PROVIDER_REASON_TO_AGENCY_EVENT.values()
         events = models.EventRecord.objects.select_related("device__provider").filter(
             event_type__in=event_types
         )

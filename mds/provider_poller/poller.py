@@ -54,8 +54,8 @@ class StatusChangesPoller:
 
         params = {}
 
-        # Start where we left, it's all based on providers sorting by start_time, obviously
-        # (we wouldn't know if the provider recorded late telemetries earlier than this date)
+        # Start where we left, it's all based on providers sorting by start_time
+        # (we wouldn't know if the provider recorded late telemetries earlier)
         if self.provider.last_start_time_polled:
             params["start_time"] = utils.to_mds_timestamp(
                 self.provider.last_start_time_polled
@@ -139,7 +139,7 @@ class StatusChangesPoller:
     def _process_status_changes(self, status_changes):
         logger.debug("Processing...")
 
-        # We already had the surprise of not receiving a integer timestamp but its string representation
+        # accept timestamp as a string instead of an integer
         status_changes = self._validate_event_times(status_changes)
         if not status_changes:
             # Data so bad there is no or nothing but invalid event times
@@ -154,7 +154,7 @@ class StatusChangesPoller:
             # The provider really doesn't help!
             return timezone.now()
 
-        # What is the latest event recorded in that series? (order is not asserted in the specs)
+        # do not rely on expected order
         last_event_time_polled = utils.from_mds_timestamp(
             max(status_change["event_time"] for status_change in status_changes)
         )
@@ -206,7 +206,7 @@ class StatusChangesPoller:
                 # Ignore just that status change to avoid rejecting the whole batch
                 continue
             try:
-                agency_event_type = enums.PROVIDER_EVENT_TYPE_REASON_TO_AGENCY_EVENT_TYPE[
+                agency_event_type = enums.PROVIDER_REASON_TO_AGENCY_EVENT[
                     event_type_reason
                 ]
             except KeyError:  # Spec violation!

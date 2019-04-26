@@ -117,13 +117,15 @@ class DeviceQueryset(models.QuerySet):
     def with_latest_events(self):
         prefetched_events = Prefetch(
             "event_records",
-            # Excluding telemetry because MDS Agency separates event from telemetry and the "latest_event" does not count telemetries as events
+            # Excluding telemetry because MDS Agency separates event from telemetry
+            # and the "latest_event" does not count telemetries as events
             queryset=EventRecord.objects.exclude(event_type="telemetry").order_by(
                 "-timestamp"
             ),
             to_attr="_latest_events",
         )
-        # Here, we can't limit the query set, so in order to limit, we have to use a property latest_event (go see the property in the model)
+        # Here, we can't limit the query set so, in order to limit,
+        # we have to use a latest_event property (see the property in the model)
         prefetch_related = self.prefetch_related(prefetched_events)
         return prefetch_related
 

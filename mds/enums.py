@@ -91,7 +91,7 @@ EVENT_TYPE_TO_DEVICE_STATUS = {
 
 
 # The two APIs don't match on names, hopefully temporary
-PROVIDER_EVENT_TYPE_REASON_TO_AGENCY_EVENT_TYPE = {
+PROVIDER_REASON_TO_AGENCY_EVENT = {
     "service_start": EVENT_TYPE.service_start.name,
     "user_drop_off": EVENT_TYPE.trip_end.name,
     "rebalance_drop_off": EVENT_TYPE.rebalance_drop_off.name,

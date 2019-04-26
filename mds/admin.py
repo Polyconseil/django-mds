@@ -51,7 +51,8 @@ class EventRecordAdmin(admin.ModelAdmin):
         return obj.device.id
 
 
-# to use when searching for devices in get_search_results as a relationship to self.model
+# to use when searching for devices in get_search_results
+# as a relationship to self.model
 def get_devices_queryset_search_results(self, search_term):
     custom_queryset = self.model.objects.select_related("device__provider")
     if is_uuid(search_term):

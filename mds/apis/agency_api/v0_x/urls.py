@@ -23,7 +23,8 @@ def get_url_patterns(prefix):
         openapi.Info(
             title="LADOT agency API",
             default_version="v0.2",
-            description="see https://github.com/CityOfLosAngeles/mobility-data-specification/tree/dev/agency",
+            description="see "
+            "https://github.com/CityOfLosAngeles/mobility-data-specification",
         ),
         patterns=[path(prefix, include(agency_router.urls))],
         public=True,

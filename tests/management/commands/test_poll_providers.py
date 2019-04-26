@@ -189,10 +189,7 @@ def test_follow_up(client):
 def make_response(
     provider, device, event, event_type_reason, associated_trip=None, next_page=None
 ):
-    assert (
-        event.event_type
-        in dict(enums.PROVIDER_EVENT_TYPE_REASON_TO_AGENCY_EVENT_TYPE).values()
-    )
+    assert event.event_type in dict(enums.PROVIDER_REASON_TO_AGENCY_EVENT).values()
     telemetry = event.properties["telemetry"]
 
     response = factories.ProviderStatusChangesBody(
