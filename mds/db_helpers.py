@@ -18,17 +18,36 @@ def upsert_providers(providers: types.GeneratorType):
             "id": provider.id,
             "name": provider.name,
             "device_category": provider.device_category,
+            "base_api_url": provider.base_api_url,
+            "oauth2_url": provider.oauth2_url,
+            # JSONField doesn't use Django JSON encoder by default
+            "api_authentication": json.dumps(provider.api_authentication),
+            "api_configuration": json.dumps(provider.api_configuration),
+            "agency_api_authentication": json.dumps(provider.agency_api_authentication),
+            "agency_api_configuration": json.dumps(provider.agency_api_configuration),
         }
 
     query = """
         INSERT INTO mds_provider (
             id,
             name,
-            device_category
+            device_category,
+            base_api_url,
+            oauth2_url,
+            api_authentication,
+            api_configuration,
+            agency_api_authentication,
+            agency_api_configuration
         ) VALUES (
             %(id)s,
             %(name)s,
-            %(device_category)s
+            %(device_category)s,
+            %(base_api_url)s,
+            %(oauth2_url)s,
+            %(api_authentication)s,
+            %(api_configuration)s,
+            %(agency_api_authentication)s,
+            %(agency_api_configuration)s
         ) ON CONFLICT DO NOTHING
     """
 
