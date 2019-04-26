@@ -1,7 +1,7 @@
 Changelog
 =========
 
-0.5.18 (unreleased)
+0.5.18 (2019-04-26)
 -------------------
 
 - Fix stupid mistake in provider upsert.
