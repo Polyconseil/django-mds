@@ -374,7 +374,7 @@ def test_device_telemetry(client, django_assert_num_queries):
         models.EventRecord.objects.filter(
             event_type="telemetry",
             device_id__in=[device_id_pattern % i for i in range(1, 4)],
-            source=enums.EVENT_SOURCE.push.name,
+            source=enums.EVENT_SOURCE.agency_api.name,
         ).count()
         == 2
     )

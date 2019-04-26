@@ -191,7 +191,8 @@ class EventRecord(models.Model):
     point = gis_models.PointField(blank=True, null=True)
     saved_at = models.DateTimeField(default=utils.timezone.now)
     source = UnboundedCharField(
-        choices=enums.choices(enums.EVENT_SOURCE), default=enums.EVENT_SOURCE.push.name
+        choices=enums.choices(enums.EVENT_SOURCE),
+        default=enums.EVENT_SOURCE.agency_api.name,
     )
     device = models.ForeignKey(
         Device, related_name="event_records", on_delete=models.CASCADE

@@ -283,7 +283,7 @@ class StatusChangesPoller:
                     _create_register_event_record(status_change)
                     for status_change in with_missing_devices
                 ),
-                source=enums.EVENT_SOURCE.pull.name,
+                source=enums.EVENT_SOURCE.provider_api.name,
             )
 
             devices_added = [
@@ -299,7 +299,7 @@ class StatusChangesPoller:
         """Now record the... records"""
         db_helpers.upsert_event_records(
             (_create_event_record(status_change) for status_change in status_changes),
-            source=enums.EVENT_SOURCE.pull.name,
+            enums.EVENT_SOURCE.provider_api.name,
             # Timestamps are unique per device, ignore duplicates
             # Events already pushed by the provider will always have precedence
             on_conflict_update=False,
@@ -386,5 +386,5 @@ def _create_register_event_record(status_change):
         - datetime.timedelta(milliseconds=1),
         event_type=enums.EVENT_TYPE.register.name,
         properties={"created_on_register": True},
-        source=enums.EVENT_SOURCE.pull.name,
+        source=enums.EVENT_SOURCE.provider_api.name,
     )

@@ -112,10 +112,8 @@ PROVIDER_EVENT_TYPE_REASON_TO_AGENCY_EVENT_TYPE = {
 EVENT_SOURCE = enum.Enum(
     "Event source",
     [
-        # push provider -> agency API
-        ("push", pgettext_lazy("Event source", "push")),
-        # pull agency <- provider API
-        ("pull", pgettext_lazy("Event source", "pull")),
+        ("agency_api", pgettext_lazy("Event source", "Agency API")),
+        ("provider_api", pgettext_lazy("Event source", "Provider API")),
     ],
 )
 

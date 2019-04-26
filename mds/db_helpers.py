@@ -117,7 +117,7 @@ def upsert_event_records(
 
     Args:
         event_records: list of EventRecord
-        source: "push" or "pull"
+        source: enums.EVENT_SOURCE
         on_conflict_update: ignore duplicates (default) or overwrite
     """
 
