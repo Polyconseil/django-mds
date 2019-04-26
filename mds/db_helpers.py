@@ -27,8 +27,8 @@ def upsert_providers(providers: types.GeneratorType):
             device_category
         ) VALUES (
             %(id)s,
-            %(name),
-            %(device_category)
+            %(name)s,
+            %(device_category)s
         ) ON CONFLICT DO NOTHING
     """
 
