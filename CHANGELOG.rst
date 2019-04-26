@@ -1,7 +1,7 @@
 Changelog
 =========
 
-0.5.19 (unreleased)
+0.5.19 (2019-04-26)
 -------------------
 
 - Fix upserting provider non-null fields.
