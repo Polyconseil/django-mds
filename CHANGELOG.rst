@@ -1,7 +1,7 @@
 Changelog
 =========
 
-0.5.20 (unreleased)
+0.5.20 (2019-05-16)
 -------------------
 
 - Fix wheel packaging including tests but forgetting compiled locales.
