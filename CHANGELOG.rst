@@ -4,7 +4,8 @@ Changelog
 0.5.20 (unreleased)
 -------------------
 
-- Nothing changed yet.
+- Fix wheel packaging including tests but forgetting compiled locales.
+- Push & pull are now labeled as "Agency API" and "Provider API".
 
 
 0.5.19 (2019-04-26)
