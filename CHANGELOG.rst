@@ -4,6 +4,7 @@ Changelog
 0.5.21 (unreleased)
 -------------------
 
+- Deprecating Provider.device_category, will be removed in a future version.
 - Added new field colors in provider model and serializer.
 
 

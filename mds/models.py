@@ -9,7 +9,7 @@ from django.contrib.gis.db import models as gis_models
 from django.contrib.postgres import fields as pg_fields
 from django.core.exceptions import ValidationError
 from django.db import models
-from django.db.models import Prefetch
+from django.db.models import Count, Prefetch, Q
 from django.utils import timezone
 
 from rest_framework.utils import encoders
@@ -70,6 +70,18 @@ def short_uuid4(uid):
     return str(uid)[:8]  # Basically splitting on the first dash
 
 
+class ProviderQuerySet(models.QuerySet):
+    def with_device_categories(self, **kwargs):
+        # A single dict would be simpler but I don't know how to make this in SQL
+        # (ERROR:  subquery must return only one column)
+        device_categories = {}
+        for device_category in enums.DEVICE_CATEGORY:
+            device_categories["device_category_%s" % device_category.name] = Count(
+                "devices", filter=Q(devices__category=device_category.name)
+            )
+        return self.filter(**kwargs).annotate(**device_categories)
+
+
 def colors_validator(colors):
     fields = {"primary", "secondary"}
     invalid_keys = set(colors.keys()) - fields
@@ -84,7 +96,10 @@ class Provider(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4)
     name = UnboundedCharField(blank=True, default="")
     logo_b64 = UnboundedCharField(null=True, blank=True, default=None)
-    device_category = UnboundedCharField(choices=enums.choices(enums.DEVICE_CATEGORY))
+    # TODO obsolete, to remove
+    device_category = UnboundedCharField(
+        choices=enums.choices(enums.DEVICE_CATEGORY), blank=True
+    )
 
     # The following fields are for us pulling data from the provider
     base_api_url = UnboundedCharField(
@@ -126,8 +141,20 @@ class Provider(models.Model):
         validators=[colors_validator],
     )
 
+    objects = ProviderQuerySet.as_manager()
+
     def __str__(self):
         return "{} ({})".format(self.name or "Provider object", short_uuid4(self.id))
+
+    @property
+    def device_categories(self):
+        # This will fail if you didn't call objects.with_device_categories()
+        device_categories = {}
+        for category in enums.DEVICE_CATEGORY:
+            device_categories[category.name] = getattr(
+                self, "device_category_%s" % category.name
+            )
+        return device_categories
 
 
 class DeviceQueryset(models.QuerySet):

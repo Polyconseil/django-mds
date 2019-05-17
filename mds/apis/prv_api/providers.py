@@ -23,6 +23,7 @@ class ProviderSerializer(serializers.ModelSerializer):
     colors = ProviderColorsSerializer(
         default=dict, help_text="colors for distinguishing providers on map"
     )
+    device_categories = serializers.DictField(serializers.IntegerField())
 
     def create(self, validated_data):
         instance = self.Meta.model(**validated_data)
@@ -41,11 +42,12 @@ class ProviderSerializer(serializers.ModelSerializer):
             "api_authentication",
             "api_configuration",
             "agency_api_authentication",
+            "device_categories",
         )
 
 
 class ProviderViewSet(viewsets.ModelViewSet):
     permission_classes = (require_scopes(SCOPE_PRV_API),)
-    queryset = models.Provider.objects.all()
+    queryset = models.Provider.objects.with_device_categories()
     lookup_field = "id"
     serializer_class = ProviderSerializer
