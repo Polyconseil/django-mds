@@ -562,6 +562,7 @@ class Provider(factory.DjangoModelFactory):
     api_configuration = {"trailing_slash": False}
     api_authentication = {"type": "none"}
     agency_api_authentication = {"type": "none"}
+    colors = {}
 
 
 class Device(factory.DjangoModelFactory):

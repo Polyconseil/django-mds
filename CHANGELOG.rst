@@ -4,7 +4,7 @@ Changelog
 0.5.21 (unreleased)
 -------------------
 
-- Nothing changed yet.
+- Added new field colors in provider model and serializer.
 
 
 0.5.20 (2019-05-16)

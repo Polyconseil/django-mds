@@ -47,6 +47,7 @@ def test_provider_basic(client, django_assert_num_queries):
         "api_configuration": {"trailing_slash": False},
         "api_authentication": {"type": "none"},
         "agency_api_authentication": {"type": "none"},
+        "colors": {},
     } in response.data
     assert {
         "id": "bbbbbbb0-1342-413b-8e89-db802b2f83f6",
@@ -57,6 +58,7 @@ def test_provider_basic(client, django_assert_num_queries):
         "api_configuration": {"trailing_slash": False},
         "api_authentication": {"type": "none"},
         "agency_api_authentication": {"type": "none"},
+        "colors": {},
     } in response.data
     assert {
         "id": "ccccccc0-1342-413b-8e89-db802b2f83f6",
@@ -67,6 +69,7 @@ def test_provider_basic(client, django_assert_num_queries):
         "api_configuration": {"trailing_slash": False},
         "api_authentication": {"type": "none"},
         "agency_api_authentication": {"type": "none"},
+        "colors": {},
     } in response.data
 
     response = client.get(
@@ -83,4 +86,5 @@ def test_provider_basic(client, django_assert_num_queries):
         "api_configuration": {"trailing_slash": False},
         "api_authentication": {"type": "none"},
         "agency_api_authentication": {"type": "none"},
+        "colors": {},
     }

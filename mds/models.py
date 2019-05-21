@@ -7,6 +7,7 @@ import uuid
 from django import forms, utils
 from django.contrib.gis.db import models as gis_models
 from django.contrib.postgres import fields as pg_fields
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import Prefetch
 from django.utils import timezone
@@ -69,7 +70,17 @@ def short_uuid4(uid):
     return str(uid)[:8]  # Basically splitting on the first dash
 
 
+def colors_validator(colors):
+    fields = {"primary", "secondary"}
+    invalid_keys = set(colors.keys()) - fields
+    if invalid_keys:
+        raise ValidationError(
+            f"{invalid_keys} is not an accepted field. Field must be in {fields}"
+        )
+
+
 class Provider(models.Model):
+
     id = models.UUIDField(primary_key=True, default=uuid.uuid4)
     name = UnboundedCharField(blank=True, default="")
     logo_b64 = UnboundedCharField(null=True, blank=True, default=None)
@@ -107,6 +118,12 @@ class Provider(models.Model):
         default=agency_api_configuration_default,
         blank=True,
         verbose_name="Agency API Configuration",
+    )
+    colors = pg_fields.JSONField(
+        default=dict,
+        blank=True,
+        verbose_name="colors for distinguishing provider icons",
+        validators=[colors_validator],
     )
 
     def __str__(self):
