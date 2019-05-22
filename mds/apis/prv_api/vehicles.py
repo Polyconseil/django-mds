@@ -1,4 +1,5 @@
 from django_filters import rest_framework as filters
+from drf_yasg.utils import swagger_serializer_method
 from rest_framework import serializers, viewsets
 
 from mds import enums, models
@@ -96,6 +97,13 @@ class RetrieveDeviceSerializer(DeviceSerializer):
         help_text="logo in base 64 of the service provider of the device",
     )
 
+    # swagger_serializer_method needed because drf-yasg type hinting detection
+    # is broken in 3.7
+    @swagger_serializer_method(
+        serializer_or_field=serializers.ListField(
+            child=serializers.DictField(child=serializers.CharField())
+        )
+    )
     def get_areas(self, obj) -> List[Dict[str, str]]:
         if not obj.dn_gps_point:
             return []
