@@ -1,7 +1,7 @@
 Changelog
 =========
 
-0.5.22 (unreleased)
+0.5.22 (2019-05-22)
 -------------------
 
 - Fix migrations by reordering them.
