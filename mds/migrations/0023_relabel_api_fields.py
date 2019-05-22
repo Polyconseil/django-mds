@@ -7,7 +7,7 @@ import mds.models
 
 class Migration(migrations.Migration):
 
-    dependencies = [("mds", "0021_rename_event_source")]
+    dependencies = [("mds", "0022_provider_colors")]
 
     operations = [
         migrations.AlterField(

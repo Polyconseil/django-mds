@@ -6,7 +6,7 @@ import mds.models
 
 class Migration(migrations.Migration):
 
-    dependencies = [("mds", "0023_provider_colors")]
+    dependencies = [("mds", "0023_relabel_api_fields")]
 
     operations = [
         migrations.AlterField(
