@@ -1,7 +1,7 @@
 Changelog
 =========
 
-0.5.21 (unreleased)
+0.5.21 (2019-05-22)
 -------------------
 
 - Deprecating Provider.device_category, will be removed in a future version.
