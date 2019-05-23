@@ -11,7 +11,8 @@ def get_prv_router():
     Enables to register new routes even after .urls has
     been called on the router.
     """
-    prv_router = routers.DefaultRouter(trailing_slash="/?")
+    prv_router = routers.DefaultRouter()
+    prv_router.trailing_slash = "/?"  # Make trailing slash optional
     prv_router.register(r"providers", providers.ProviderViewSet)
     prv_router.register(r"service_areas", service_areas.AreaViewSet)
     prv_router.register(r"polygons", service_areas.PolygonViewSet)

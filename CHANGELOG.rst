@@ -5,6 +5,7 @@ Changelog
 -------------------
 
 - Remove device_category after deprecation.
+- Fix private API optional trailing slash
 
 
 0.5.22 (2019-05-22)

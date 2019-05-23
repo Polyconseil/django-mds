@@ -116,7 +116,7 @@ def test_device_list_basic(client, django_assert_num_queries):
         "associated_trip": None,
     }
     # test auth
-    response = client.get("/prv/provider_api/status_changes/")
+    response = client.get("/prv/provider_api/status_changes")
     assert response.status_code == 401
 
     start_time = utils.to_mds_timestamp(now - datetime.timedelta(minutes=30))
@@ -125,7 +125,7 @@ def test_device_list_basic(client, django_assert_num_queries):
     n += 1  # count on events
     with django_assert_num_queries(n):
         response = client.get(
-            "/prv/provider_api/status_changes/?start_time=%s" % start_time,
+            "/prv/provider_api/status_changes?start_time=%s" % start_time,
             **auth_header(SCOPE_PRV_API, provider_id=provider.id),
         )
     assert response.status_code == 200
@@ -137,6 +137,14 @@ def test_device_list_basic(client, django_assert_num_queries):
     assert expected_event_device2 in data
 
     # Test pagination: retrieve only given number of events
+    response = client.get(
+        "/prv/provider_api/status_changes?start_time=%s&take=1" % start_time,
+        **auth_header(SCOPE_PRV_API, provider_id=provider.id),
+    )
+    data = response.data["data"]["status_changes"]
+    assert len(data) == 1
+
+    # Also test endpoint work with a trailing slash
     response = client.get(
         "/prv/provider_api/status_changes/?start_time=%s&take=1" % start_time,
         **auth_header(SCOPE_PRV_API, provider_id=provider.id),
