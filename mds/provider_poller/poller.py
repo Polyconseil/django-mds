@@ -314,9 +314,7 @@ def _create_provider(status_change):
         logger.warning("Provider %s has no name", provider_id)
         name = ""
 
-    return models.Provider(
-        id=provider_id, name=name, device_category=status_change["vehicle_type"]
-    )
+    return models.Provider(id=provider_id, name=name)
 
 
 def _create_device(status_change):

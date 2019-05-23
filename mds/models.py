@@ -96,10 +96,6 @@ class Provider(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4)
     name = UnboundedCharField(blank=True, default="")
     logo_b64 = UnboundedCharField(null=True, blank=True, default=None)
-    # TODO obsolete, to remove
-    device_category = UnboundedCharField(
-        choices=enums.choices(enums.DEVICE_CATEGORY), blank=True
-    )
 
     # The following fields are for us pulling data from the provider
     base_api_url = UnboundedCharField(

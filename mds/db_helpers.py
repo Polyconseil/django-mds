@@ -17,7 +17,6 @@ def upsert_providers(providers: types.GeneratorType):
         return {
             "id": provider.id,
             "name": provider.name,
-            "device_category": provider.device_category,
             "base_api_url": provider.base_api_url,
             "oauth2_url": provider.oauth2_url,
             # JSONField doesn't use Django JSON encoder by default
@@ -32,7 +31,6 @@ def upsert_providers(providers: types.GeneratorType):
         INSERT INTO mds_provider (
             id,
             name,
-            device_category,
             base_api_url,
             oauth2_url,
             api_authentication,
@@ -43,7 +41,6 @@ def upsert_providers(providers: types.GeneratorType):
         ) VALUES (
             %(id)s,
             %(name)s,
-            %(device_category)s,
             %(base_api_url)s,
             %(oauth2_url)s,
             %(api_authentication)s,

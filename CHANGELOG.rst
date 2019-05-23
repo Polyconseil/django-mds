@@ -4,7 +4,7 @@ Changelog
 0.5.23 (unreleased)
 -------------------
 
-- Nothing changed yet.
+- Remove device_category after deprecation.
 
 
 0.5.22 (2019-05-22)
