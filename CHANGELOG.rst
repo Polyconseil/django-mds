@@ -4,6 +4,7 @@ Changelog
 0.5.23 (unreleased)
 -------------------
 
+- Fix compiled locales not shipped in the wheel.
 - Remove device_category after deprecation.
 - Fix private API optional trailing slash
 
