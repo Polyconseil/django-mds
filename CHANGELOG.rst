@@ -1,7 +1,7 @@
 Changelog
 =========
 
-0.5.23 (unreleased)
+0.5.23 (2019-05-24)
 -------------------
 
 - Fix compiled locales not shipped in the wheel.
