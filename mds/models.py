@@ -267,7 +267,7 @@ class EventRecord(models.Model):
 class Polygon(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4)
     label = UnboundedCharField(default="", blank=True, db_index=True)
-    geom = gis_models.PolygonField()
+    geom = gis_models.MultiPolygonField()
     properties = pg_fields.JSONField(default=dict, encoder=encoders.JSONEncoder)
 
     def __str__(self):

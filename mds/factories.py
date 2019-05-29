@@ -594,9 +594,10 @@ class Area(factory.DjangoModelFactory):
             for polygon in extracted:
                 self.polygons.add(polygon)
         else:
-            geom = geos.Polygon(
+            polygon = geos.Polygon(
                 ((0.0, 0.0), (0.0, 50.0), (50.0, 50.0), (50.0, 0.0), (0.0, 0.0))
             )
+            geom = geos.MultiPolygon(polygon)
             poly = Polygon(geom=geom)
             self.polygons.add(poly)
 
@@ -616,7 +617,7 @@ class Polygon(factory.DjangoModelFactory):
         model = models.Polygon
 
     label = ""
-    geom = district10
+    geom = geos.MultiPolygon(district10)
     properties = {}
 
 

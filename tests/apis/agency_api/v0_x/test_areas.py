@@ -52,7 +52,7 @@ def test_areas_detail(client, django_assert_num_queries):
         "service_area_id": str(area.pk),
         "area": {
             "coordinates": [
-                [[[0.0, 0.0], [0.0, 50.0], [50.0, 50.0], [50.0, 0.0], [0.0, 0.0]]]
+                [[[[0.0, 0.0], [0.0, 50.0], [50.0, 50.0], [50.0, 0.0], [0.0, 0.0]]]]
             ],
             "type": "MultiPolygon",
         },

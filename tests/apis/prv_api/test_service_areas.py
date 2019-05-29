@@ -1,6 +1,8 @@
 import uuid
 import pytest
 
+from django.contrib.gis import geos
+
 from mds.access_control.scopes import SCOPE_PRV_API
 from mds.factories import Area, Polygon
 import mds.models as models
@@ -59,9 +61,9 @@ def test_area_get(client):
             "label": "",
             "geom": {
                 "coordinates": [
-                    [[0.0, 0.0], [0.0, 50.0], [50.0, 50.0], [50.0, 0.0], [0.0, 0.0]]
+                    [[[0.0, 0.0], [0.0, 50.0], [50.0, 50.0], [50.0, 0.0], [0.0, 0.0]]]
                 ],
-                "type": "Polygon",
+                "type": "MultiPolygon",
             },
         }
     ]
@@ -120,16 +122,18 @@ def test_area_delete(client):
 POLY_BASE_URL = "/prv/polygons/"
 
 MOCK_GEOJSON = {
-    "type": "Polygon",
+    "type": "MultiPolygon",
     "coordinates": [
         [
-            [2.197_265_625, 50.944_584_434_950_11],
-            [-4.987_792_968_75, 48.414_618_617_493_2],
-            [-1.713_867_187_5, 43.309_191_099_856_86],
-            [3.142_089_843_75, 42.391_008_609_205_045],
-            [7.514_648_437_5, 43.707_593_504_052_94],
-            [8.085_937_5, 48.980_216_985_374_994],
-            [2.197_265_625, 50.944_584_434_950_11],
+            [
+                [2.197_265_625, 50.944_584_434_950_11],
+                [-4.987_792_968_75, 48.414_618_617_493_2],
+                [-1.713_867_187_5, 43.309_191_099_856_86],
+                [3.142_089_843_75, 42.391_008_609_205_045],
+                [7.514_648_437_5, 43.707_593_504_052_94],
+                [8.085_937_5, 48.980_216_985_374_994],
+                [2.197_265_625, 50.944_584_434_950_11],
+            ]
         ]
     ],
 }
@@ -158,7 +162,12 @@ def test_polygon_creation(client):
 @pytest.mark.django_db
 def test_polygon_get(client):
     polygon_id = str(uuid.uuid4())
-    Polygon(id=polygon_id, label="test", properties={}, geom=str(MOCK_GEOJSON))
+    Polygon(
+        id=polygon_id,
+        label="test",
+        properties={},
+        geom=geos.GEOSGeometry(str(MOCK_GEOJSON)),
+    )
 
     response = client.get(
         "{}{}/".format(POLY_BASE_URL, polygon_id), **auth_header(SCOPE_PRV_API)
@@ -175,7 +184,12 @@ def test_polygon_get(client):
 @pytest.mark.django_db
 def test_polygon_patch(client):
     polygon_id = str(uuid.uuid4())
-    poly = Polygon(id=polygon_id, label="test", properties={}, geom=str(MOCK_GEOJSON))
+    poly = Polygon(
+        id=polygon_id,
+        label="test",
+        properties={},
+        geom=geos.GEOSGeometry(str(MOCK_GEOJSON)),
+    )
 
     response = client.patch(
         "{}{}/".format(POLY_BASE_URL, polygon_id),
@@ -191,7 +205,12 @@ def test_polygon_patch(client):
 @pytest.mark.django_db
 def test_polygon_update(client):
     polygon_id = str(uuid.uuid4())
-    poly = Polygon(id=polygon_id, label="test", properties={}, geom=str(MOCK_GEOJSON))
+    poly = Polygon(
+        id=polygon_id,
+        label="test",
+        properties={},
+        geom=geos.GEOSGeometry(str(MOCK_GEOJSON)),
+    )
 
     response = client.put(
         "{}{}/".format(POLY_BASE_URL, polygon_id),
@@ -217,7 +236,9 @@ def test_polygon_areas_update(client):
     area_id = str(uuid.uuid4())
     area = Area(id=area_id)
     polygon_id = str(uuid.uuid4())
-    poly = Polygon(id=polygon_id, label="test", geom=str(MOCK_GEOJSON))
+    poly = Polygon(
+        id=polygon_id, label="test", geom=geos.GEOSGeometry(str(MOCK_GEOJSON))
+    )
 
     assert poly.areas.count() == 0
 
@@ -236,7 +257,7 @@ def test_polygon_areas_update(client):
 @pytest.mark.django_db
 def test_polygon_delete(client):
     polygon_id = str(uuid.uuid4())
-    Polygon(id=polygon_id, geom=str(MOCK_GEOJSON))
+    Polygon(id=polygon_id, geom=geos.GEOSGeometry(str(MOCK_GEOJSON)))
 
     response = client.delete(
         "{}{}/".format(POLY_BASE_URL, polygon_id), **auth_header(SCOPE_PRV_API)

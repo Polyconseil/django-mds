@@ -1,4 +1,3 @@
-import json
 import random
 
 from rest_framework import serializers
@@ -6,6 +5,7 @@ from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
+from django.contrib.gis import geos
 from django.db import IntegrityError
 
 from mds import models
@@ -30,7 +30,8 @@ class PolygonRequestSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         instance = self.Meta.model(
-            label=validated_data["label"], geom=json.dumps(validated_data["geom"])
+            label=validated_data["label"],
+            geom=geos.GEOSGeometry(str(validated_data["geom"])),
         )
         instance.save()
         return instance
@@ -39,7 +40,7 @@ class PolygonRequestSerializer(serializers.ModelSerializer):
         if validated_data.get("label"):
             instance.label = validated_data["label"]
         if validated_data.get("geom"):
-            instance.geom = json.dumps(validated_data["geom"])
+            instance.geom = geos.GEOSGeometry(str(validated_data["geom"]))
         if validated_data.get("areas"):
             areas = validated_data.pop("areas", [])
             instance.areas.set(areas)
@@ -110,8 +111,7 @@ class PolygonViewSet(utils.MultiSerializerViewSetMixin, viewsets.ModelViewSet):
             polygons_to_create = []
             for polygon in polygons:
                 geom = polygon.get("geom", None)
-                if geom and geom["type"] == "Polygon":
-
+                if geom and geom["type"] in ["Polygon", "MultiPolygon"]:
                     areas = []
                     for area_label in polygon.get("areas", []):
                         defaults = {"color": "#%06x" % random.randint(0, 0xFFFFFF)}
@@ -121,7 +121,8 @@ class PolygonViewSet(utils.MultiSerializerViewSetMixin, viewsets.ModelViewSet):
                         )[0]
                         areas.append(area)
                     poly = models.Polygon(
-                        label=polygon.get("label", ""), geom=str(geom)
+                        label=polygon.get("label", ""),
+                        geom=geos.GEOSGeometry(str(geom)),
                     )
                     poly.areas.set([a.id for a in areas])
                     polygons_to_create.append(poly)
