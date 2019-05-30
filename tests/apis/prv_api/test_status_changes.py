@@ -8,8 +8,8 @@ from mds.access_control.scopes import SCOPE_PRV_API
 from tests.auth_helpers import BASE_NUM_QUERIES, auth_header
 
 
-@pytest.mark.django_db
-def test_device_list_basic(client, django_assert_num_queries):
+@pytest.fixture
+def status_changes_fixtures():
     now = timezone.now()
 
     uuid1 = "aaaaaaa1-1342-413b-8e89-db802b2f83f6"
@@ -49,6 +49,7 @@ def test_device_list_basic(client, django_assert_num_queries):
     factories.EventRecord(
         device=device1,
         timestamp=now,
+        saved_at=now,
         event_type=enums.EVENT_TYPE.maintenance.name,
         properties={
             "trip_id": "b3da2d46-065f-4036-903c-49d796f09357",
@@ -62,15 +63,21 @@ def test_device_list_basic(client, django_assert_num_queries):
     factories.EventRecord(
         device=device1,
         timestamp=now - datetime.timedelta(seconds=1),
+        saved_at=now - datetime.timedelta(seconds=1),
         event_type=enums.EVENT_TYPE.telemetry.name,
     )
     # This one is too old
-    factories.EventRecord(device=device1, timestamp=now - datetime.timedelta(hours=1))
+    factories.EventRecord(
+        device=device1,
+        timestamp=now - datetime.timedelta(hours=1),
+        saved_at=now - datetime.timedelta(hours=1),
+    )
 
     # Add an event on the second device
     factories.EventRecord(
         device=device2,
         timestamp=now,
+        saved_at=now,
         event_type=enums.EVENT_TYPE.trip_start.name,
         properties={
             "trip_id": None,
@@ -82,6 +89,7 @@ def test_device_list_basic(client, django_assert_num_queries):
     )
 
     expected_event_device1 = {
+        "recorded": utils.to_mds_timestamp(now),
         "provider_id": str(provider.id),
         "provider_name": "Test provider",
         "device_id": uuid1,
@@ -99,12 +107,13 @@ def test_device_list_basic(client, django_assert_num_queries):
         "associated_trip": "b3da2d46-065f-4036-903c-49d796f09357",
     }
     expected_event_device2 = {
+        "recorded": utils.to_mds_timestamp(now),
         "provider_id": str(provider2.id),
         "provider_name": "Test another provider",
         "device_id": uuid2,
         "vehicle_id": "3CCCCC",
         "propulsion_type": ["electric"],
-        "event_type_reason": "trip_start",
+        "event_type_reason": "user_pick_up",
         "event_type": "trip",
         "vehicle_type": "scooter",
         "event_time": utils.to_mds_timestamp(now),
@@ -115,9 +124,28 @@ def test_device_list_basic(client, django_assert_num_queries):
         },
         "associated_trip": None,
     }
+
+    return now, provider, expected_event_device1, expected_event_device2
+
+
+@pytest.mark.django_db
+def test_device_list_auth(client, django_assert_num_queries, status_changes_fixtures):
+    now, provider, expected_event_device1, expected_event_device2 = (
+        status_changes_fixtures
+    )
+
     # test auth
     response = client.get("/prv/provider_api/status_changes")
     assert response.status_code == 401
+
+
+@pytest.mark.django_db
+def test_device_list_basic_time(
+    client, django_assert_num_queries, status_changes_fixtures
+):
+    now, provider, expected_event_device1, expected_event_device2 = (
+        status_changes_fixtures
+    )
 
     start_time = utils.to_mds_timestamp(now - datetime.timedelta(minutes=30))
     n = BASE_NUM_QUERIES
@@ -129,7 +157,6 @@ def test_device_list_basic(client, django_assert_num_queries):
             **auth_header(SCOPE_PRV_API, provider_id=provider.id),
         )
     assert response.status_code == 200
-
     data = response.data["data"]["status_changes"]
     assert len(data) == 2
 
@@ -147,6 +174,52 @@ def test_device_list_basic(client, django_assert_num_queries):
     # Also test endpoint work with a trailing slash
     response = client.get(
         "/prv/provider_api/status_changes/?start_time=%s&take=1" % start_time,
+        **auth_header(SCOPE_PRV_API, provider_id=provider.id),
+    )
+    data = response.data["data"]["status_changes"]
+    assert len(data) == 1
+
+
+@pytest.mark.django_db
+def test_device_list_basic_recorded(
+    client, django_assert_num_queries, status_changes_fixtures
+):
+    now, provider, expected_event_device1, expected_event_device2 = (
+        status_changes_fixtures
+    )
+
+    # test auth
+    response = client.get("/prv/provider_api/status_changes")
+    assert response.status_code == 401
+
+    start_recorded = utils.to_mds_timestamp(now - datetime.timedelta(minutes=30))
+    n = BASE_NUM_QUERIES
+    n += 1  # query on events
+    n += 1  # count on events
+    with django_assert_num_queries(n):
+        response = client.get(
+            "/prv/provider_api/status_changes?start_recorded=%s" % start_recorded,
+            **auth_header(SCOPE_PRV_API, provider_id=provider.id),
+        )
+    assert response.status_code == 200
+
+    data = response.data["data"]["status_changes"]
+    assert len(data) == 2
+
+    assert expected_event_device1 in data
+    assert expected_event_device2 in data
+
+    # Test pagination: retrieve only given number of events
+    response = client.get(
+        "/prv/provider_api/status_changes?start_recorded=%s&take=1" % start_recorded,
+        **auth_header(SCOPE_PRV_API, provider_id=provider.id),
+    )
+    data = response.data["data"]["status_changes"]
+    assert len(data) == 1
+
+    # Also test endpoint work with a trailing slash
+    response = client.get(
+        "/prv/provider_api/status_changes/?start_recorded=%s&take=1" % start_recorded,
         **auth_header(SCOPE_PRV_API, provider_id=provider.id),
     )
     data = response.data["data"]["status_changes"]

@@ -104,10 +104,12 @@ PROVIDER_REASON_TO_AGENCY_EVENT = {
     "maintenance_pick_up": EVENT_TYPE.maintenance_pick_up.name,
     # This may be aded in a revision of the provider API specs
     "battery_charged": EVENT_TYPE.battery_charged.name,
-    # TODO remove - in case we still receive that old name
-    "battery_ok": EVENT_TYPE.battery_charged.name,
 }
 
+# Invert keys and values
+AGENCY_EVENT_TO_PROVIDER_REASON = dict(
+    (v, k) for k, v in PROVIDER_REASON_TO_AGENCY_EVENT.items()
+)
 
 EVENT_SOURCE = enum.Enum(
     "Event source",

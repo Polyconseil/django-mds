@@ -7,12 +7,13 @@ from mds.apis import utils as apis_utils
 
 
 class DeviceStatusChangesSerializer(serializers.ModelSerializer):
+    recorded = apis_utils.UnixTimestampMilliseconds(source="saved_at")
     associated_trip = serializers.CharField(source="properties.trip_id")
     device_id = serializers.CharField(source="device.id")
     event_location = serializers.SerializerMethodField()
     event_time = apis_utils.UnixTimestampMilliseconds(source="timestamp")
     event_type = serializers.SerializerMethodField()
-    event_type_reason = serializers.CharField(source="event_type")
+    event_type_reason = serializers.SerializerMethodField()
     propulsion_type = serializers.ListSerializer(
         source="device.propulsion",
         child=serializers.ChoiceField(choices=enums.choices(enums.DEVICE_PROPULSION)),
@@ -25,6 +26,7 @@ class DeviceStatusChangesSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.EventRecord
         fields = (
+            "recorded",
             "associated_trip",
             "device_id",
             "event_location",
@@ -55,6 +57,9 @@ class DeviceStatusChangesSerializer(serializers.ModelSerializer):
     def get_event_type(self, obj):
         return enums.EVENT_TYPE_TO_DEVICE_STATUS[obj.event_type]
 
+    def get_event_type_reason(self, obj):
+        return enums.AGENCY_EVENT_TO_PROVIDER_REASON[obj.event_type]
+
 
 class CustomPagination(pagination.PageNumberPagination):
     page_size = 5000
@@ -79,21 +84,32 @@ class ProviderApiViewSet(viewsets.ViewSet):
 
     @decorators.action(detail=False, methods=["get"])
     def status_changes(self, request, *args, **kwargs):
+        start_recorded = request.query_params.get("start_recorded")
         start_time = request.query_params.get("start_time")
         end_time = request.query_params.get("end_time")
+
         # Only forward events that were first retrieved though providers'
         # `status_changes' endpoint
         event_types = enums.PROVIDER_REASON_TO_AGENCY_EVENT.values()
         events = models.EventRecord.objects.select_related("device__provider").filter(
             event_type__in=event_types
         )
-        if start_time:
-            start_time = utils.from_mds_timestamp(int(start_time))
-            events = events.filter(timestamp__gte=start_time)
-        if end_time:
-            end_time = utils.from_mds_timestamp(int(end_time))
-            events = events.filter(timestamp__lte=end_time)
+
+        # We support either recorded or time search but not both at the same time
+        if start_recorded:
+            order_by = "saved_at"
+            start_recorded = utils.from_mds_timestamp(int(start_recorded))
+            events = events.filter(saved_at__gte=start_recorded)
+        else:
+            order_by = "timestamp"
+            if start_time:
+                start_time = utils.from_mds_timestamp(int(start_time))
+                events = events.filter(timestamp__gte=start_time)
+            if end_time:
+                end_time = utils.from_mds_timestamp(int(end_time))
+                events = events.filter(timestamp__lte=end_time)
+
         paginator = CustomPagination()
-        page = paginator.paginate_queryset(events.order_by("timestamp"), request)
+        page = paginator.paginate_queryset(events.order_by(order_by), request)
         data = DeviceStatusChangesSerializer(page, many=True).data
         return paginator.get_paginated_response(data)
