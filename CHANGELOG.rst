@@ -1,7 +1,7 @@
 Changelog
 =========
 
-0.5.24 (unreleased)
+0.5.24 (2019-05-31)
 -------------------
 
 - Support recorded & start_recorded
