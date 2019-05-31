@@ -4,7 +4,8 @@ Changelog
 0.5.24 (unreleased)
 -------------------
 
-- Nothing changed yet.
+- Support recorded & start_recorded
+- Add Multipolygon support
 
 
 0.5.23 (2019-05-24)
