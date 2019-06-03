@@ -2,6 +2,7 @@
 import datetime
 import json
 
+from django.contrib.gis import geos
 from django_filters import rest_framework as filters
 from rest_framework import pagination
 from rest_framework import serializers
@@ -125,7 +126,7 @@ class MultiPointSerializer(BaseGeometrySerializer):
 
 
 class PolygonSerializer(BaseGeometrySerializer):
-    type = serializers.ChoiceField(["Polygon"])
+    type = serializers.ChoiceField(["Polygon", "MultiPolygon"])
     coordinates = serializers.ListField(
         child=serializers.ListField(
             child=serializers.ListField(child=serializers.FloatField())
@@ -161,3 +162,16 @@ class DateTimeRangeOverlapFilter(filters.IsoDateTimeFromToRangeFilter):
 
         lookup = "%s__%s" % (self.field_name, "overlap")
         return self.get_method(qs)(**{lookup: (value.start, value.stop)})
+
+
+# Others #########################################################
+
+
+def get_geos_multipolygon(geom_str_repr):
+    """
+      Retrieve a GEOS MultiPolygon from string
+    """
+    geos_obj = geos.GEOSGeometry(geom_str_repr)
+    if geos_obj and not isinstance(geos_obj, geos.MultiPolygon):
+        return geos.MultiPolygon(geos_obj)
+    return geos_obj
