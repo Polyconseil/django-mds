@@ -1,7 +1,7 @@
 Changelog
 =========
 
-0.5.25 (unreleased)
+0.5.25 (2019-06-03)
 -------------------
 
 - Nothing changed yet.
