@@ -360,7 +360,7 @@ def _create_event_record(status_change):
 
     first_saved_at = utils.timezone.now
     # "Aggregation" layers store a recorded field, and we want to keep the same value
-    if (status_change["recorded"]):
+    if status_change["recorded"]:
         first_saved_at = utils.from_mds_timestamp(status_change["recorded"])
 
     return models.EventRecord(
@@ -369,7 +369,7 @@ def _create_event_record(status_change):
         point=point,
         event_type=status_change["agency_event_type"],
         properties=properties,
-        first_saved_at=first_saved_at
+        first_saved_at=first_saved_at,
     )
 
 
