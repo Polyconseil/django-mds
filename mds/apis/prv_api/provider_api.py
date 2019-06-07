@@ -8,6 +8,7 @@ from mds.apis import utils as apis_utils
 
 class DeviceStatusChangesSerializer(serializers.ModelSerializer):
     recorded = apis_utils.UnixTimestampMilliseconds(source="saved_at")
+    first_recorded = apis_utils.UnixTimestampMilliseconds(source="first_saved_at")
     associated_trip = serializers.CharField(source="properties.trip_id")
     device_id = serializers.CharField(source="device.id")
     event_location = serializers.SerializerMethodField()
@@ -27,6 +28,7 @@ class DeviceStatusChangesSerializer(serializers.ModelSerializer):
         model = models.EventRecord
         fields = (
             "recorded",
+            "first_recorded",
             "associated_trip",
             "device_id",
             "event_location",
