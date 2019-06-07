@@ -55,9 +55,10 @@ class PolygonResponseSerializer(serializers.Serializer):
     label = serializers.CharField(help_text="Name of the polygon")
     geom = utils.PolygonSerializer(help_text="GeoJSON Polygon")
     areas = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
+    properties = serializers.DictField()
 
     class Meta:
-        fields = ("id", "label", "geom", "areas")
+        fields = ("id", "label", "geom", "areas", "properties")
 
 
 class PolygonsImportRequestSerializer(serializers.Serializer):
@@ -121,6 +122,7 @@ class PolygonViewSet(utils.MultiSerializerViewSetMixin, viewsets.ModelViewSet):
                         areas.append(area)
                     poly = models.Polygon(
                         label=polygon.get("label", ""),
+                        properties=polygon.get("properties", {}),
                         geom=utils.get_geos_multipolygon(str(geom)),
                     )
                     poly.areas.set([a.id for a in areas])

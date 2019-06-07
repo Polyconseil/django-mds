@@ -60,6 +60,7 @@ def test_area_get(client):
             "id": str(area.polygons.get().id),
             "areas": [area_id],
             "label": "",
+            "properties": {},
             "geom": {
                 "coordinates": [
                     [[[0.0, 0.0], [0.0, 50.0], [50.0, 50.0], [50.0, 0.0], [0.0, 0.0]]]
@@ -216,6 +217,7 @@ def test_polygon_get(client):
         "id": polygon_id,
         "areas": [],
         "label": "test",
+        "properties": {},
         "geom": MOCK_GEOJSON_MULTIPOLYGON,
     }
 
