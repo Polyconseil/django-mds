@@ -1,7 +1,7 @@
 Changelog
 =========
 
-0.5.26 (unreleased)
+0.5.26 (2019-06-10)
 -------------------
 
 - Added "first_recorded" field for event aggregators.
