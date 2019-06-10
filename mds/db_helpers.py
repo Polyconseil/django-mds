@@ -131,6 +131,7 @@ def upsert_event_records(
             # The same encoder as in the model
             "properties": json.dumps(event_record.properties, cls=encoders.JSONEncoder),
             "source": source,
+            "first_saved_at": event_record.first_saved_at,
         }
 
     query = """
@@ -141,6 +142,7 @@ def upsert_event_records(
             event_type,
             properties,
             source,
+            first_saved_at,
             saved_at
         ) VALUES (
             %(device_id)s,
@@ -149,6 +151,7 @@ def upsert_event_records(
             %(event_type)s,
             %(properties)s,
             %(source)s,
+            %(first_saved_at)s,
             current_timestamp
         )
         """
@@ -159,6 +162,7 @@ def upsert_event_records(
                 event_type = EXCLUDED.event_type,
                 properties = EXCLUDED.properties,
                 source = EXCLUDED.source,
+                first_saved_at = EXCLUDED.first_saved_at,
                 saved_at = current_timestamp
             """
     else:

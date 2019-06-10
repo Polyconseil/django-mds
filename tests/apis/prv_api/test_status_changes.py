@@ -90,6 +90,7 @@ def status_changes_fixtures():
 
     expected_event_device1 = {
         "recorded": utils.to_mds_timestamp(now),
+        "first_recorded": None,
         "provider_id": str(provider.id),
         "provider_name": "Test provider",
         "device_id": uuid1,
@@ -108,6 +109,7 @@ def status_changes_fixtures():
     }
     expected_event_device2 = {
         "recorded": utils.to_mds_timestamp(now),
+        "first_recorded": None,
         "provider_id": str(provider2.id),
         "provider_name": "Test another provider",
         "device_id": uuid2,

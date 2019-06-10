@@ -637,7 +637,6 @@ class EventRecord(factory.DjangoModelFactory):
         )
     )
     saved_at = datetime.datetime(2018, 8, 1, 1, tzinfo=pytz.utc)
-    first_saved_at = datetime.datetime(2018, 8, 1, 1, tzinfo=pytz.utc)
     event_type = factory.Iterator(c.name for c in enums.EVENT_TYPE)
     properties = factory.Dict(
         {

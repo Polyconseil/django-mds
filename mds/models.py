@@ -233,8 +233,8 @@ class EventRecord(models.Model):
     point = gis_models.PointField(blank=True, null=True)
     # For synchronisation purposes (polling on this field)
     saved_at = models.DateTimeField(default=utils.timezone.now)
-    # For KPIs, know when the event was seen by an agregator the first time
-    first_saved_at = models.DateTimeField(default=utils.timezone.now)
+    # For KPIs, know when the event was seen by an aggregator the first time
+    first_saved_at = models.DateTimeField(blank=True, null=True)
     source = UnboundedCharField(
         choices=enums.choices(enums.EVENT_SOURCE),
         default=enums.EVENT_SOURCE.agency_api.name,
