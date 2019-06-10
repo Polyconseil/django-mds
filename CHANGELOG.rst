@@ -4,13 +4,14 @@ Changelog
 0.5.26 (unreleased)
 -------------------
 
-- Nothing changed yet.
+- Added "first_recorded" field for event aggregators.
+- Fixes on (multi)polygons.
 
 
 0.5.25 (2019-06-03)
 -------------------
 
-- Nothing changed yet.
+- Someone didn't fill this changelog...
 
 
 0.5.24 (2019-05-31)
