@@ -4,7 +4,7 @@ Changelog
 0.5.27 (unreleased)
 -------------------
 
-- Nothing changed yet.
+- Lower the level of poller logs.
 
 
 0.5.26 (2019-06-10)

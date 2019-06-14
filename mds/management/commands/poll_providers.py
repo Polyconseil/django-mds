@@ -26,7 +26,7 @@ class Command(management.BaseCommand):
 
     def handle(self, *args, **options):
         for provider in models.Provider.objects.all():
-            logger.info("Polling provider %s... ", provider.name)
+            logger.debug("Polling provider %s... ", provider.name)
             try:
                 poller.StatusChangesPoller(provider).poll()
             except Exception:  # pylint: disable=broad-except
@@ -36,4 +36,4 @@ class Command(management.BaseCommand):
                 # But in production, we just log and try the next one
                 logger.exception("Error in polling provider %s", provider.name)
             else:
-                logger.info("Polling provider %s succeeded.", provider.name)
+                logger.debug("Polling provider %s succeeded.", provider.name)

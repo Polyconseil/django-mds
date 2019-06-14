@@ -42,7 +42,7 @@ class StatusChangesPoller:
 
     def poll(self):
         if not self.provider.base_api_url:
-            logger.info("Provider %s has no URL defined, skipping.", self.provider.name)
+            logger.debug("Provider %s has no URL defined, skipping.", self.provider.name)
             return
 
         self._poll_status_changes()
