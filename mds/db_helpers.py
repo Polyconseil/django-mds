@@ -25,6 +25,7 @@ def upsert_providers(providers: types.GeneratorType):
             "agency_api_authentication": json.dumps(provider.agency_api_authentication),
             "agency_api_configuration": json.dumps(provider.agency_api_configuration),
             "colors": json.dumps(provider.colors),
+            "operator": provider.operator,
         }
 
     query = """
@@ -37,7 +38,8 @@ def upsert_providers(providers: types.GeneratorType):
             api_configuration,
             agency_api_authentication,
             agency_api_configuration,
-            colors
+            colors,
+            operator
         ) VALUES (
             %(id)s,
             %(name)s,
@@ -47,7 +49,8 @@ def upsert_providers(providers: types.GeneratorType):
             %(api_configuration)s,
             %(agency_api_authentication)s,
             %(agency_api_configuration)s,
-            %(colors)s
+            %(colors)s,
+            %(operator)s
         ) ON CONFLICT DO NOTHING
     """
 

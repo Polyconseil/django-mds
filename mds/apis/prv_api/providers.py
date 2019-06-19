@@ -20,6 +20,7 @@ class ProviderSerializer(serializers.ModelSerializer):
     logo_b64 = serializers.CharField(
         required=False, help_text="Logo of provider base64 encoded"
     )
+    operator = serializers.BooleanField(help_text="This provider is a device operator")
     colors = ProviderColorsSerializer(
         default=dict, help_text="colors for distinguishing providers on map"
     )
@@ -42,6 +43,7 @@ class ProviderSerializer(serializers.ModelSerializer):
             "api_configuration",
             "agency_api_authentication",
             "device_categories",
+            "operator",
         )
 
 

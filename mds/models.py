@@ -82,6 +82,9 @@ class ProviderQuerySet(models.QuerySet):
             )
         return self.filter(**kwargs).annotate(**device_categories)
 
+    def operators(self, **kwargs):
+        return self.filter(operator=True, **kwargs)
+
 
 def colors_validator(colors):
     fields = {"primary", "secondary"}
@@ -97,6 +100,7 @@ class Provider(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4)
     name = UnboundedCharField(blank=True, default="")
     logo_b64 = UnboundedCharField(null=True, blank=True, default=None)
+    operator = models.BooleanField(default=True)
 
     # The following fields are for us pulling data from the provider
     base_api_url = UnboundedCharField(
