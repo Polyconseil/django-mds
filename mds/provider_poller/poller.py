@@ -55,14 +55,18 @@ class StatusChangesPoller:
         params = {}
 
         # Start where we left, it's all based on providers sorting by start_time
-        # (we wouldn't know if the provider recorded late telemetries earlier)
+        # (but we would miss telemetries older than start_time saved after we polled).
+        # For those that support it, use the recorded time field or equivalent.
+        start_time_field = self.provider.api_configuration.get(
+            "start_time_field", "start_time"
+        )
         if self.provider.last_start_time_polled:
-            params["start_time"] = utils.to_mds_timestamp(
+            params[start_time_field] = utils.to_mds_timestamp(
                 self.provider.last_start_time_polled
             )
         # Otherwise limit polling
         elif PROVIDER_POLLER_LIMIT_DAYS:
-            params["start_time"] = utils.to_mds_timestamp(
+            params[start_time_field] = utils.to_mds_timestamp(
                 timezone.now() - datetime.timedelta(PROVIDER_POLLER_LIMIT_DAYS)
             )
 
