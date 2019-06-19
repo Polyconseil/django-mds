@@ -1,7 +1,7 @@
 Changelog
 =========
 
-0.5.27 (unreleased)
+0.5.27 (2019-06-19)
 -------------------
 
 - Lower the level of poller logs.
