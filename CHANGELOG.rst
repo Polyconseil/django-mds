@@ -5,6 +5,8 @@ Changelog
 -------------------
 
 - Lower the level of poller logs.
+- New flag (device) "operator" on providers
+- Support custom time field on polling
 
 
 0.5.26 (2019-06-10)
