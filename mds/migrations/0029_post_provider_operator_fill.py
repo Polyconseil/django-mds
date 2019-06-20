@@ -11,8 +11,8 @@ class Migration(migrations.Migration):
         migrations.RunSQL(
             """
             UPDATE mds_provider SET operator = (
-                CASE WHEN name IN ('LADOT', 'LADOT Sandbox') THEN true
-                ELSE false
+                CASE WHEN name IN ('LADOT', 'LADOT Sandbox') THEN false
+                ELSE true
                 END
             )
             """,

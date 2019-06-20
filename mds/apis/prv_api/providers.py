@@ -1,6 +1,6 @@
+import django_filters.rest_framework
 from rest_framework import serializers
 from rest_framework import viewsets
-
 from mds import models
 from mds.access_control.permissions import require_scopes
 from mds.access_control.scopes import SCOPE_PRV_API
@@ -54,3 +54,5 @@ class ProviderViewSet(viewsets.ModelViewSet):
     queryset = models.Provider.objects.with_device_categories()
     lookup_field = "id"
     serializer_class = ProviderSerializer
+    filter_backends = (django_filters.rest_framework.DjangoFilterBackend,)
+    filterset_fields = ("operator",)

@@ -4,7 +4,8 @@ Changelog
 0.5.30 (unreleased)
 -------------------
 
-- Nothing changed yet.
+- Forgot to filter operator providers in the endpoint.
+- Fix migrating the initial operator value
 
 
 0.5.29 (2019-06-20)
