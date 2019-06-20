@@ -5,7 +5,7 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [("mds", "0029_provider_operator_fill")]
+    dependencies = [("mds", "0029_post_provider_operator_fill")]
 
     operations = [
         migrations.AlterField(
