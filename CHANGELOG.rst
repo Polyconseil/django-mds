@@ -5,6 +5,7 @@ Changelog
 -------------------
 
 - Reorder migrations to fix deployment.
+- Filter providers by operator status in admin
 
 
 0.5.27 (2019-06-19)

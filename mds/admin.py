@@ -14,7 +14,8 @@ def is_uuid(uuid_string, version=4):
 
 @admin.register(models.Provider)
 class ProviderAdmin(admin.ModelAdmin):
-    list_display = ["id", "name"]
+    list_display = ["id", "name", "operator"]
+    list_filter = ["operator"]
     ordering = ["name"]
 
 
