@@ -1,7 +1,7 @@
 Changelog
 =========
 
-0.5.28 (unreleased)
+0.5.28 (2019-06-20)
 -------------------
 
 - Reorder migrations to fix deployment.
