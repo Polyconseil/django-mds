@@ -4,7 +4,7 @@ Changelog
 0.5.29 (unreleased)
 -------------------
 
-- Nothing changed yet.
+- Fix new operator field unnecessarily required in serializer
 
 
 0.5.28 (2019-06-20)
