@@ -5,14 +5,12 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('mds', '0030_provider_operator_fill'),
-    ]
+    dependencies = [("mds", "0029_provider_operator_fill")]
 
     operations = [
         migrations.AlterField(
-            model_name='provider',
-            name='operator',
+            model_name="provider",
+            name="operator",
             field=models.BooleanField(default=True),
-        ),
+        )
     ]

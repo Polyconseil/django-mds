@@ -8,7 +8,7 @@ class Migration(migrations.Migration):
     # concurrent index creation cannot be made inside a transaction
     atomic = False
 
-    dependencies = [("mds", "0027_eventrecord_first_saved_at")]
+    dependencies = [("mds", "0030_post_provider_operator_default")]
 
     operations = [
         migrations.SeparateDatabaseAndState(

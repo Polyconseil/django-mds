@@ -5,7 +5,7 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
 
-    dependencies = [("mds", "0029_provider_operator")]
+    dependencies = [("mds", "0028_provider_operator")]
 
     operations = [
         migrations.RunSQL(

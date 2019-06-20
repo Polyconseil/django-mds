@@ -5,7 +5,7 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [("mds", "0028_eventrecord_saved_at_index")]
+    dependencies = [("mds", "0027_eventrecord_first_saved_at")]
 
     operations = [
         migrations.AddField(

@@ -4,7 +4,7 @@ Changelog
 0.5.28 (unreleased)
 -------------------
 
-- Nothing changed yet.
+- Reorder migrations to fix deployment.
 
 
 0.5.27 (2019-06-19)
