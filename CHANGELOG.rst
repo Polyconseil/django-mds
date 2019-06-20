@@ -1,7 +1,7 @@
 Changelog
 =========
 
-0.5.30 (unreleased)
+0.5.30 (2019-06-20)
 -------------------
 
 - Forgot to filter operator providers in the endpoint.
