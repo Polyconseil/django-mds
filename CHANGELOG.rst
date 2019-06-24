@@ -1,7 +1,7 @@
 Changelog
 =========
 
-0.5.31 (unreleased)
+0.5.31 (2019-06-24)
 -------------------
 
 - Read-only event records endpoint.
