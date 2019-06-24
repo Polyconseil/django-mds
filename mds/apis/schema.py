@@ -124,7 +124,10 @@ class CustomFilterInspector(FilterInspector):
             )
             extra_param["collection_format"] = "multi"
         else:
-            if isinstance(field, filters.ChoiceFilter):
+            if isinstance(field, filters.ModelChoiceFilter):
+                type_ = subtype = drf_yasg.openapi.TYPE_STRING
+                # extra_param?
+            elif isinstance(field, filters.ChoiceFilter):
                 type_ = subtype = drf_yasg.openapi.TYPE_STRING
                 extra_param["enum"] = [c for c, _ in field.extra["choices"]]
             elif isinstance(field, filters.NumberFilter):

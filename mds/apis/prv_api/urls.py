@@ -2,7 +2,7 @@ from django.conf.urls import include
 from django.urls import path
 from rest_framework import routers
 
-from . import authent, provider_api, providers, service_areas, vehicles
+from . import authent, provider_api, providers, service_areas, vehicles, event_records
 
 
 def get_prv_router():
@@ -19,6 +19,9 @@ def get_prv_router():
     prv_router.register(r"vehicles", vehicles.DeviceViewSet, basename="device")
     prv_router.register(
         r"provider_api", provider_api.ProviderApiViewSet, basename="provider_api"
+    )
+    prv_router.register(
+        r"event_records", event_records.EventRecordViewSet, basename="event_records"
     )
     return prv_router
 
