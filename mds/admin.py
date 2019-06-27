@@ -36,7 +36,7 @@ class DeviceAdmin(admin.ModelAdmin):
 class EventRecordAdmin(admin.ModelAdmin):
     list_display = ["saved_at", "timestamp", "provider", "device_id", "event_type"]
     list_filter = ["device__provider", "event_type"]
-    list_select_related = ("device__provider",)
+    list_select_related = ["device__provider"]
     search_fields = ["device__id", "device__identification_number"]
 
     def get_search_results(self, request, queryset, search_term):
@@ -55,7 +55,7 @@ class EventRecordAdmin(admin.ModelAdmin):
 # to use when searching for devices in get_search_results
 # as a relationship to self.model
 def get_devices_queryset_search_results(self, search_term):
-    custom_queryset = self.model.objects.select_related("device__provider")
+    custom_queryset = self.model.objects.select_related(*self.list_select_related)
     if is_uuid(search_term):
         return custom_queryset.filter(device_id=search_term)
     else:
