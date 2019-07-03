@@ -193,6 +193,10 @@ class Device(models.Model):
     )
     year_manufactured = models.IntegerField(blank=True, null=True)
     manufacturer = UnboundedCharField(blank=True, default="")
+    # Remember to update this field within raw queries!
+    saved_at = models.DateTimeField(
+        db_index=True, default=pg_functions.TransactionNow, editable=False
+    )
 
     # denormalized fields - the source of truth is in the EventRecord table.
     # /!\ These fields are for internal usage and may disappear anytime
@@ -212,6 +216,10 @@ class Device(models.Model):
             self.identification_number,
             short_uuid4(self.id),
         )
+
+    def save(self, *args, **kwargs):
+        self.saved_at = pg_functions.TransactionNow()
+        super().save(*args, **kwargs)
 
     @property
     def latest_event(self):

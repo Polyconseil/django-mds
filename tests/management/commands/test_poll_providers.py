@@ -78,6 +78,7 @@ def test_poll_provider_batch(client):
 
     # The second device was created on the fly
     device2 = models.Device.objects.get(pk=expected_device2.pk)
+    assert device2.saved_at is not None
     # With a fake register event and the actual event
     event2_register, event2_regular = device2.event_records.order_by("timestamp")
 

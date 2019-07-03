@@ -89,7 +89,8 @@ def upsert_devices(devices: types.GeneratorType):
             model,
             propulsion,
             manufacturer,
-            dn_status
+            dn_status,
+            saved_at
         ) VALUES (
             %(id)s,
             %(provider_id)s,
@@ -99,7 +100,8 @@ def upsert_devices(devices: types.GeneratorType):
             %(model)s,
             %(propulsion)s,
             %(manufacturer)s,
-            %(dn_status)s
+            %(dn_status)s,
+            CURRENT_TIMESTAMP
         ) ON CONFLICT DO NOTHING
     """
 
