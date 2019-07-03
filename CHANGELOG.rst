@@ -4,7 +4,7 @@ Changelog
 0.5.33 (unreleased)
 -------------------
 
-- Nothing changed yet.
+- Resort to setting saved_at from the Python side.
 
 
 0.5.32 (2019-07-03)

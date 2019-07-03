@@ -11,8 +11,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name="device",
             name="saved_at",
-            field=models.DateTimeField(
-                blank=True, db_index=True, editable=False, null=True
-            ),
+            field=models.DateTimeField(db_index=True, null=True),
         )
     ]
