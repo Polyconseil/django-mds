@@ -1,7 +1,7 @@
 Changelog
 =========
 
-0.5.32 (unreleased)
+0.5.32 (2019-07-03)
 -------------------
 
 - Add saved_at column on devices.
