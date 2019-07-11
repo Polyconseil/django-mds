@@ -4,7 +4,7 @@ Changelog
 0.5.34 (unreleased)
 -------------------
 
-- Nothing changed yet.
+- Fix LADOT poller to poll on recorded when using start_recorded
 
 
 0.5.33 (2019-07-03)
