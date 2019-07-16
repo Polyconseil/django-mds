@@ -203,7 +203,7 @@ def test_device_event(client):
             "charge": 0.54,
         },
         "timestamp": 1_325_376_000_000,
-        "trip_id": None,
+        "trip_id": "2aa5fd81-a518-4114-82be-f9a8b2982ff7",
     }
 
     # test auth
@@ -225,6 +225,7 @@ def test_device_event(client):
     assert response.status_code == 201
     assert response.data == {"device_id": str(device_id), "status": "removed"}
     assert device.event_records.all().count() == 1
+    assert device.event_records.first().properties["trip_id"] == "2aa5fd81-a518-4114-82be-f9a8b2982ff7"
 
 
 @pytest.mark.django_db
