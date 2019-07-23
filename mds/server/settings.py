@@ -31,6 +31,7 @@ INSTALLED_APPS = [
     "corsheaders",
     "django.contrib.admin",
     "django.contrib.auth",
+    "django.contrib.gis",
     "django.contrib.contenttypes",
     "django.contrib.messages",
     "django.contrib.postgres",
