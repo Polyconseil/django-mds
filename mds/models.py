@@ -122,7 +122,16 @@ class Provider(models.Model):
     # We may poll a provider, e.g. LADOT sandbox that replies for many providers
     # but has no device itself.
     # So we cannot just rely on checking the latest event record saved.
-    last_start_time_polled = models.DateTimeField(blank=True, null=True)
+    last_event_time_polled = models.DateTimeField(
+        blank=True, null=True, verbose_name="Last event time polled (start_time)"
+    )
+    last_recorded_polled = models.DateTimeField(
+        blank=True, null=True, verbose_name="Last recorded polled (start_recorded)"
+    )
+    # Some providers accept `skip` as a query param
+    last_skip_polled = models.PositiveIntegerField(
+        blank=True, null=True, verbose_name="Last skip polled (total_events)"
+    )
 
     # The following fields are for the provider pushing data to us
     agency_api_authentication = pg_fields.JSONField(

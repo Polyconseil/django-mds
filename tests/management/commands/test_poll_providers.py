@@ -153,7 +153,7 @@ def test_follow_up(client):
     event = factories.EventRecord()
     device = event.device
     provider = device.provider
-    provider.last_start_time_polled = event.timestamp
+    provider.last_event_time_polled = event.timestamp
     provider.save()
     expected_event = factories.EventRecord.build(
         event_type=enums.EVENT_TYPE.service_end.name, timestamp=timezone.now()
@@ -211,6 +211,7 @@ def make_response(
                     telemetry["gps"]["lat"],
                 ],
                 associated_trip=associated_trip,
+                recorded=int(event.timestamp.timestamp() * 1000),  # In ms
             )
         ],
         links__next=next_page,

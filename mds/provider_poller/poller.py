@@ -26,12 +26,25 @@ from .settings import PROVIDER_POLLER_LIMIT_DAYS
 
 
 ACCEPTED_MDS_VERSIONS = ["0.2", "0.3"]
-START_TIME_FIELD_MAPPING = enum.Enum(
-    "start_time field to event_time_field",
-    [("start_recorded", "recorded"), ("start_time", "event_time")],
+POLLING_CURSOR_TO_QUERY_PARAM = enum.Enum(
+    "polling_cursor field to the query parameter",
+    [
+        ("start_recorded", "recorded"),
+        ("start_time", "event_time"),
+        ("total_events", "skip"),
+    ],
 )
 
 logger = logging.getLogger(__name__)
+
+
+def get_date_param(last_event):
+    if last_event:
+        return utils.to_mds_timestamp(last_event)
+    elif PROVIDER_POLLER_LIMIT_DAYS:
+        delta = timezone.now() - datetime.timedelta(PROVIDER_POLLER_LIMIT_DAYS)
+        logger.debug(f"No last_event on provider, starting from: {str(delta)}")
+        return utils.to_mds_timestamp(delta)
 
 
 class StatusChangesPoller:
@@ -61,26 +74,26 @@ class StatusChangesPoller:
         # Start where we left, it's all based on providers sorting by start_time
         # (but we would miss telemetries older than start_time saved after we polled).
         # For those that support it, use the recorded time field or equivalent.
-        start_time_field = self.provider.api_configuration.get(
-            "start_time_field", "start_time"
+        polling_cursor = self.provider.api_configuration.get(
+            "polling_cursor", POLLING_CURSOR_TO_QUERY_PARAM.start_time.name
         )
-        logger.debug(f"start_time_field: {start_time_field}")
-        if self.provider.last_start_time_polled:
-            logger.debug(
-                "last_start_time_polled of provider: "
-                + str(self.provider.last_start_time_polled)
-            )
-            params[start_time_field] = utils.to_mds_timestamp(
-                self.provider.last_start_time_polled
-            )
-        # Otherwise limit polling
-        elif PROVIDER_POLLER_LIMIT_DAYS:
-            params[start_time_field] = utils.to_mds_timestamp(
-                timezone.now() - datetime.timedelta(PROVIDER_POLLER_LIMIT_DAYS)
-            )
-            logger.debug(
-                "No last_start_time_polled on provider, starting from: "
-                + str(timezone.now() - datetime.timedelta(PROVIDER_POLLER_LIMIT_DAYS))
+        logger.info(
+            f"Starting polling using the field: {polling_cursor}. Current state:\n"
+            + f"\tLast event_time: {str(self.provider.last_event_time_polled)},\n"
+            + f"\tLast recorded: {str(self.provider.last_recorded_polled)}\n"
+            + f"\tLast skip: {self.provider.last_skip_polled}."
+        )
+
+        # skip
+        if polling_cursor == POLLING_CURSOR_TO_QUERY_PARAM.total_events.name:
+            params[polling_cursor] = self.provider.last_skip_polled
+        # recorded
+        elif polling_cursor == POLLING_CURSOR_TO_QUERY_PARAM.start_recorded.name:
+            params[polling_cursor] = get_date_param(self.provider.last_recorded_polled)
+        # event_time
+        elif polling_cursor == POLLING_CURSOR_TO_QUERY_PARAM.start_time.name:
+            params[polling_cursor] = get_date_param(
+                self.provider.last_event_time_polled
             )
 
         # Provider-specific params to optimise polling
@@ -101,12 +114,40 @@ class StatusChangesPoller:
             if not status_changes:
                 break
 
+            next_url = body.get("links", {}).get("next")
+
             # A transaction for each "page" of data
             with transaction.atomic():
-                last_start_time_polled = self._process_status_changes(status_changes)
-                self.provider.last_start_time_polled = last_start_time_polled
-                self.provider.save(update_fields=["last_start_time_polled"])
-            next_url = body.get("links", {}).get("next")
+                # We get the maximum of the recorded and event_types
+                # from the status changes
+                event_time_polled, recorded_polled = self._process_status_changes(
+                    status_changes
+                )
+
+                # We get the new skip from the number of status changes
+                skip_polled = (
+                    self.provider.last_skip_polled + len(status_changes)
+                    if self.provider.last_skip_polled
+                    else len(status_changes)
+                )
+
+                self.provider.last_event_time_polled = event_time_polled
+                self.provider.last_recorded_polled = recorded_polled
+                self.provider.last_skip_polled = skip_polled
+                self.provider.save(
+                    update_fields=[
+                        "last_event_time_polled",
+                        "last_recorded_polled",
+                        "last_skip_polled",
+                    ]
+                )
+
+                logger.info(
+                    f"Finished polling using the field: {polling_cursor}. New state:\n"
+                    + f"\tLast event_time: {str(event_time_polled)},\n"
+                    + f"\tLast recorded: {str(recorded_polled)}\n"
+                    + f"\tLast skip: {skip_polled}."
+                )
 
     @retry(stop_max_attempt_number=2)
     def _get_body(self, url):
@@ -163,36 +204,37 @@ class StatusChangesPoller:
                 "No valid event_time found in status_changes series: %s", status_changes
             )
             # How can we prevent from asking them again next time?
-            if self.provider.last_start_time_polled:
-                return self.provider.last_start_time_polled + datetime.timedelta(
-                    milliseconds=1
+            if (
+                self.provider.last_event_time_polled
+                and self.provider.last_recorded_polled
+            ):
+                ms = datetime.timedelta(milliseconds=1)
+                return (
+                    self.provider.last_event_time_polled + ms,
+                    self.provider.last_recorded_polled + ms,
                 )
-            # The provider really doesn't help!
-            return timezone.now()
 
-        # do not rely on expected order
-        logger.debug(f"{len(status_changes)} status changes")
-        start_time_field = self.provider.api_configuration.get(
-            "start_time_field", "start_time"
-        )
-        event_time_field = START_TIME_FIELD_MAPPING[start_time_field].value
-        logger.debug(f"event_time_field: {event_time_field}")
+            # The provider really doesn't help!
+            return timezone.now(), timezone.now()
+
         last_event_time_polled = utils.from_mds_timestamp(
-            max(status_change[event_time_field] for status_change in status_changes)
+            max(status_change["event_time"] for status_change in status_changes)
         )
-        logger.debug(f"last_event_time_polled: {last_event_time_polled}")
+        last_recorded_polled = utils.from_mds_timestamp(
+            max(status_change.get("recorded", 0) for status_change in status_changes)
+        )
 
         status_changes = self._validate_status_changes(status_changes)
         if not status_changes:
             # None were valid, we won't ask that series again
             # (provided status changes are ordered by event_time ascending)
-            return last_event_time_polled
+            return last_event_time_polled, last_recorded_polled
 
         self._create_missing_providers(status_changes)
         self._create_missing_devices(status_changes)
         self._create_event_records(status_changes)
 
-        return last_event_time_polled
+        return last_event_time_polled, last_recorded_polled
 
     def _validate_event_times(self, status_changes):
         """I need this one done before validating the rest of the data."""
