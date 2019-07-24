@@ -232,3 +232,49 @@ def test_device_list_basic_recorded(
     )
     data = response.data["data"]["status_changes"]
     assert len(data) == 1
+
+
+@pytest.mark.django_db
+def test_device_list_basic_skip(
+    client, django_assert_num_queries, status_changes_fixtures
+):
+    now, provider, expected_event_device1, expected_event_device2 = (
+        status_changes_fixtures
+    )
+
+    # test auth
+    response = client.get("/prv/provider_api/status_changes")
+    assert response.status_code == 401
+
+    skip = 1
+    n = BASE_NUM_QUERIES
+    n += 1  # query on events
+    n += 1  # count on events
+    with django_assert_num_queries(n):
+        response = client.get(
+            "/prv/provider_api/status_changes?skip=%s" % skip,
+            **auth_header(SCOPE_PRV_API, provider_id=provider.id),
+        )
+    assert response.status_code == 200
+
+    data = response.data["data"]["status_changes"]
+    assert len(data) == 1
+
+    assert expected_event_device1 not in data
+    assert expected_event_device2 in data
+
+    # Test pagination: retrieve only given number of events
+    response = client.get(
+        "/prv/provider_api/status_changes?skip=0&take=1",
+        **auth_header(SCOPE_PRV_API, provider_id=provider.id),
+    )
+    data = response.data["data"]["status_changes"]
+    assert len(data) == 1
+
+    # Also test endpoint work with a trailing slash
+    response = client.get(
+        "/prv/provider_api/status_changes/?skip=%s&take=1" % skip,
+        **auth_header(SCOPE_PRV_API, provider_id=provider.id),
+    )
+    data = response.data["data"]["status_changes"]
+    assert len(data) == 1
