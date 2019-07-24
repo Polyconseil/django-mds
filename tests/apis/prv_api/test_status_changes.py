@@ -47,6 +47,7 @@ def status_changes_fixtures():
 
     # Add an event on the first device
     factories.EventRecord(
+        id=1,
         device=device1,
         timestamp=now,
         saved_at=now,
@@ -61,6 +62,7 @@ def status_changes_fixtures():
     )
     # A telemetry should not be considered as an event
     factories.EventRecord(
+        id=2,
         device=device1,
         timestamp=now - datetime.timedelta(seconds=1),
         saved_at=now - datetime.timedelta(seconds=1),
@@ -68,6 +70,7 @@ def status_changes_fixtures():
     )
     # This one is too old
     factories.EventRecord(
+        id=3,
         device=device1,
         timestamp=now - datetime.timedelta(hours=1),
         saved_at=now - datetime.timedelta(hours=1),
@@ -75,6 +78,7 @@ def status_changes_fixtures():
 
     # Add an event on the second device
     factories.EventRecord(
+        id=4,
         device=device2,
         timestamp=now,
         saved_at=now,
@@ -89,6 +93,7 @@ def status_changes_fixtures():
     )
 
     expected_event_device1 = {
+        "id": "1",
         "recorded": utils.to_mds_timestamp(now),
         "first_recorded": None,
         "provider_id": str(provider.id),
@@ -108,6 +113,7 @@ def status_changes_fixtures():
         "associated_trip": "b3da2d46-065f-4036-903c-49d796f09357",
     }
     expected_event_device2 = {
+        "id": "4",
         "recorded": utils.to_mds_timestamp(now),
         "first_recorded": None,
         "provider_id": str(provider2.id),

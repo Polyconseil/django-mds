@@ -625,6 +625,7 @@ class EventRecord(factory.DjangoModelFactory):
     class Meta:
         model = models.EventRecord
 
+    id = factory.Sequence(str)
     device = factory.SubFactory(Device)
     timestamp = factory.Sequence(
         lambda n: datetime.datetime(2018, 8, 1, tzinfo=pytz.utc)
