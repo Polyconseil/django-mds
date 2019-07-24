@@ -1,7 +1,7 @@
 Changelog
 =========
 
-0.5.35 (unreleased)
+0.5.35 (2019-07-24)
 -------------------
 
 - Add polling providers with `skip` query parameters
