@@ -29,8 +29,8 @@ ACCEPTED_MDS_VERSIONS = ["0.2", "0.3"]
 POLLING_CURSOR_TO_QUERY_PARAM = enum.Enum(
     "polling_cursor field to the query parameter",
     [
-        ("start_recorded", "recorded"),
-        ("start_time", "event_time"),
+        ("start_recorded", "start_recorded"),
+        ("start_time", "start_time"),
         ("total_events", "skip"),
     ],
 )
@@ -86,13 +86,17 @@ class StatusChangesPoller:
 
         # skip
         if polling_cursor == POLLING_CURSOR_TO_QUERY_PARAM.total_events.name:
-            params[polling_cursor] = self.provider.last_skip_polled
-        # recorded
+            params[
+                POLLING_CURSOR_TO_QUERY_PARAM.total_events.value
+            ] = self.provider.last_skip_polled
+        # start_recorded
         elif polling_cursor == POLLING_CURSOR_TO_QUERY_PARAM.start_recorded.name:
-            params[polling_cursor] = get_date_param(self.provider.last_recorded_polled)
-        # event_time
+            params[POLLING_CURSOR_TO_QUERY_PARAM.start_recorded.value] = get_date_param(
+                self.provider.last_recorded_polled
+            )
+        # start_time
         elif polling_cursor == POLLING_CURSOR_TO_QUERY_PARAM.start_time.name:
-            params[polling_cursor] = get_date_param(
+            params[POLLING_CURSOR_TO_QUERY_PARAM.start_time.value] = get_date_param(
                 self.provider.last_event_time_polled
             )
 
