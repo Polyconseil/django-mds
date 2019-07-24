@@ -4,7 +4,8 @@ Changelog
 0.5.35 (unreleased)
 -------------------
 
-- Nothing changed yet.
+- Add polling providers with `skip` query parameters
+- Fix admin crash for event records page
 
 
 0.5.34 (2019-07-11)
