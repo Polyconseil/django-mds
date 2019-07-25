@@ -4,7 +4,7 @@ Changelog
 0.5.36 (unreleased)
 -------------------
 
-- Nothing changed yet.
+- Allow to skip events in /status_changes endpoint .
 
 
 0.5.35 (2019-07-24)

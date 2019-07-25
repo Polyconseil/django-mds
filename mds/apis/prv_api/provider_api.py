@@ -7,6 +7,7 @@ from mds.apis import utils as apis_utils
 
 
 class DeviceStatusChangesSerializer(serializers.ModelSerializer):
+    id = serializers.CharField()
     recorded = apis_utils.UnixTimestampMilliseconds(source="saved_at")
     first_recorded = apis_utils.UnixTimestampMilliseconds(source="first_saved_at")
     associated_trip = serializers.CharField(source="properties.trip_id")
@@ -27,6 +28,7 @@ class DeviceStatusChangesSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.EventRecord
         fields = (
+            "id",
             "recorded",
             "first_recorded",
             "associated_trip",
@@ -86,6 +88,7 @@ class ProviderApiViewSet(viewsets.ViewSet):
 
     @decorators.action(detail=False, methods=["get"])
     def status_changes(self, request, *args, **kwargs):
+        skip = request.query_params.get("skip")
         start_recorded = request.query_params.get("start_recorded")
         start_time = request.query_params.get("start_time")
         end_time = request.query_params.get("end_time")
@@ -97,8 +100,11 @@ class ProviderApiViewSet(viewsets.ViewSet):
             event_type__in=event_types
         )
 
-        # We support either recorded or time search but not both at the same time
-        if start_recorded:
+        # We support either recorded, time search or offset but not at the same time
+        if skip:
+            order_by = "id"
+            events = events.filter(id__gt=int(skip))
+        elif start_recorded:
             order_by = "saved_at"
             start_recorded = utils.from_mds_timestamp(int(start_recorded))
             events = events.filter(saved_at__gte=start_recorded)
