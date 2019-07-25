@@ -103,7 +103,7 @@ class ProviderApiViewSet(viewsets.ViewSet):
         # We support either recorded, time search or offset but not at the same time
         if skip:
             order_by = "id"
-            events = events.filter(id__gte=int(skip))
+            events = events.filter(id__gt=int(skip))
         elif start_recorded:
             order_by = "saved_at"
             start_recorded = utils.from_mds_timestamp(int(start_recorded))
