@@ -50,8 +50,11 @@ def get_date_param(last_event):
 class StatusChangesPoller:
     """Poll all providers to fetch their latest telemetry data."""
 
-    def __init__(self, provider):
+    def __init__(self, provider, cursor=None, from_cursor=None, to_cursor=None):
         self.provider = provider
+        self.overriden_cursor = cursor
+        self.from_cursor = from_cursor
+        self.to_cursor = to_cursor
         self.oauth2_store = OAuth2Store(provider)
         # While we poll a given provider, it may aggegrate data from several providers
         # (these are sets of UUIDs, not str)
@@ -74,30 +77,36 @@ class StatusChangesPoller:
         # Start where we left, it's all based on providers sorting by start_time
         # (but we would miss telemetries older than start_time saved after we polled).
         # For those that support it, use the recorded time field or equivalent.
-        polling_cursor = self.provider.api_configuration.get(
+        polling_cursor = self.overriden_cursor or self.provider.api_configuration.get(
             "polling_cursor", POLLING_CURSOR_TO_QUERY_PARAM.start_time.name
         )
         logger.info(
             f"Starting polling using the field: {polling_cursor}. Current state:\n"
-            + f"\tLast event_time: {str(self.provider.last_event_time_polled)},\n"
-            + f"\tLast recorded: {str(self.provider.last_recorded_polled)}\n"
-            + f"\tLast skip: {self.provider.last_skip_polled}."
+            + (
+                (
+                    f"\tLast event_time: {str(self.provider.last_event_time_polled)},\n"
+                    + f"\tLast recorded: {str(self.provider.last_recorded_polled)}\n"
+                    + f"\tLast skip: {self.provider.last_skip_polled}."
+                )
+                if not self.overriden_cursor
+                else f"\tCursor value: {self.from_cursor}."
+            )
         )
 
         # skip
         if polling_cursor == POLLING_CURSOR_TO_QUERY_PARAM.total_events.name:
-            params[
-                POLLING_CURSOR_TO_QUERY_PARAM.total_events.value
-            ] = self.provider.last_skip_polled
+            params[POLLING_CURSOR_TO_QUERY_PARAM.total_events.value] = (
+                self.from_cursor or self.provider.last_skip_polled
+            )
         # start_recorded
         elif polling_cursor == POLLING_CURSOR_TO_QUERY_PARAM.start_recorded.name:
             params[POLLING_CURSOR_TO_QUERY_PARAM.start_recorded.value] = get_date_param(
-                self.provider.last_recorded_polled
+                self.from_cursor or self.provider.last_recorded_polled
             )
         # start_time
         elif polling_cursor == POLLING_CURSOR_TO_QUERY_PARAM.start_time.name:
             params[POLLING_CURSOR_TO_QUERY_PARAM.start_time.value] = get_date_param(
-                self.provider.last_event_time_polled
+                self.from_cursor or self.provider.last_event_time_polled
             )
 
         # Provider-specific params to optimise polling
@@ -108,6 +117,13 @@ class StatusChangesPoller:
 
         if params:
             next_url = "%s?%s" % (next_url, urllib.parse.urlencode(params))
+
+        skip_polled = (
+            self.from_cursor
+            if self.from_cursor
+            and self.overriden_cursor == POLLING_CURSOR_TO_QUERY_PARAM.total_events.name
+            else None
+        )
 
         # Pagination
         while next_url:
@@ -127,27 +143,45 @@ class StatusChangesPoller:
                 event_time_polled, recorded_polled = self._process_status_changes(
                     status_changes
                 )
-
-                # We get the new skip from the number of status changes
-                skip_polled = (
-                    self.provider.last_skip_polled + len(status_changes)
-                    if self.provider.last_skip_polled
-                    else len(status_changes)
-                )
-
-                self.provider.last_event_time_polled = event_time_polled
-                self.provider.last_recorded_polled = recorded_polled
-                self.provider.last_skip_polled = skip_polled
-                self.provider.save(
-                    update_fields=[
-                        "last_event_time_polled",
-                        "last_recorded_polled",
-                        "last_skip_polled",
-                    ]
-                )
+                if self.overriden_cursor:
+                    if (
+                        polling_cursor
+                        == POLLING_CURSOR_TO_QUERY_PARAM.total_events.name
+                    ):
+                        skip_polled += len(status_changes)
+                        if skip_polled >= self.to_cursor:
+                            break
+                    elif (
+                        polling_cursor
+                        == POLLING_CURSOR_TO_QUERY_PARAM.start_recorded.name
+                    ):
+                        if recorded_polled >= self.to_cursor:
+                            break
+                    elif (
+                        polling_cursor == POLLING_CURSOR_TO_QUERY_PARAM.start_time.name
+                    ):
+                        if event_time_polled >= self.to_cursor:
+                            break
+                else:
+                    # We get the new skip from the number of status changes
+                    skip_polled = (
+                        self.provider.last_skip_polled + len(status_changes)
+                        if self.provider.last_skip_polled
+                        else len(status_changes)
+                    )
+                    self.provider.last_event_time_polled = event_time_polled
+                    self.provider.last_recorded_polled = recorded_polled
+                    self.provider.last_skip_polled = skip_polled
+                    self.provider.save(
+                        update_fields=[
+                            "last_event_time_polled",
+                            "last_recorded_polled",
+                            "last_skip_polled",
+                        ]
+                    )
 
                 logger.info(
-                    f"Finished polling using the field: {polling_cursor}. New state:\n"
+                    f"Polled page using cursor: {polling_cursor}. New state:\n"
                     + f"\tLast event_time: {str(event_time_polled)},\n"
                     + f"\tLast recorded: {str(recorded_polled)}\n"
                     + f"\tLast skip: {skip_polled}."
@@ -225,7 +259,7 @@ class StatusChangesPoller:
             max(status_change["event_time"] for status_change in status_changes)
         )
         last_recorded_polled = utils.from_mds_timestamp(
-            max(status_change.get("recorded", 0) for status_change in status_changes)
+            max(status_change.get("recorded") or 0 for status_change in status_changes)
         )
 
         status_changes = self._validate_status_changes(status_changes)
@@ -429,7 +463,7 @@ def _create_event_record(status_change):
 
     first_saved_at = None
     # "Aggregation" layers store a recorded field, and we want to keep the same value
-    if "recorded" in status_change:
+    if "recorded" in status_change and status_change["recorded"]:
         first_saved_at = utils.from_mds_timestamp(status_change["recorded"])
 
     return models.EventRecord(

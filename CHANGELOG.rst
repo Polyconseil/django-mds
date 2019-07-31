@@ -5,7 +5,7 @@ Changelog
 -------------------
 
 - Allow to skip events in /status_changes endpoint .
-
+- Allow providers polling to be overidden.
 
 0.5.35 (2019-07-24)
 -------------------
