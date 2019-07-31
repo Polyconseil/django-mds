@@ -4,7 +4,7 @@ Changelog
 0.5.37 (unreleased)
 -------------------
 
-- Nothing changed yet.
+- Empty relase to fix buggy 0.5.36 one
 
 
 0.5.36 (2019-07-31)
