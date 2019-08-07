@@ -6,7 +6,6 @@ import factory
 from django.contrib.gis import geos
 from django.contrib.gis.geos.geometry import GEOSGeometry
 from django.utils import timezone
-import pytz
 
 from mds.provider_mapping import (
     PROVIDER_REASON_TO_AGENCY_EVENT,
@@ -630,11 +629,9 @@ class EventRecord(factory.DjangoModelFactory):
     class Meta:
         model = models.EventRecord
 
-    id = factory.Sequence(str)
     device = factory.SubFactory(Device)
     timestamp = factory.Sequence(
-        lambda n: datetime.datetime(2018, 8, 1, tzinfo=pytz.utc)
-        + datetime.timedelta(seconds=n)
+        lambda n: timezone.now() - datetime.timedelta(minutes=n)
     )
     point = factory.LazyAttribute(
         lambda f: geos.Point(
@@ -642,7 +639,7 @@ class EventRecord(factory.DjangoModelFactory):
             f.properties["telemetry"]["gps"]["lat"],
         )
     )
-    saved_at = datetime.datetime(2018, 8, 1, 1, tzinfo=pytz.utc)
+    saved_at = factory.LazyAttribute(lambda f: f.timestamp)
     event_type = factory.Iterator(c.name for c in enums.EVENT_TYPE)
     properties = factory.Dict(
         {

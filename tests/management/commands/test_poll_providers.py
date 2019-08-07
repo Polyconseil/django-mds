@@ -172,7 +172,7 @@ def test_follow_up(client):
                 provider.base_api_url,
                 "/status_changes?%s"
                 % urllib.parse.urlencode(
-                    {"start_time": int(event.timestamp.timestamp() * 1000)}
+                    {"start_time": round(event.timestamp.timestamp() * 1000)}
                 ),
             ),
             json=make_response(
