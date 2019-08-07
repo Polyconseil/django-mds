@@ -1,7 +1,7 @@
 Changelog
 =========
 
-0.5.38 (unreleased)
+0.5.38 (2019-08-07)
 -------------------
 
 - Improvements on the EventRecord factory to get more coherent Events
