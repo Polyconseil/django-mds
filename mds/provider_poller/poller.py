@@ -20,6 +20,7 @@ from mds import db_helpers
 from mds import enums
 from mds import models
 from mds import utils
+from mds.provider_mapping import PROVIDER_REASON_TO_AGENCY_EVENT
 from .oauth2_store import OAuth2Store
 from .translation import translate_data
 from .settings import PROVIDER_POLLER_LIMIT_DAYS
@@ -309,9 +310,7 @@ class StatusChangesPoller:
                 # Ignore just that status change to avoid rejecting the whole batch
                 continue
             try:
-                agency_event_type = enums.PROVIDER_REASON_TO_AGENCY_EVENT[
-                    event_type_reason
-                ]
+                agency_event_type = PROVIDER_REASON_TO_AGENCY_EVENT[event_type_reason]
             except KeyError:  # Spec violation!
                 logger.warning(
                     'Device %s has unknown "%s" event_type_reason',

@@ -74,6 +74,7 @@ def status_changes_fixtures():
         device=device1,
         timestamp=now - datetime.timedelta(hours=1),
         saved_at=now - datetime.timedelta(hours=1),
+        event_type=enums.EVENT_TYPE.reserve.name,
     )
 
     # Add an event on the second device
@@ -122,7 +123,7 @@ def status_changes_fixtures():
         "vehicle_id": "3CCCCC",
         "propulsion_type": ["electric"],
         "event_type_reason": "user_pick_up",
-        "event_type": "trip",
+        "event_type": "reserved",
         "vehicle_type": "scooter",
         "event_time": utils.to_mds_timestamp(now),
         "event_location": {
@@ -252,7 +253,7 @@ def test_device_list_basic_skip(
     assert response.status_code == 200
 
     data = response.data["data"]["status_changes"]
-    assert len(data) == 2
+    assert len(data) == 3
 
     assert expected_event_device1 in data
     assert expected_event_device2 in data
@@ -265,7 +266,7 @@ def test_device_list_basic_skip(
     assert response.status_code == 200
 
     data = response.data["data"]["status_changes"]
-    assert len(data) == 1
+    assert len(data) == 2
 
     assert expected_event_device1 not in data
     assert expected_event_device2 in data

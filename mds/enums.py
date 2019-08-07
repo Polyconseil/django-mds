@@ -62,7 +62,7 @@ EVENT_TYPE = enum.Enum(
         ("deregister", pgettext_lazy("Event type", "Deregister")),
         # this last event is not in the MDS spec
         ("telemetry", pgettext_lazy("Event type", "Received telemetry")),
-        # This may be aded in a revision of the agency API specs
+        # This may be added in a revision of the agency API specs
         ("battery_charged", pgettext_lazy("Event type", "Battery charged")),
     ],
 )
@@ -88,28 +88,6 @@ EVENT_TYPE_TO_DEVICE_STATUS = {
     EVENT_TYPE.telemetry.name: DEVICE_STATUS.unknown.name,
     EVENT_TYPE.battery_charged.name: DEVICE_STATUS.available.name,
 }
-
-
-# The two APIs don't match on names, hopefully temporary
-PROVIDER_REASON_TO_AGENCY_EVENT = {
-    "service_start": EVENT_TYPE.service_start.name,
-    "user_drop_off": EVENT_TYPE.trip_end.name,
-    "rebalance_drop_off": EVENT_TYPE.rebalance_drop_off.name,
-    "maintenance_drop_off": EVENT_TYPE.maintenance_drop_off.name,
-    "user_pick_up": EVENT_TYPE.trip_start.name,
-    "maintenance": EVENT_TYPE.maintenance.name,
-    "low_battery": EVENT_TYPE.low_battery.name,
-    "service_end": EVENT_TYPE.service_end.name,
-    "rebalance_pick_up": EVENT_TYPE.rebalance_pick_up.name,
-    "maintenance_pick_up": EVENT_TYPE.maintenance_pick_up.name,
-    # This may be aded in a revision of the provider API specs
-    "battery_charged": EVENT_TYPE.battery_charged.name,
-}
-
-# Invert keys and values
-AGENCY_EVENT_TO_PROVIDER_REASON = dict(
-    (v, k) for k, v in PROVIDER_REASON_TO_AGENCY_EVENT.items()
-)
 
 EVENT_SOURCE = enum.Enum(
     "Event source",

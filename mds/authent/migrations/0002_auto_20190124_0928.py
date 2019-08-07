@@ -5,19 +5,22 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('authent', '0001_initial'),
-    ]
+    dependencies = [("authent", "0001_initial")]
 
     operations = [
         migrations.AlterField(
-            model_name='accesstoken',
-            name='revoked_after',
+            model_name="accesstoken",
+            name="revoked_after",
             field=models.DateTimeField(blank=True, null=True),
         ),
         migrations.AlterField(
-            model_name='application',
-            name='owner',
-            field=models.UUIDField(blank=True, db_index=True, help_text='Unique identifier for the owner of the application, not necessarily a django User.', null=True),
+            model_name="application",
+            name="owner",
+            field=models.UUIDField(
+                blank=True,
+                db_index=True,
+                help_text="Unique identifier for the owner of the application, not necessarily a django User.",
+                null=True,
+            ),
         ),
     ]

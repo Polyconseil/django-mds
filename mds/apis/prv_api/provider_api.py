@@ -4,6 +4,10 @@ from mds import enums, models, utils
 from mds.access_control.permissions import require_scopes
 from mds.access_control.scopes import SCOPE_PRV_API
 from mds.apis import utils as apis_utils
+from mds.provider_mapping import (
+    AGENCY_EVENT_TO_PROVIDER_REASON,
+    PROVIDER_REASON_TO_PROVIDER_EVENT_TYPE,
+)
 
 
 class DeviceStatusChangesSerializer(serializers.ModelSerializer):
@@ -59,10 +63,11 @@ class DeviceStatusChangesSerializer(serializers.ModelSerializer):
         }
 
     def get_event_type(self, obj):
-        return enums.EVENT_TYPE_TO_DEVICE_STATUS[obj.event_type]
+        reason = self.get_event_type_reason(obj)
+        return PROVIDER_REASON_TO_PROVIDER_EVENT_TYPE[reason]
 
     def get_event_type_reason(self, obj):
-        return enums.AGENCY_EVENT_TO_PROVIDER_REASON[obj.event_type]
+        return AGENCY_EVENT_TO_PROVIDER_REASON[obj.event_type]
 
 
 class CustomPagination(pagination.PageNumberPagination):
@@ -93,11 +98,9 @@ class ProviderApiViewSet(viewsets.ViewSet):
         start_time = request.query_params.get("start_time")
         end_time = request.query_params.get("end_time")
 
-        # Only forward events that were first retrieved though providers'
-        # `status_changes' endpoint
-        event_types = enums.PROVIDER_REASON_TO_AGENCY_EVENT.values()
-        events = models.EventRecord.objects.select_related("device__provider").filter(
-            event_type__in=event_types
+        # Only forward events that are actual events and not telemetry
+        events = models.EventRecord.objects.select_related("device__provider").exclude(
+            event_type=enums.EVENT_TYPE.telemetry.name
         )
 
         # We support either recorded, time search or offset but not at the same time

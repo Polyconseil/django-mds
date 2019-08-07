@@ -12,6 +12,7 @@ import requests_mock
 from mds import enums
 from mds import factories
 from mds import models
+from mds.provider_mapping import PROVIDER_REASON_TO_AGENCY_EVENT
 
 
 # This is what the agency API is calling status, go figure
@@ -190,7 +191,7 @@ def test_follow_up(client):
 def make_response(
     provider, device, event, event_type_reason, associated_trip=None, next_page=None
 ):
-    assert event.event_type in dict(enums.PROVIDER_REASON_TO_AGENCY_EVENT).values()
+    assert event.event_type in dict(PROVIDER_REASON_TO_AGENCY_EVENT).values()
     telemetry = event.properties["telemetry"]
 
     response = factories.ProviderStatusChangesBody(
