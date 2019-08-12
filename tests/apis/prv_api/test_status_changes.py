@@ -74,7 +74,7 @@ def status_changes_fixtures():
         device=device1,
         timestamp=now - datetime.timedelta(hours=1),
         saved_at=now - datetime.timedelta(hours=1),
-        event_type=enums.EVENT_TYPE.reserve.name,
+        event_type=enums.EVENT_TYPE.service_end.name,
     )
 
     # Add an event on the second device

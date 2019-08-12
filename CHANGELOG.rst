@@ -5,6 +5,7 @@ Changelog
 -------------------
 
 - Fix provider API crash when there is no trip_id.
+- Fix filtering of provider API events (e.g. there should be no register event)
 
 
 0.5.38 (2019-08-07)
