@@ -4,7 +4,7 @@ Changelog
 0.5.39 (unreleased)
 -------------------
 
-- Nothing changed yet.
+- Fix provider API crash when there is no trip_id.
 
 
 0.5.38 (2019-08-07)

@@ -14,7 +14,7 @@ class DeviceStatusChangesSerializer(serializers.ModelSerializer):
     id = serializers.CharField()
     recorded = apis_utils.UnixTimestampMilliseconds(source="saved_at")
     first_recorded = apis_utils.UnixTimestampMilliseconds(source="first_saved_at")
-    associated_trip = serializers.CharField(source="properties.trip_id")
+    associated_trip = serializers.SerializerMethodField()
     device_id = serializers.CharField(source="device.id")
     event_location = serializers.SerializerMethodField()
     event_time = apis_utils.UnixTimestampMilliseconds(source="timestamp")
@@ -53,6 +53,9 @@ class DeviceStatusChangesSerializer(serializers.ModelSerializer):
 
     def update(self, instance, data):
         raise NotImplementedError()
+
+    def get_associated_trip(self, obj):
+        return obj.properties.get("trip_id", None)
 
     def get_event_location(self, obj):
         telemetry = obj.properties.get("telemetry", {})
