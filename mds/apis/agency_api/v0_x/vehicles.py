@@ -290,12 +290,6 @@ class DeviceViewSet(
         },
     }
 
-    def list(self, *args, **kwargs):
-        return super().list(*args, **kwargs)
-
-    def retrieve(self, *args, **kwargs):
-        return super().retrieve(*args, **kwargs)
-
     def create(self, *args, **kwargs):
         return self._create(*args, **kwargs)
 
