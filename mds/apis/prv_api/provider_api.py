@@ -6,7 +6,9 @@ from mds.access_control.scopes import SCOPE_PRV_API
 from mds.apis import utils as apis_utils
 from mds.provider_mapping import (
     AGENCY_EVENT_TO_PROVIDER_REASON,
-    PROVIDER_REASON_TO_PROVIDER_EVENT_TYPE,
+    PROVIDER_EVENT_TYPE_REASON_TO_EVENT_TYPE,
+    OLD_AGENCY_EVENT_TO_PROVIDER_REASON,
+    get_provider_reason_from_both_mappings,
 )
 
 
@@ -67,10 +69,10 @@ class DeviceStatusChangesSerializer(serializers.ModelSerializer):
 
     def get_event_type(self, obj):
         reason = self.get_event_type_reason(obj)
-        return PROVIDER_REASON_TO_PROVIDER_EVENT_TYPE[reason]
+        return PROVIDER_EVENT_TYPE_REASON_TO_EVENT_TYPE[reason]
 
     def get_event_type_reason(self, obj):
-        return AGENCY_EVENT_TO_PROVIDER_REASON[obj.event_type]
+        return get_provider_reason_from_both_mappings(obj)
 
 
 class CustomPagination(pagination.PageNumberPagination):
@@ -103,7 +105,9 @@ class ProviderApiViewSet(viewsets.ViewSet):
 
         events = models.EventRecord.objects.select_related("device__provider").filter(
             # Only forward events that can be polled from a "provider API"
-            event_type__in=AGENCY_EVENT_TO_PROVIDER_REASON.keys()
+            # We don't want to filter out the old or the new events though.
+            event_type__in=[x[0] for x in AGENCY_EVENT_TO_PROVIDER_REASON.keys()]
+            + list(OLD_AGENCY_EVENT_TO_PROVIDER_REASON.keys())
         )
 
         # We support either recorded, time search or offset but not at the same time

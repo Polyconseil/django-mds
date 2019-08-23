@@ -71,7 +71,7 @@ def test_device_list_basic(client, django_assert_num_queries):
     factories.EventRecord(
         device=device,
         saved_at=today + datetime.timedelta(seconds=10),
-        event_type=enums.EVENT_TYPE.maintenance_drop_off.name,
+        event_type=enums.EVENT_TYPE.provider_drop_off.name,
         timestamp=today - datetime.timedelta(seconds=5),
     )
 
@@ -182,7 +182,10 @@ def test_device_register(client):
 
 @pytest.mark.django_db
 def test_device_event(client):
-    provider = factories.Provider(id=uuid.UUID("aaaa0000-61fd-4cce-8113-81af1de90942"))
+    provider = factories.Provider(
+        id=uuid.UUID("aaaa0000-61fd-4cce-8113-81af1de90942"),
+        api_configuration={"agency_api_version": "draft"},
+    )
     device_id = uuid.UUID("bbbb0000-61fd-4cce-8113-81af1de90942")
     device = factories.Device(id=device_id, provider=provider)
 
@@ -229,7 +232,10 @@ def test_device_event(client):
 
 @pytest.mark.django_db
 def test_device_event_inverted_coordinates(client):
-    provider = factories.Provider(id=uuid.UUID("aaaa0000-61fd-4cce-8113-81af1de90942"))
+    provider = factories.Provider(
+        id=uuid.UUID("aaaa0000-61fd-4cce-8113-81af1de90942"),
+        api_configuration={"agency_api_version": "draft"},
+    )
     device_id = uuid.UUID("bbbb0000-61fd-4cce-8113-81af1de90942")
     device = factories.Device(id=device_id, provider=provider)
 
@@ -378,3 +384,121 @@ def test_device_telemetry(client, django_assert_num_queries):
         ).count()
         == 2
     )
+
+
+@pytest.mark.django_db
+def test_device_new_api_agency(client):
+    provider = factories.Provider(id=uuid.UUID("aaaa0000-61fd-4cce-8113-81af1de90942"))
+    device_id = uuid.UUID("bbbb0000-61fd-4cce-8113-81af1de90942")
+    device = factories.Device(id=device_id, provider=provider)
+
+    data = {
+        "event_type": "service_end",
+        "event_type_reason": "low_battery",
+        "telemetry": {
+            "device_id": str(device_id),
+            "timestamp": 1_325_377_000_000,
+            "gps": {"lat": 34.07068, "lng": -118.279_678},
+            "charge": 0.54,
+        },
+        "timestamp": 1_325_377_000_000,
+        "trip_id": None,
+    }
+
+    # test auth
+    assert device.event_records.all().count() == 0
+    response = client.post(
+        reverse("agency:device-event", args=[device_id]),
+        data=data,
+        content_type="application/json",
+        **auth_header(SCOPE_AGENCY_API, provider_id=provider.id),
+    )
+
+    assert response.status_code == 201
+    assert response.data == {"device_id": str(device_id), "status": "removed"}
+    assert device.event_records.all().count() == 1
+
+    data2 = {
+        "event_type": "provider_pick_up",
+        "event_type_reason": "rebalance",
+        "telemetry": {
+            "device_id": str(device_id),
+            "timestamp": 1_325_378_000_000,
+            "gps": {"lat": 34.07068, "lng": -118.279_678},
+            "charge": 0.54,
+        },
+        "timestamp": 1_325_378_000_000,
+        "trip_id": None,
+    }
+
+    response2 = client.post(
+        reverse("agency:device-event", args=[device_id]),
+        data=data2,
+        content_type="application/json",
+        **auth_header(SCOPE_AGENCY_API, provider_id=provider.id),
+    )
+
+    assert response2.status_code == 201
+    assert response2.data == {"device_id": str(device_id), "status": "removed"}
+    assert device.event_records.all().count() == 2
+
+
+@pytest.mark.django_db
+def test_device_new_api_agency_invalid(client):
+    provider = factories.Provider(id=uuid.UUID("aaaa0000-61fd-4cce-8113-81af1de90942"))
+    device_id = uuid.UUID("bbbb0000-61fd-4cce-8113-81af1de90942")
+    device = factories.Device(id=device_id, provider=provider)
+
+    data = {
+        "event_type": "service_end",
+        "event_type_reason": "invalid",  # Invalid event_type_reason
+        "telemetry": {
+            "device_id": str(device_id),
+            "timestamp": 1_325_377_000_000,
+            "gps": {"lat": 34.07068, "lng": -118.279_678},
+            "charge": 0.54,
+        },
+        "timestamp": 1_325_377_000_000,
+        "trip_id": None,
+    }
+
+    # test auth
+    assert device.event_records.all().count() == 0
+    response = client.post(
+        reverse("agency:device-event", args=[device_id]),
+        data=data,
+        content_type="application/json",
+        **auth_header(SCOPE_AGENCY_API, provider_id=provider.id),
+    )
+
+    assert response.status_code == 400
+    assert "is not a valid choice" in str(response.data)
+    assert device.event_records.all().count() == 0
+
+
+@pytest.mark.django_db
+def test_validation_error_new_api(client):
+    provider = factories.Provider(id=uuid.UUID("aaaa0000-61fd-4cce-8113-81af1de90942"))
+    device_id = uuid.UUID("bbbb0000-61fd-4cce-8113-81af1de90942")
+    device = factories.Device(id=device_id, provider=provider)
+
+    data = {
+        "event_type": "service_end",
+        "telemetry": {
+            "device_id": str(device_id),
+            "timestamp": 1_325_376_000_000,
+            "gps": {"lat": 0.0, "lng": 3.0},
+        },
+        "timestamp": 1_325_376_000_000,
+        "trip_id": None,
+    }
+
+    assert device.event_records.all().count() == 0
+    response = client.post(
+        reverse("agency:device-event", args=[device_id]),
+        data=data,
+        content_type="application/json",
+        **auth_header(SCOPE_AGENCY_API, provider_id=provider.id),
+    )
+    assert response.status_code == 400
+    assert device.event_records.all().count() == 0

@@ -12,22 +12,10 @@ import requests_mock
 from mds import enums
 from mds import factories
 from mds import models
-from mds.provider_mapping import PROVIDER_REASON_TO_AGENCY_EVENT
-
-
-# This is what the agency API is calling status, go figure
-PROVIDER_EVENT_TYPES = {
-    "service_start": "available",
-    "user_drop_off": "available",
-    "rebalance_drop_off": "available",
-    "maintenance_drop_off": "available",
-    "user_pick_up": "reserved",
-    "maintenance": "unavailable",
-    "low_battery": "unavailable",
-    "service_end": "removed",
-    "rebalance_pick_up": "removed",
-    "maintenance_pick_up": "removed",
-}
+from mds.provider_mapping import (
+    PROVIDER_REASON_TO_AGENCY_EVENT,
+    PROVIDER_EVENT_TYPE_REASON_TO_EVENT_TYPE,
+)
 
 
 @pytest.mark.django_db
@@ -95,7 +83,7 @@ def test_several_providers(client, django_assert_num_queries):
     provider1 = factories.Provider(base_api_url="http://provider1")
     device1 = factories.Device.build(provider=provider1)
     expected_event1 = factories.EventRecord.build(
-        event_type=enums.EVENT_TYPE.rebalance_drop_off.name
+        event_type=enums.EVENT_TYPE.provider_drop_off.name
     )
     provider2 = factories.Provider(base_api_url="http://provider2")
     device2 = factories.Device.build(provider=provider2)
@@ -191,7 +179,9 @@ def test_follow_up(client):
 def make_response(
     provider, device, event, event_type_reason, associated_trip=None, next_page=None
 ):
-    assert event.event_type in dict(PROVIDER_REASON_TO_AGENCY_EVENT).values()
+    assert event.event_type in [
+        event_type for event_type, *_ in dict(PROVIDER_REASON_TO_AGENCY_EVENT).values()
+    ]
     telemetry = event.properties["telemetry"]
 
     response = factories.ProviderStatusChangesBody(
@@ -202,7 +192,7 @@ def make_response(
                 device_id=str(device.pk),
                 vehicle_id=device.identification_number,
                 vehicle_type=device.category,
-                event_type=PROVIDER_EVENT_TYPES[event_type_reason],
+                event_type=PROVIDER_EVENT_TYPE_REASON_TO_EVENT_TYPE[event_type_reason],
                 event_type_reason=event_type_reason,
                 propulsion_type=device.propulsion,
                 event_time=int(event.timestamp.timestamp() * 1000),  # In ms

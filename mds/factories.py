@@ -9,7 +9,7 @@ from django.utils import timezone
 
 from mds.provider_mapping import (
     PROVIDER_REASON_TO_AGENCY_EVENT,
-    PROVIDER_REASON_TO_PROVIDER_EVENT_TYPE,
+    PROVIDER_EVENT_TYPE_REASON_TO_EVENT_TYPE,
 )
 
 from . import models
@@ -673,7 +673,7 @@ class ProviderStatusChange(factory.DictFactory):
     vehicle_id = factory.Sequence(str)
     vehicle_type = factory.Iterator(c.name for c in enums.DEVICE_CATEGORY)
     propulsion_type = factory.Iterator([c.name] for c in enums.DEVICE_PROPULSION)
-    event_type = factory.Iterator(PROVIDER_REASON_TO_PROVIDER_EVENT_TYPE.values())
+    event_type = factory.Iterator(PROVIDER_EVENT_TYPE_REASON_TO_EVENT_TYPE.values())
     event_type_reason = factory.Iterator(PROVIDER_REASON_TO_AGENCY_EVENT.keys())
     event_time = 1_529_968_782_421
     event_location = factory.Dict(

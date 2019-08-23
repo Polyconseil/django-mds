@@ -310,7 +310,10 @@ class StatusChangesPoller:
                 # Ignore just that status change to avoid rejecting the whole batch
                 continue
             try:
-                agency_event_type = PROVIDER_REASON_TO_AGENCY_EVENT[event_type_reason]
+                event = PROVIDER_REASON_TO_AGENCY_EVENT[event_type_reason]
+                agency_event_type, agency_event_type_reason = (
+                    event if len(event) == 2 else event + (None,)
+                )
             except KeyError:  # Spec violation!
                 logger.warning(
                     'Device %s has unknown "%s" event_type_reason',
@@ -320,6 +323,7 @@ class StatusChangesPoller:
                 # Ignore just that status change to avoid rejecting the whole batch
                 continue
             status_change["agency_event_type"] = agency_event_type
+            status_change["agency_event_type_reason"] = agency_event_type_reason
 
             event_location = status_change["event_location"]
             if event_location:
@@ -470,6 +474,7 @@ def _create_event_record(status_change):
         timestamp=utils.from_mds_timestamp(status_change["event_time"]),
         point=point,
         event_type=status_change["agency_event_type"],
+        event_type_reason=status_change["agency_event_type_reason"],
         properties=properties,
         first_saved_at=first_saved_at,
     )

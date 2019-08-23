@@ -34,8 +34,15 @@ class DeviceAdmin(admin.ModelAdmin):
 
 @admin.register(models.EventRecord)
 class EventRecordAdmin(admin.ModelAdmin):
-    list_display = ["saved_at", "timestamp", "provider", "device_id", "event_type"]
-    list_filter = ["device__provider", "event_type"]
+    list_display = [
+        "saved_at",
+        "timestamp",
+        "provider",
+        "device_id",
+        "event_type",
+        "event_type_reason",
+    ]
+    list_filter = ["device__provider", "event_type", "event_type_reason"]
     list_select_related = ["device__provider"]
     search_fields = ["device__id", "device__identification_number"]
 

@@ -51,7 +51,7 @@ def status_changes_fixtures():
         device=device1,
         timestamp=now,
         saved_at=now,
-        event_type=enums.EVENT_TYPE.maintenance.name,
+        event_type=enums.EVENT_TYPE.service_end.name,
         properties={
             "trip_id": "b3da2d46-065f-4036-903c-49d796f09357",
             "telemetry": {
@@ -102,8 +102,8 @@ def status_changes_fixtures():
         "device_id": uuid1,
         "vehicle_id": "1AAAAA",
         "propulsion_type": ["combustion"],
-        "event_type_reason": "maintenance",
-        "event_type": "unavailable",
+        "event_type_reason": "service_end",
+        "event_type": "removed",
         "vehicle_type": "car",
         "event_time": utils.to_mds_timestamp(now),
         "event_location": {
