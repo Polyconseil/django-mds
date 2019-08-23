@@ -1,7 +1,13 @@
 Changelog
 =========
 
-0.5.40 (unreleased)
+0.5.41 (unreleased)
+-------------------
+
+- Add a migration to revert the migration 0040
+
+
+0.5.40 (2019-08-23)
 -------------------
 
 - Upgrade API Agency to use event_type and event_type_reason.
