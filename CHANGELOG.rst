@@ -1,7 +1,7 @@
 Changelog
 =========
 
-0.5.40 (unreleased)
+0.5.40 (2019-08-23)
 -------------------
 
 - Upgrade API Agency to use event_type and event_type_reason.
