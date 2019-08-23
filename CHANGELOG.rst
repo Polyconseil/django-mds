@@ -4,7 +4,7 @@ Changelog
 0.5.40 (unreleased)
 -------------------
 
-- Nothing changed yet.
+- Upgrade API Agency to use event_type and event_type_reason.
 
 
 0.5.39 (2019-08-12)
