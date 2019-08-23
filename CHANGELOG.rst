@@ -1,7 +1,7 @@
 Changelog
 =========
 
-0.5.41 (unreleased)
+0.5.41 (2019-08-23)
 -------------------
 
 - Add a migration to revert the migration 0040
