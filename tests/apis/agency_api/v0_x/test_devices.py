@@ -226,7 +226,7 @@ def test_device_event(client):
         **auth_header(SCOPE_AGENCY_API, provider_id=provider.id),
     )
     assert response.status_code == 201
-    assert response.data == {"device_id": str(device_id), "status": "removed"}
+    assert response.data == {"device_id": str(device_id), "status": "unavailable"}
     assert device.event_records.all().count() == 1
 
 
@@ -281,7 +281,7 @@ def test_device_event_inverted_coordinates(client):
         **auth_header(SCOPE_AGENCY_API, provider_id=provider.id),
     )
     assert response.status_code == 201
-    assert response.data == {"device_id": str(device_id), "status": "removed"}
+    assert response.data == {"device_id": str(device_id), "status": "unavailable"}
     # Stored as (lng lat) as expected
     assert device.event_records.all()[0].point.wkt == "POINT (-118.279678 34.07068)"
 
@@ -415,7 +415,7 @@ def test_device_new_api_agency(client):
     )
 
     assert response.status_code == 201
-    assert response.data == {"device_id": str(device_id), "status": "removed"}
+    assert response.data == {"device_id": str(device_id), "status": "unavailable"}
     assert device.event_records.all().count() == 1
 
     data2 = {

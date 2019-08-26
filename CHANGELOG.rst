@@ -4,7 +4,7 @@ Changelog
 0.5.42 (unreleased)
 -------------------
 
-- Nothing changed yet.
+- Add back the mapping EVENT_TYPE_TO_DEVICE_STATUS
 
 
 0.5.41 (2019-08-23)
