@@ -1,7 +1,7 @@
 Changelog
 =========
 
-0.5.43 (unreleased)
+0.5.43 (2019-08-30)
 -------------------
 
 - Update Agency to Provider Mapping for service_end events.
