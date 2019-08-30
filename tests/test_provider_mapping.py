@@ -187,6 +187,10 @@ def test_get_provider_reason_from_both_mappings_for_old_mapping(device):
     for reason, agency_event in OLD_PROVIDER_REASON_TO_AGENCY_EVENT.items():
         obj = factories.EventRecord(device=device, event_type=agency_event)
         provider_reason = get_provider_reason_from_both_mappings(obj)
+        if agency_event == "service_end":
+            # We skip this case because the old mapping is wrong for this one.
+            # We want to map a Agency "service_end" to "maintenance"
+            continue
         assert provider_reason == reason
 
 

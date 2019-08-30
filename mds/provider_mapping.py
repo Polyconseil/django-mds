@@ -80,7 +80,7 @@ OLD_PROVIDER_REASON_TO_AGENCY_EVENT = {
 AGENCY_EVENT_TO_PROVIDER_REASON = {
     (EVENT_TYPE.register.name,): PROVIDER_EVENT_TYPE_REASON.service_end.name,
     (EVENT_TYPE.service_start.name,): PROVIDER_EVENT_TYPE_REASON.service_start.name,
-    (EVENT_TYPE.service_end.name,): PROVIDER_EVENT_TYPE_REASON.service_end.name,
+    (EVENT_TYPE.service_end.name,): PROVIDER_EVENT_TYPE_REASON.maintenance.name,
     (
         EVENT_TYPE.service_end.name,
         EVENT_TYPE_REASON.low_battery.name,
@@ -92,11 +92,11 @@ AGENCY_EVENT_TO_PROVIDER_REASON = {
     (
         EVENT_TYPE.service_end.name,
         EVENT_TYPE_REASON.compliance.name,
-    ): PROVIDER_EVENT_TYPE_REASON.service_end.name,
+    ): PROVIDER_EVENT_TYPE_REASON.maintenance.name,
     (
         EVENT_TYPE.service_end.name,
         EVENT_TYPE_REASON.off_hours.name,
-    ): PROVIDER_EVENT_TYPE_REASON.service_end.name,
+    ): PROVIDER_EVENT_TYPE_REASON.maintenance.name,
     (
         EVENT_TYPE.provider_drop_off.name,
     ): PROVIDER_EVENT_TYPE_REASON.rebalance_drop_off.name,

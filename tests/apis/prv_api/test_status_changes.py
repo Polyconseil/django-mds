@@ -102,8 +102,8 @@ def status_changes_fixtures():
         "device_id": uuid1,
         "vehicle_id": "1AAAAA",
         "propulsion_type": ["combustion"],
-        "event_type_reason": "service_end",
-        "event_type": "removed",
+        "event_type_reason": "maintenance",
+        "event_type": "unavailable",
         "vehicle_type": "car",
         "event_time": utils.to_mds_timestamp(now),
         "event_location": {
