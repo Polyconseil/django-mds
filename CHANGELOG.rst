@@ -1,10 +1,10 @@
 Changelog
 =========
 
-0.5.44 (unreleased)
+0.6.0 (unreleased)
 -------------------
 
-- Nothing changed yet.
+- Dropped private API not used in django-mds.
 
 
 0.5.43 (2019-08-30)
