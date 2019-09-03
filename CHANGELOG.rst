@@ -4,7 +4,7 @@ Changelog
 0.6.1 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Update Agency API ValidationError
 
 
 0.6.0 (2019-09-02)

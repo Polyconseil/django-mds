@@ -208,13 +208,15 @@ class DeviceEventSerializer(serializers.Serializer):
         if old_version:
             return (event_type, None)
         else:
-            event = (event_type, event_type_reason)
-            if event not in provider_mapping.AGENCY_EVENT_TO_PROVIDER_REASON.keys():
+            event = (
+                (event_type, event_type_reason) if event_type_reason else (event_type,)
+            )
+            if event not in provider_mapping.AGENCY_EVENT_TO_PROVIDER_REASON:
                 # This should be avoided if possible
                 msg = f"The event ({event[0]}, {event[1]}) is not in the mapping."
                 logger.warning(msg)
                 raise ValidationError(msg)
-            return event
+            return (event_type, event_type_reason)
 
     def create(self, validated_data):
         event_type, event_type_reason = self.get_event(validated_data)
