@@ -334,7 +334,13 @@ class DeviceViewSet(
         provider_id = request.user.provider_id
         device = models.Device.objects.filter(provider_id=provider_id, id=id).last()
         if not device:
-            return Response(data={}, status=404)
+            return Response(
+                data={
+                    "message": f"No device found for device_id: {id}",
+                    "device_id": id,
+                },
+                status=404,
+            )
 
         provider = models.Provider.objects.get(pk=provider_id)
         request_serializer = self.get_serializer(

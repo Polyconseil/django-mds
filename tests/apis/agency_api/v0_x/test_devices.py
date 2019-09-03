@@ -532,3 +532,30 @@ def test_validation_error_new_api_not_in_mapping(client):
     assert response.status_code == 400
     assert "is not in the mapping" in str(response.data)
     assert device.event_records.all().count() == 0
+
+
+@pytest.mark.django_db
+def test_create_device_missing_provider(client):
+    provider = factories.Provider(id=uuid.UUID("aaaa0000-61fd-4cce-8113-81af1de90942"))
+    device_id = uuid.UUID("bbbb0000-61fd-4cce-8113-81af1de90942")
+    data = {
+        "event_type": "trip_leave",
+        "event_type_reason": None,
+        "telemetry": {
+            "device_id": str(device_id),
+            "timestamp": 1_325_376_000_000,
+            "gps": {"lat": 0.0, "lng": 3.0},
+        },
+        "timestamp": 1_325_376_000_000,
+        "trip_id": None,
+    }
+
+    response = client.post(
+        reverse("agency:device-event", args=[device_id]),
+        data=data,
+        content_type="application/json",
+        **auth_header(SCOPE_AGENCY_API, provider_id=provider.id),
+    )
+    assert response.status_code == 404
+    assert "No device found for device_id" in str(response.data["message"])
+    assert str(response.data["device_id"]) == str(device_id)
