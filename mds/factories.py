@@ -702,3 +702,49 @@ class ProviderStatusChangesBody(factory.DictFactory):
         {"status_changes": factory.List([factory.SubFactory(ProviderStatusChange)])}
     )
     links = factory.Dict({"next": None})
+
+
+class Policy(factory.django.DjangoModelFactory):
+    class Meta:
+        model = models.Policy
+        django_get_or_create = ["name"]
+
+    name = factory.Sequence("Policy #{}".format)
+    start_date = factory.LazyFunction(timezone.now)
+    end_date = factory.LazyAttribute(
+        lambda policy: policy.start_date + datetime.timedelta(days=30)
+    )
+    published_date = factory.SelfAttribute("start_date")
+    rules = factory.List(
+        [
+            {
+                "name": "Venice Beach Special Operations Zone Global Cap",
+                "rule_id": "81b1bc92-65b7-4434-8ada-2feeb0b7b223",
+                "rule_type": "count",
+                "geographies": ["e0e4a085-7a50-43e0-afa4-6792ca897c5a"],
+                "statuses": {"available": [], "reserved": [], "trip": []},
+                "vehicle_types": ["bicycle", "scooter"],
+                "maximum": 750,
+                "value_url": (
+                    "https://api.ladot.io/compliance/count/"
+                    "81b1bc92-65b7-4434-8ada-2feeb0b7b223"
+                ),
+            }
+        ]
+    )
+
+    @factory.post_generation
+    def providers(self, create, extracted, **kwargs):
+        if not create:
+            return
+        if extracted:
+            for provider in extracted:
+                self.providers.add(provider)
+
+    @factory.post_generation
+    def prev_policies(self, create, extracted, **kwargs):
+        if not create:
+            return
+        if extracted:
+            for policy in extracted:
+                self.prev_policies.add(policy)

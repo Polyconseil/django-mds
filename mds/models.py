@@ -12,6 +12,7 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import Count, Prefetch, Q
 from django.utils import timezone
+from django.core.serializers.json import DjangoJSONEncoder
 
 from rest_framework.utils import encoders
 
@@ -311,3 +312,20 @@ class Area(models.Model):
 
     def __str__(self):
         return "{} ({})".format(self.label or "Area object", short_uuid4(self.id))
+
+
+class Policy(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4)
+    name = UnboundedCharField()
+    description = UnboundedCharField(default="", blank=True)
+    providers = models.ManyToManyField(Provider, blank=True)
+    start_date = models.DateTimeField()
+    end_date = models.DateTimeField(blank=True, null=True)
+    published_date = models.DateTimeField(blank=True, null=True)
+    prev_policies = models.ManyToManyField("self", blank=True)
+    # FIXME Integrity check when deleting referenced geographies
+    # Denormalize the list of geographies as ManyToManyField to Area?
+    rules = pg_fields.JSONField(default=list, encoder=DjangoJSONEncoder)
+
+    def __str__(self):
+        return f"{self.name} ({short_uuid4(self.id)})"

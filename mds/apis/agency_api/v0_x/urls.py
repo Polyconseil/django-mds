@@ -1,17 +1,24 @@
 import re
+
 from django.urls import include, path, re_path
+
 from rest_framework import permissions
 from rest_framework import routers
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 
+# from . import geography
+from . import policies
 from . import service_areas
 from . import vehicles
 
 
 agency_router = routers.DefaultRouter()
-agency_router.register(r"service_areas", service_areas.AreaViewSet)
 agency_router.register(r"vehicles", vehicles.DeviceViewSet, basename="device")
+agency_router.register(r"policies", policies.PolicyViewSet, basename="policy")
+# agency_router.register(r"geography", geography.GeographyViewSet, basename="geography")
+# Deprecation pending for "geography"
+agency_router.register(r"service_areas", service_areas.AreaViewSet)
 
 
 def get_url_patterns(prefix):
