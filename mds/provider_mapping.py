@@ -248,6 +248,12 @@ OLD_TO_NEW_AGENCY_EVENT = {
 }
 
 
+# Only forward events that can be polled from a "provider API"
+# We don't want to filter out the old or the new events though.
+API_PROVIDER_EVENTS = [x[0] for x in AGENCY_EVENT_TO_PROVIDER_REASON]
+API_PROVIDER_EVENTS.extend(OLD_AGENCY_EVENT_TO_PROVIDER_REASON.keys())
+
+
 def get_new_event_from_old(old_event):
     """
     Maps an old agency event to the new agency event.
