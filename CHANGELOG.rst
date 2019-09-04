@@ -6,6 +6,7 @@ Changelog
 
 - Update Agency API ValidationError
 - Return device_id for 404 when device doesn't not exist
+- First implementation of the draft Policy API.
 
 
 0.6.0 (2019-09-02)
