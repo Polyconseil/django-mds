@@ -11,11 +11,16 @@ from drf_yasg import openapi
 from . import policies
 from . import service_areas
 from . import vehicles
+from . import compliance
 
 
 agency_router = routers.DefaultRouter()
 agency_router.register(r"vehicles", vehicles.DeviceViewSet, basename="device")
 agency_router.register(r"policies", policies.PolicyViewSet, basename="policy")
+agency_router.register(
+    r"compliance/snapshot", compliance.ComplianceViewSet, basename="compliance"
+)
+
 # agency_router.register(r"geography", geography.GeographyViewSet, basename="geography")
 # Deprecation pending for "geography"
 agency_router.register(r"service_areas", service_areas.AreaViewSet)

@@ -748,3 +748,18 @@ class Policy(factory.django.DjangoModelFactory):
         if extracted:
             for policy in extracted:
                 self.prev_policies.add(policy)
+
+
+class ComplianceFactory(factory.django.DjangoModelFactory):
+
+    policy = factory.SubFactory(Policy)
+    vehicle = factory.SubFactory(Device)
+    rule = factory.Faker("uuid4")
+    geography = factory.Faker("uuid4")
+    start_date = factory.LazyFunction(timezone.now)
+    end_date = factory.LazyAttribute(
+        lambda compliance: compliance.start_date + datetime.timedelta(days=30)
+    )
+
+    class Meta:
+        model = models.Compliance

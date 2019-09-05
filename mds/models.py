@@ -329,3 +329,20 @@ class Policy(models.Model):
 
     def __str__(self):
         return f"{self.name} ({short_uuid4(self.id)})"
+
+
+class Compliance(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4)
+    policy = models.ForeignKey(
+        Policy, related_name="compliances", on_delete=models.CASCADE
+    )
+    vehicle = models.ForeignKey(
+        Device, related_name="compliances", on_delete=models.CASCADE
+    )
+    rule = models.UUIDField(default=uuid.uuid4)
+    geography = models.UUIDField(default=uuid.uuid4)
+    start_date = models.DateTimeField()
+    end_date = models.DateTimeField(blank=True, null=True)
+
+    def __str__(self):
+        return f"({short_uuid4(self.id)})"

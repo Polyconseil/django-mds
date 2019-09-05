@@ -4,7 +4,7 @@ Changelog
 0.6.3 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- API compliance
 
 
 0.6.2 (2019-09-09)
