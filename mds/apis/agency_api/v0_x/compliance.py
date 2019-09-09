@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from rest_framework import viewsets
 
-from django.db.models import Q, Prefetch
+from django.db.models import Prefetch
 
 from mds import models
 
@@ -11,7 +11,6 @@ import pytz
 
 class ComplianceSerializer(serializers.ModelSerializer):
     rules_id = serializers.SerializerMethodField()
-
     compliances = serializers.SerializerMethodField()
 
     class Meta:
@@ -19,10 +18,7 @@ class ComplianceSerializer(serializers.ModelSerializer):
         fields = ("id", "rules_id", "compliances")
 
     def get_rules_id(self, policy):
-        rules = []
-        for rule in policy.rules:
-            rules.append(rule["rule_id"])
-        return rules
+        return [rule["rule_id"] for rule in policy.rules]
 
     def get_compliances(self, policy):
         final_compliance = []
@@ -40,9 +36,7 @@ class ComplianceSerializer(serializers.ModelSerializer):
                     current_compliance["vehicles_in_violation"].append(
                         str(compliance.vehicle.id)
                     )
-                    current_compliance["total_violations"] = len(
-                        current_compliance["vehicles_in_violation"]
-                    )
+                    current_compliance["total_violations"] += 1
                     break
             else:
                 final_compliance.append(
@@ -66,56 +60,53 @@ class ComplianceViewSet(viewsets.ModelViewSet):
         queryset = super().get_queryset()
         provider_id = self.request.GET.get("provider_id")
         end_date = self.request.GET.get("end_date")
-        if end_date:
-            end_date = datetime.fromtimestamp(int(end_date), tz=pytz.UTC)
+        filters = {}
         if provider_id and end_date:
-            queryset = queryset.filter(
-                Q(compliances__end_date__gte=end_date)
-                | Q(compliances__end_date__isnull=True),
-                compliances__vehicle__provider__id=provider_id,
-                compliances__start_date__lte=end_date,
-            ).prefetch_related(
-                Prefetch(
-                    "compliances",
-                    queryset=models.Compliance.objects.filter(
-                        Q(end_date__gte=end_date) | Q(end_date__isnull=True),
-                        vehicle__provider__id=provider_id,
-                        start_date__lt=end_date,
-                    ),
-                    to_attr="compliances_pref",
-                )
-            )
-        elif provider_id:
-            queryset = queryset.filter(
-                compliances__vehicle__provider__id=provider_id
-            ).prefetch_related(
-                Prefetch(
-                    "compliances",
-                    queryset=models.Compliance.objects.filter(
-                        vehicle__provider__id=provider_id
-                    ),
-                    to_attr="compliances_pref",
-                )
+            end_date = datetime.fromtimestamp(int(end_date), tz=pytz.UTC)
+            filters["compliances__vehicle__provider__id"] = provider_id
+            filters["compliances__start_date__lte"] = end_date
+            filter_prefetch = Prefetch(
+                "compliances",
+                queryset=models.Compliance.objects.exclude(
+                    end_date__lte=end_date
+                ).filter(vehicle__provider__id=provider_id, start_date__lt=end_date),
+                to_attr="compliances_pref",
             )
         elif end_date:
-            queryset = queryset.filter(
-                Q(compliances__end_date__gte=end_date)
-                | Q(compliances__end_date__isnull=True),
-                compliances__start_date__lte=end_date,
-            ).prefetch_related(
-                Prefetch(
-                    "compliances",
-                    queryset=models.Compliance.objects.filter(),
-                    to_attr="compliances_pref",
-                )
+            end_date = datetime.fromtimestamp(int(end_date), tz=pytz.UTC)
+            filter_prefetch = Prefetch(
+                "compliances",
+                queryset=models.Compliance.objects.exclude(
+                    end_date__lte=end_date
+                ).filter(start_date__lt=end_date),
+                to_attr="compliances_pref",
             )
+            filters["compliances__start_date__lte"] = end_date
+        elif provider_id:
+            filter_prefetch = Prefetch(
+                "compliances",
+                queryset=models.Compliance.objects.filter(
+                    vehicle__provider__id=provider_id
+                ),
+                to_attr="compliances_pref",
+            )
+            filters["compliances__vehicle__provider__id"] = provider_id
         else:
-            queryset = queryset.prefetch_related(
-                Prefetch(
-                    "compliances",
-                    queryset=models.Compliance.objects.filter(),
-                    to_attr="compliances_pref",
-                )
+            filter_prefetch = Prefetch(
+                "compliances",
+                queryset=models.Compliance.objects.filter(),
+                to_attr="compliances_pref",
             )
+
+        if (provider_id and end_date) or end_date:
+            queryset = (
+                queryset.exclude(compliances__end_date__lt=end_date)
+                .filter(**filters)
+                .prefetch_related(filter_prefetch)
+            )
+        elif provider_id:
+            queryset = queryset.filter(**filters).prefetch_related(filter_prefetch)
+        else:
+            queryset = queryset.prefetch_related(filter_prefetch)
 
         return queryset

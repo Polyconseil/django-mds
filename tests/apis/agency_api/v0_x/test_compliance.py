@@ -36,13 +36,13 @@ def test_compliance_list_basic(client, django_assert_num_queries):
         end_date=datetime.datetime(2007, 12, 7, 16, 29, 43, 79043, tzinfo=pytz.UTC),
     )
 
-    factories.ComplianceFactory(
+    compliance_null = factories.ComplianceFactory(
         rule=uuid.UUID("89b5bbb5-ba98-4498-9649-787eb8ddbb8e"),
         geography=uuid.UUID("2cfbdd7f-8ba2-4b48-9826-951fe3249981"),
-        policy_id=policy.id,
+        policy_id=factories.Policy().id,
         vehicle_id=factories.Device().id,
         start_date=datetime.datetime(2009, 12, 6, 16, 29, 43, 79043, tzinfo=pytz.UTC),
-        end_date=datetime.datetime(2009, 12, 7, 16, 29, 43, 79043, tzinfo=pytz.UTC),
+        end_date=None,
     )
 
     # Test without auth
@@ -50,7 +50,7 @@ def test_compliance_list_basic(client, django_assert_num_queries):
     n += 1  # query on device
     n += 1  # query on policy  # query on Compliance
     n += 1  # query on second compliance
-    # query on policies
+    # query Last compliance
     with django_assert_num_queries(n):  # No token check
         response = client.get(reverse("agency:compliance-list"))
     assert response.status_code == 200
@@ -63,7 +63,8 @@ def test_compliance_list_basic(client, django_assert_num_queries):
     )
 
     assert response.status_code == 200
-    assert str(compliance.policy_id) == response.data[0]["id"]  # provider is OK
+    assert str(compliance.policy_id) == response.data[0]["id"]
+    # provider is OK
 
     response = client.get(
         reverse("agency:compliance-list"),
@@ -100,15 +101,16 @@ def test_compliance_list_basic(client, django_assert_num_queries):
 
     response = client.get(
         reverse("agency:compliance-list"), {"end_date": 1126023900}
-    )  # to high
+    )  # to low
 
     assert response.status_code == 200 and response.data == []
 
     response = client.get(
-        reverse("agency:compliance-list"), {"end_date": 1441556700}
-    )  # to low
+        reverse("agency:compliance-list"), {"end_date": 1741556700}
+    )  # to high but compliance_null is not finish
 
-    assert response.status_code == 200 and response.data == []
+    assert response.status_code == 200
+    assert response.data[0]["id"] == str(compliance_null.policy_id)
 
     response = client.get(
         reverse("agency:compliance-list"),
