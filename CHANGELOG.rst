@@ -4,7 +4,7 @@ Changelog
 0.6.2 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Upsert the event_type_reason when we push through the Agency API.
 
 
 0.6.1 (2019-09-04)

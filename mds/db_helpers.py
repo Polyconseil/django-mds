@@ -133,6 +133,7 @@ def upsert_event_records(
             "device_id": str(event_record.device_id),
             "point": event_record.point.ewkt if event_record.point else None,
             "event_type": event_record.event_type,
+            "event_type_reason": event_record.event_type_reason,
             # The same encoder as in the model
             "properties": json.dumps(event_record.properties, cls=encoders.JSONEncoder),
             "source": source,
@@ -145,6 +146,7 @@ def upsert_event_records(
             timestamp,
             point,
             event_type,
+            event_type_reason,
             properties,
             source,
             first_saved_at,
@@ -154,6 +156,7 @@ def upsert_event_records(
             %(timestamp)s,
             %(point)s,
             %(event_type)s,
+            %(event_type_reason)s,
             %(properties)s,
             %(source)s,
             %(first_saved_at)s,
@@ -165,6 +168,7 @@ def upsert_event_records(
             ON CONFLICT (device_id, timestamp) DO UPDATE SET
                 point = EXCLUDED.point,
                 event_type = EXCLUDED.event_type,
+                event_type_reason = EXCLUDED.event_type_reason,
                 properties = EXCLUDED.properties,
                 source = EXCLUDED.source,
                 first_saved_at = EXCLUDED.first_saved_at,
