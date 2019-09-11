@@ -1,7 +1,7 @@
 Changelog
 =========
 
-0.6.3 (unreleased)
+0.6.3 (2019-09-11)
 ------------------
 
 - [SMP-998] Model and API public for compliance (violation/pricing)
