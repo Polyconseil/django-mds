@@ -327,6 +327,9 @@ class Policy(models.Model):
     # Denormalize the list of geographies as ManyToManyField to Area?
     rules = pg_fields.JSONField(default=list, encoder=DjangoJSONEncoder)
 
+    class Meta:
+        verbose_name_plural = "policies"
+
     def __str__(self):
         return f"{self.name} ({short_uuid4(self.id)})"
 

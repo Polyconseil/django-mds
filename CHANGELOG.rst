@@ -5,6 +5,7 @@ Changelog
 ------------------
 
 - [SMP-998] Model and API public for compliance (violation/pricing)
+- Added model admins for Policy and Compliance.
 
 
 0.6.2 (2019-09-09)
