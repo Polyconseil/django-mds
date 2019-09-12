@@ -639,7 +639,7 @@ class EventRecord(factory.DjangoModelFactory):
             f.properties["telemetry"]["gps"]["lat"],
         )
     )
-    saved_at = factory.LazyAttribute(lambda f: f.timestamp)
+    saved_at = factory.SelfAttribute("timestamp")
     event_type = factory.Iterator(c.name for c in enums.EVENT_TYPE)
     properties = factory.Dict(
         {
