@@ -47,6 +47,10 @@ def _get_auth_mean():
 
 def _generate_payload(application, token_duration, user):
     payload = {"jti": str(uuid.uuid4()), "scope": application.scopes_string}
+    aggregator_for = " ".join(
+        str(uid) for uid in application.aggregator_for.values_list("id", flat=True)
+    )
+
     if user:
         payload["sub"] = "user:%s" % user.username
         payload["name"] = user.get_full_name() or user.username
@@ -54,6 +58,8 @@ def _generate_payload(application, token_duration, user):
         payload["sub"] = ("application:%s" % application.client_id,)
     if application.owner:
         payload["app_owner"] = str(application.owner)
+    if aggregator_for:
+        payload["aggregator_for"] = aggregator_for
     if token_duration:
         expiry = timezone.now() + token_duration
         payload["exp"] = int(expiry.timestamp())

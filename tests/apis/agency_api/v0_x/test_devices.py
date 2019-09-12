@@ -535,7 +535,7 @@ def test_validation_error_new_api_not_in_mapping(client):
 
 
 @pytest.mark.django_db
-def test_create_device_missing_provider(client):
+def test_create_device_missing_device(client):
     provider = factories.Provider(id=uuid.UUID("aaaa0000-61fd-4cce-8113-81af1de90942"))
     device_id = uuid.UUID("bbbb0000-61fd-4cce-8113-81af1de90942")
     data = {
@@ -559,3 +559,33 @@ def test_create_device_missing_provider(client):
     assert response.status_code == 404
     assert "No device found for device_id" in str(response.data["message"])
     assert str(response.data["device_id"]) == str(device_id)
+
+
+@pytest.mark.django_db
+def test_create_device_with_poller_id(client):
+    provider = factories.Provider(id=uuid.UUID("aaaa0000-61fd-4cce-8113-81af1de90942"))
+    poller_id = uuid.UUID("cccc0000-61fd-4cce-8113-81af1de90942")
+    poller = factories.Provider(id=poller_id)
+    device_id = uuid.UUID("bbbb0000-61fd-4cce-8113-81af1de90942")
+    device = factories.Device(id=device_id, provider=provider)
+
+    data = {
+        "event_type": "trip_leave",
+        "event_type_reason": None,
+        "telemetry": {
+            "device_id": str(device_id),
+            "timestamp": 1_325_376_000_000,
+            "gps": {"lat": 0.0, "lng": 3.0},
+        },
+        "timestamp": 1_325_376_000_000,
+        "trip_id": None,
+    }
+
+    response = client.post(
+        reverse("agency:device-event", args=[device_id]),
+        data=data,
+        content_type="application/json",
+        **auth_header(SCOPE_AGENCY_API, provider_id=poller.id),
+    )
+    assert response.status_code == 201
+    assert device.event_records.all().count() == 1
