@@ -1,7 +1,7 @@
 Changelog
 =========
 
-0.6.4 (unreleased)
+0.6.4 (2019-09-12)
 ------------------
 
 - Add the aggregator_for in the application and update Agency API
