@@ -55,6 +55,10 @@ def test_compliance_list_basic(client, django_assert_num_queries):
         response = client.get(reverse("agency:compliance-list"))
     assert response.status_code == 200
 
+    import pdb
+
+    pdb.set_trace()
+
     # Check why there is policy more
     assert str(compliance.policy.id) == response.data[0]["id"]
 

@@ -323,9 +323,13 @@ class Policy(models.Model):
     end_date = models.DateTimeField(blank=True, null=True)
     published_date = models.DateTimeField(blank=True, null=True)
     prev_policies = models.ManyToManyField("self", blank=True)
+    fixed_price = models.IntegerField(blank=True, null=True)
     # FIXME Integrity check when deleting referenced geographies
     # Denormalize the list of geographies as ManyToManyField to Area?
     rules = pg_fields.JSONField(default=list, encoder=DjangoJSONEncoder)
+
+    class Meta:
+        verbose_name_plural = "policies"
 
     def __str__(self):
         return f"{self.name} ({short_uuid4(self.id)})"
