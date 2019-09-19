@@ -1,3 +1,5 @@
+import logging
+
 import datetime
 from typing import List
 
@@ -6,7 +8,10 @@ from django.core.cache import cache
 from django.utils import timezone
 
 
+from mds.models import Provider
 from mds.authent import models, generators
+
+logger = logging.getLogger(__name__)
 
 
 class MDSAuthentException(Exception):
@@ -80,6 +85,13 @@ def create_application(name, owner=None, grant=None, scopes=None):
         scopes=scopes,
         owner=owner,
     )
+    try:
+        provider = Provider.objects.get(pk=owner)
+        app.aggregator_for.add(provider)
+    except Provider.DoesNotExist:
+        # We raise a warning but continue with the creation of the client credentials
+        logger.warning(f"Could not set app permissions for owner {owner}")
+        pass
     return {
         "name": name,
         "client_id": app.client_id,

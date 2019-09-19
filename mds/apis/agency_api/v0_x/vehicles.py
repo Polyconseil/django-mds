@@ -71,6 +71,9 @@ class DeviceRegisterSerializer(serializers.Serializer):
     device_id = serializers.UUIDField(
         source="id", help_text="Provided by Operator to uniquely identify a vehicle."
     )
+    provider_id = serializers.UUIDField(
+        help_text="Provider id issued by the city.", required=False
+    )
     vehicle_id = serializers.CharField(
         source="identification_number",
         help_text="Vehicle Identification Number (vehicle_id) visible on vehicle.",
@@ -93,7 +96,18 @@ class DeviceRegisterSerializer(serializers.Serializer):
     model = serializers.CharField(required=False, help_text="Vehicle Model.")
 
     def create(self, validated_data):
-        provider_id = self.context["request"].user.provider_id
+        user = self.context["request"].user
+        provider_id = str(validated_data.pop("provider_id", user.provider_id))
+
+        if not provider_id:
+            logger.warning("Trying to register a device without provider_id")
+
+        if provider_id not in user.aggregator_for:
+            logger.warning(
+                "%s is trying to push an event with the provider id %s"
+                % (user.provider_id, provider_id)
+            )
+
         try:
             return models.Device.objects.create(
                 provider_id=provider_id, **validated_data
@@ -331,9 +345,9 @@ class DeviceViewSet(
     @action(detail=True, methods=["post", "options"])
     def event(self, request, id):
         """Endpoint to receive an event from a provider."""
-        provider_id = request.user.provider_id
-        device = models.Device.objects.filter(provider_id=provider_id, id=id).last()
-        if not device:
+        try:
+            device = models.Device.objects.get(pk=id)
+        except models.Device.DoesNotExist:
             return Response(
                 data={
                     "message": f"No device found for device_id: {id}",
@@ -342,13 +356,18 @@ class DeviceViewSet(
                 status=404,
             )
 
-        provider = models.Provider.objects.get(pk=provider_id)
+        if str(device.provider_id) not in request.user.aggregator_for:
+            logger.warning(
+                "%s is trying to push an event with the provider id %s"
+                % (request.user.provider_id, str(device.provider_id))
+            )
+
         request_serializer = self.get_serializer(
             data=request.data,
             context={
                 "device": device,
                 "request_or_response": "request",
-                "provider": provider,
+                "provider": device.provider,
             },
         )
         request_serializer.is_valid(raise_exception=True)

@@ -17,12 +17,14 @@ class RemoteUser:
 
     _id: str
     _scopes: Set[str] = set()
+    _aggregator_for: Set[str] = set()
     _provider_id: Optional[str] = None
     """If provided, restrict access to data owned by given provider"""
 
-    def __init__(self, sub, scopes, provider_id):
+    def __init__(self, sub, scopes, aggregator_for, provider_id):
         self._id = sub
         self._scopes = scopes
+        self._aggregator_for = aggregator_for
         self._provider_id = provider_id
 
     def __str__(self):
@@ -43,6 +45,10 @@ class RemoteUser:
     @property
     def scopes(self):
         return self._scopes
+
+    @property
+    def aggregator_for(self):
+        return self._aggregator_for
 
     @property
     def provider_id(self):
@@ -96,5 +102,8 @@ def build_user(payload: Dict) -> RemoteUser:
 
     # See https://tools.ietf.org/html/rfc6749#section-3.3
     scopes = set(payload["scope"].split(" "))
+    aggregator_for = set(payload.get("aggregator_for", "").split(" "))
 
-    return RemoteUser(payload["sub"], scopes, payload.get("app_owner", None))
+    return RemoteUser(
+        payload["sub"], scopes, aggregator_for, payload.get("app_owner", None)
+    )

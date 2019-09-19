@@ -1,7 +1,9 @@
-from django.contrib import admin
-from . import models
-
 from uuid import UUID
+
+from django.contrib import admin
+from django.utils.translation import ugettext_lazy as _
+
+from . import models
 
 
 def is_uuid(uuid_string, version=4):
@@ -79,3 +81,45 @@ class AreaAdmin(admin.ModelAdmin):
 class PolygonAdmin(admin.ModelAdmin):
     list_display = ["id", "label"]
     ordering = ["label"]
+
+
+class PublishedFilter(admin.SimpleListFilter):
+    title = _("published")
+    parameter_name = "is_published"
+
+    def lookups(self, request, model_admin):
+        return [("0", _("No")), ("1", _("Yes"))]
+
+    def queryset(self, request, queryset):
+        if self.value() == "0":
+            queryset = queryset.filter(published_date__isnull=True)
+        elif self.value() == "1":
+            queryset = queryset.filter(published_date__isnull=False)
+        return queryset
+
+
+@admin.register(models.Policy)
+class PolicyAdmin(admin.ModelAdmin):
+    list_display = ["name", "start_date", "end_date", "is_published"]
+    list_filter = ["start_date", "end_date", PublishedFilter, "providers"]
+    search_fields = ["id", "name", "description"]
+    ordering = ["start_date"]
+
+    def is_published(self, policy):
+        return bool(policy.published_date)
+
+    is_published.boolean = True
+
+
+@admin.register(models.Compliance)
+class ComplianceAdmin(admin.ModelAdmin):
+    list_display = ["id", "policy_name", "start_date", "end_date"]
+    list_filter = ["start_date", "end_date"]
+    search_fields = ["id", "policy_id", "vehicle_id"]
+    ordering = ["start_date"]
+
+    def get_queryset(self, request):
+        return super().get_queryset(request).select_related("policy")
+
+    def policy_name(self, compliance):
+        return compliance.policy.name

@@ -1,5 +1,6 @@
 from django.contrib.postgres import fields as pg_fields
 from django.db import models
+from mds.models import Provider
 from oauth2_provider.models import (
     AbstractApplication,
     AbstractAccessToken,
@@ -14,6 +15,9 @@ class Application(AbstractApplication):
         blank=True,
         db_index=True,
         help_text="Unique identifier for the owner of the application",
+    )
+    aggregator_for = models.ManyToManyField(
+        Provider, help_text="Provider the application is allowed to write for"
     )
     scopes = pg_fields.ArrayField(
         models.CharField(max_length=32), help_text="Application allowed scopes."
