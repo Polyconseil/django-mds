@@ -1,5 +1,6 @@
 import datetime
 import zlib
+import random
 
 import factory
 
@@ -715,6 +716,7 @@ class Policy(factory.django.DjangoModelFactory):
         lambda policy: policy.start_date + datetime.timedelta(days=30)
     )
     published_date = factory.SelfAttribute("start_date")
+    fixed_price = factory.LazyFunction(lambda: random.randint(0, 20000))
     rules = factory.List(
         [
             {
@@ -725,6 +727,7 @@ class Policy(factory.django.DjangoModelFactory):
                 "statuses": {"available": [], "reserved": [], "trip": []},
                 "vehicle_types": ["bicycle", "scooter"],
                 "maximum": 750,
+                "variable_price": 20,
                 "value_url": (
                     "https://api.ladot.io/compliance/count/"
                     "81b1bc92-65b7-4434-8ada-2feeb0b7b223"
