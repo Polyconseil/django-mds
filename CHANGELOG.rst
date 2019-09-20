@@ -4,8 +4,7 @@ Changelog
 0.6.5 (unreleased)
 ------------------
 
--[SMP-1097] Adding Fixed_price on Policy models
-- Nothing changed yet.
+- [SMP-1097] Adding Fixed_price on Policy models
 
 
 0.6.4 (2019-09-12)
