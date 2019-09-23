@@ -364,8 +364,8 @@ class Compliance(models.Model):
     vehicle = models.ForeignKey(
         Device, related_name="compliances", on_delete=models.CASCADE
     )
-    rule = models.UUIDField(default=uuid.uuid4)
-    geography = models.UUIDField(default=uuid.uuid4)
+    rule = models.UUIDField()
+    geography = models.UUIDField()
     start_date = models.DateTimeField()
     end_date = models.DateTimeField(blank=True, null=True)
 

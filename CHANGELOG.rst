@@ -4,7 +4,7 @@ Changelog
 0.6.7 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Remove inappropriate default values.
 
 
 0.6.6 (2019-09-23)
