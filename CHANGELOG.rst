@@ -1,7 +1,7 @@
 Changelog
 =========
 
-0.6.7 (unreleased)
+0.6.7 (2019-09-23)
 ------------------
 
 - Remove inappropriate default values.
