@@ -1,7 +1,7 @@
 Changelog
 =========
 
-0.6.6 (unreleased)
+0.6.6 (2019-09-23)
 ------------------
 
 - Improvements for policy and compliance.
