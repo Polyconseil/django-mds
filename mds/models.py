@@ -314,6 +314,19 @@ class Area(models.Model):
         return "{} ({})".format(self.label or "Area object", short_uuid4(self.id))
 
 
+class PolicyQueryset(models.QuerySet):
+    def active(self, at=None, **kwargs):
+        if not at:
+            at = timezone.now()
+        return self.filter(
+            start_date__lte=at,
+            end_date__gt=at,
+            published_date__isnull=False,
+            prev_policies__isnull=True,
+            **kwargs,
+        )
+
+
 class Policy(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4)
     name = UnboundedCharField()
@@ -328,11 +341,19 @@ class Policy(models.Model):
     # Denormalize the list of geographies as ManyToManyField to Area?
     rules = pg_fields.JSONField(default=list, encoder=DjangoJSONEncoder)
 
+    objects = PolicyQueryset.as_manager()
+
     class Meta:
         verbose_name_plural = "policies"
 
     def __str__(self):
         return f"{self.name} ({short_uuid4(self.id)})"
+
+    @property
+    def kind(self):
+        if self.rules:
+            return self.rules[0]["rule_type"]
+        return None
 
 
 class Compliance(models.Model):
@@ -347,6 +368,9 @@ class Compliance(models.Model):
     geography = models.UUIDField(default=uuid.uuid4)
     start_date = models.DateTimeField()
     end_date = models.DateTimeField(blank=True, null=True)
+
+    class Meta:
+        unique_together = ("policy", "rule", "geography", "vehicle", "start_date")
 
     def __str__(self):
         return f"({short_uuid4(self.id)})"

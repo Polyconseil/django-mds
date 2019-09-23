@@ -4,7 +4,7 @@ Changelog
 0.6.6 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Improvements for policy and compliance.
 
 
 0.6.5 (2019-09-20)
