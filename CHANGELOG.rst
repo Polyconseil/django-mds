@@ -1,7 +1,7 @@
 Changelog
 =========
 
-0.6.8 (unreleased)
+0.6.8 (2019-09-24)
 ------------------
 
 - Adding daily_penalty field on Policy models
