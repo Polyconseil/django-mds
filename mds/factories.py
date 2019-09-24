@@ -717,6 +717,7 @@ class Policy(factory.django.DjangoModelFactory):
     )
     published_date = factory.SelfAttribute("start_date")
     fixed_price = factory.LazyFunction(lambda: random.randint(0, 20000))
+    daily_penalty = factory.LazyFunction(lambda: random.randint(0, 200))
     rules = factory.List(
         [
             {
