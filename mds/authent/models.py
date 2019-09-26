@@ -20,7 +20,8 @@ class Application(AbstractApplication):
         Provider, help_text="Provider the application is allowed to write for"
     )
     scopes = pg_fields.ArrayField(
-        models.CharField(max_length=32), help_text="Application allowed scopes."
+        models.CharField(max_length=32),
+        help_text="Application allowed scopes (separated with commas)",
     )
 
     def natural_key(self):
