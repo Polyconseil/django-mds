@@ -31,7 +31,6 @@ class PolicySerializer(serializers.Serializer):
     prev_policies = serializers.SerializerMethodField(
         help_text="Unique IDs of prior policies replaced by this one"
     )
-    fixed_price = serializers.IntegerField()
     rules = serializers.JSONField(help_text="List of applicable rule elements")
 
     def get_provider_ids(self, policy):

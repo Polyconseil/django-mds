@@ -5,6 +5,7 @@ Changelog
 ------------------
 
 - Add lag under which compliances were computed.
+- Move custom policy fields to config field.
 
 
 0.6.8 (2019-09-24)

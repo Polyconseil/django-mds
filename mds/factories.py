@@ -716,8 +716,14 @@ class Policy(factory.django.DjangoModelFactory):
         lambda policy: policy.start_date + datetime.timedelta(days=30)
     )
     published_date = factory.SelfAttribute("start_date")
-    fixed_price = factory.LazyFunction(lambda: random.randint(0, 20000))
-    daily_penalty = factory.LazyFunction(lambda: random.randint(0, 200))
+    config = factory.Dict(
+        {
+            "rule_type": "count",
+            "daily_penalty": factory.LazyFunction(lambda: random.randint(0, 200)),
+            "fixed_price": factory.LazyFunction(lambda: random.randint(0, 20000)),
+            "grace_period_days": factory.LazyFunction(lambda: random.randint(0, 10)),
+        }
+    )
     rules = factory.List(
         [
             {

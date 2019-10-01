@@ -12,6 +12,6 @@ def fill_compliance_lag(apps, schema_editor):
 
 class Migration(migrations.Migration):
 
-    dependencies = [("mds", "0048_add_compliance_lag")]
+    dependencies = [("mds", "0050_pre_migrate_to_policy_config")]
 
     operations = [migrations.RunPython(fill_compliance_lag, migrations.RunPython.noop)]

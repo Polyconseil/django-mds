@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('mds', '0049_fill_compliance_lag'),
+        ('mds', '0051_fill_compliance_lag'),
     ]
 
     operations = [

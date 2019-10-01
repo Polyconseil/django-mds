@@ -336,11 +336,10 @@ class Policy(models.Model):
     end_date = models.DateTimeField(blank=True, null=True)
     published_date = models.DateTimeField(blank=True, null=True)
     prev_policies = models.ManyToManyField("self", blank=True)
-    fixed_price = models.IntegerField(default=0)
-    daily_penalty = models.IntegerField(default=0)
     # FIXME Integrity check when deleting referenced geographies
     # Denormalize the list of geographies as ManyToManyField to Area?
     rules = pg_fields.JSONField(default=list, encoder=DjangoJSONEncoder)
+    config = pg_fields.JSONField(default=dict)
 
     objects = PolicyQueryset.as_manager()
 
@@ -350,11 +349,15 @@ class Policy(models.Model):
     def __str__(self):
         return f"{self.name} ({short_uuid4(self.id)})"
 
+    def save(self, *args, **kwargs):
+        # Denormalize policy kind with first rule type
+        if self.rules:
+            self.config.update({"rule_type": self.rules[0]["rule_type"]})
+        super(Policy, self).save(*args, **kwargs)
+
     @property
     def kind(self):
-        if self.rules:
-            return self.rules[0]["rule_type"]
-        return None
+        return self.config["rule_type"]
 
 
 class Compliance(models.Model):
