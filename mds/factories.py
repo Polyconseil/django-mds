@@ -764,6 +764,7 @@ class ComplianceFactory(factory.django.DjangoModelFactory):
     end_date = factory.LazyAttribute(
         lambda compliance: compliance.start_date + datetime.timedelta(days=30)
     )
+    lag = datetime.timedelta(0)
 
     class Meta:
         model = models.Compliance

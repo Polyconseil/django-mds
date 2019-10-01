@@ -369,9 +369,20 @@ class Compliance(models.Model):
     geography = models.UUIDField()
     start_date = models.DateTimeField()
     end_date = models.DateTimeField(blank=True, null=True)
+    # Delay considered before computing the compliance
+    lag = models.DurationField()
 
     class Meta:
-        unique_together = ("policy", "rule", "geography", "vehicle", "start_date")
+        unique_together = (
+            "policy",
+            "rule",
+            "geography",
+            "vehicle",
+            "start_date",
+            # Different jobs with each one their lag follow a different timeline
+            # and may compute different compliances as they may see more events
+            "lag",
+        )
 
     def __str__(self):
         return f"({short_uuid4(self.id)})"

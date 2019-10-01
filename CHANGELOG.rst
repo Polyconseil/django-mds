@@ -4,7 +4,7 @@ Changelog
 0.6.9 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Add lag under which compliances were computed.
 
 
 0.6.8 (2019-09-24)

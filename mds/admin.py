@@ -113,8 +113,8 @@ class PolicyAdmin(admin.ModelAdmin):
 
 @admin.register(models.Compliance)
 class ComplianceAdmin(admin.ModelAdmin):
-    list_display = ["id", "policy_name", "start_date", "end_date"]
-    list_filter = ["start_date", "end_date"]
+    list_display = ["id", "policy_name", "start_date", "end_date", "lag"]
+    list_filter = ["start_date", "end_date", "lag"]
     search_fields = ["id", "policy_id", "vehicle_id"]
     ordering = ["start_date"]
 
