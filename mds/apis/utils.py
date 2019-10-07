@@ -37,6 +37,12 @@ class LimitOffsetPagination(pagination.LimitOffsetPagination):
 class MultiSerializerViewSetMixin:
     serializers_mapping = {}
 
+    def perform_create(self, serializer):
+        return serializer.save()
+
+    def perform_update(self, serializer):
+        return serializer.save()
+
     def _create(self, request, *args, **kwargs):
         """Patch of rest_framework.mixins.CreateModelMixin.create.
 
@@ -46,7 +52,7 @@ class MultiSerializerViewSetMixin:
             data=request.data, context={"request_or_response": "request"}
         )
         request_serializer.is_valid(raise_exception=True)
-        instance = request_serializer.save()
+        instance = self.perform_create(request_serializer)
         response_serializer = self.get_serializer(
             instance=instance, context={"request_or_response": "response"}
         )
@@ -66,7 +72,7 @@ class MultiSerializerViewSetMixin:
             context={"request_or_response": "request"},
         )
         request_serializer.is_valid(raise_exception=True)
-        request_serializer.save()
+        self.perform_update(request_serializer)
 
         if getattr(instance, "_prefetched_objects_cache", None):
             # If 'prefetch_related' has been applied to a queryset, we need to
