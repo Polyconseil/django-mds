@@ -1,7 +1,7 @@
 Changelog
 =========
 
-0.6.10 (unreleased)
+0.6.10 (2019-10-07)
 -------------------
 
 - Nothing changed yet.
