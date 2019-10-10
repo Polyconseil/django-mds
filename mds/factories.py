@@ -710,12 +710,11 @@ class Policy(factory.django.DjangoModelFactory):
         model = models.Policy
         django_get_or_create = ["name"]
 
+    class Params:
+        published = factory.Trait(published_date=factory.SelfAttribute("start_date"))
+
     name = factory.Sequence("Policy #{}".format)
     start_date = factory.LazyFunction(timezone.now)
-    end_date = factory.LazyAttribute(
-        lambda policy: policy.start_date + datetime.timedelta(days=30)
-    )
-    published_date = factory.SelfAttribute("start_date")
     config = factory.Dict(
         {
             "rule_type": enums.POLICY_RULE_TYPES["count"].name,

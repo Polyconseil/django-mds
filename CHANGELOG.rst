@@ -16,6 +16,7 @@ Changelog
 0.6.9 (2019-10-01)
 ------------------
 
+- Unbound policies are active too.
 - Add lag under which compliances were computed.
 - Move custom policy fields to config field.
 

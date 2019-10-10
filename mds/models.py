@@ -319,8 +319,9 @@ class PolicyQueryset(models.QuerySet):
         if not at:
             at = timezone.now()
         return self.filter(
+            Q(end_date__gt=at) | Q(end_date__isnull=True),
             start_date__lte=at,
-            end_date__gt=at,
+            # Whether to consider retroactive policies is up to the policy engine
             published_date__isnull=False,
             prev_policies__isnull=True,
             **kwargs,

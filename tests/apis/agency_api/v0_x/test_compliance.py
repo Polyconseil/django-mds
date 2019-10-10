@@ -22,7 +22,7 @@ def test_compliances_metadata(client):
 @pytest.mark.django_db
 def test_compliance_list_basic(client, django_assert_num_queries):
     device = factories.Device()
-    policy = factories.Policy()
+    policy = factories.Policy(published=True)
 
     # One provider-specific policy
     # provider_policy = factories.ComplianceFactory()

@@ -26,9 +26,9 @@ def test_policy_list_basic(client, django_assert_num_queries):
     other_provider = factories.Provider(name="Other provider")
 
     # One provider-specific policy
-    provider_policy = factories.Policy(providers=[provider])
+    provider_policy = factories.Policy(providers=[provider], published=True)
     # And one general-purpose policy
-    general_policy = factories.Policy()
+    general_policy = factories.Policy(published=True)
 
     # Test without auth
     n = BASE_NUM_QUERIES
@@ -67,17 +67,37 @@ def test_policy_list_basic(client, django_assert_num_queries):
 @pytest.mark.django_db
 def test_policy_list_range(client):
     # Policy from last year
-    past = factories.Policy(start_date=timezone.now() - datetime.timedelta(days=365))
-    # Policy ongoing (half of the lifespan)
-    ongoing = factories.Policy(start_date=timezone.now() - datetime.timedelta(days=15))
+    past = factories.Policy(  # noqa: F841
+        name="past",
+        start_date=timezone.now() - datetime.timedelta(days=365),
+        end_date=timezone.now() - datetime.timedelta(days=350),
+        published=True,
+    )
+    # Policy with lower and upper bounds (half of the lifespan)
+    bound = factories.Policy(  # noqa: F841
+        name="bound",
+        start_date=timezone.now() - datetime.timedelta(days=15),
+        end_date=timezone.now() + datetime.timedelta(days=15),
+        published=True,
+    )
+    # Same but no upper bound
+    ongoing = factories.Policy(  # noqa: F841
+        name="ongoing",
+        start_date=timezone.now() - datetime.timedelta(days=15),
+        published=True,
+    )
     # Policy for next year
-    future = factories.Policy(start_date=timezone.now() + datetime.timedelta(days=365))
+    future = factories.Policy(  # noqa: F841
+        name="future",
+        start_date=timezone.now() + datetime.timedelta(days=365),
+        published=True,
+    )
 
-    # Ongoing and future policies by default
+    # Current and future policies by default
     response = client.get(reverse("agency:policy-list"))
-    assert [p["policy_id"] for p in response.data] == [str(ongoing.id), str(future.id)]
+    assert [p["name"] for p in response.data] == ["bound", "ongoing", "future"]
 
-    # Ongoing only
+    # Current only
     response = client.get(
         reverse("agency:policy-list"),
         {
@@ -85,9 +105,9 @@ def test_policy_list_range(client):
             "end_time": utils.to_mds_timestamp(timezone.now()),
         },
     )
-    assert [p["policy_id"] for p in response.data] == [str(ongoing.id)]
+    assert [p["name"] for p in response.data] == ["bound", "ongoing"]
 
-    # Future only
+    # Ongoing is still.. ongoing, and future
     response = client.get(
         reverse("agency:policy-list"),
         {
@@ -96,7 +116,7 @@ def test_policy_list_range(client):
             )
         },
     )
-    assert [p["policy_id"] for p in response.data] == [str(future.id)]
+    assert [p["name"] for p in response.data] == ["ongoing", "future"]
 
     # Past only
     response = client.get(
@@ -110,7 +130,7 @@ def test_policy_list_range(client):
             ),
         },
     )
-    assert [p["policy_id"] for p in response.data] == [str(past.id)]
+    assert [p["name"] for p in response.data] == ["past"]
 
     # All
     response = client.get(
@@ -124,8 +144,4 @@ def test_policy_list_range(client):
             ),
         },
     )
-    assert [p["policy_id"] for p in response.data] == [
-        str(past.id),
-        str(ongoing.id),
-        str(future.id),
-    ]
+    assert [p["name"] for p in response.data] == ["past", "bound", "ongoing", "future"]

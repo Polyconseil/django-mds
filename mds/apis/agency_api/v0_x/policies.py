@@ -74,7 +74,7 @@ class PolicyViewSet(viewsets.ReadOnlyModelViewSet):
             start_time = utils.from_mds_timestamp(int(start_time))
         else:
             start_time = Now()
-        range_q = Q(end_date__gte=start_time)
+        range_q = Q(end_date__gt=start_time) | Q(end_date__isnull=True)
 
         end_time = self.request.GET.get("end_time")
         if end_time:
