@@ -717,7 +717,7 @@ class Policy(factory.django.DjangoModelFactory):
     start_date = factory.LazyFunction(timezone.now)
     config = factory.Dict(
         {
-            "rule_type": enums.POLICY_RULE_TYPES["count"].name,
+            "rule_type": enums.POLICY_RULE_TYPES.count.name,
             "daily_penalty": factory.LazyFunction(lambda: random.randint(0, 200)),
             "fixed_price": factory.LazyFunction(lambda: random.randint(0, 20000)),
             "grace_period_days": factory.LazyFunction(lambda: random.randint(0, 10)),
@@ -728,7 +728,7 @@ class Policy(factory.django.DjangoModelFactory):
             {
                 "name": "Venice Beach Special Operations Zone Global Cap",
                 "rule_id": "81b1bc92-65b7-4434-8ada-2feeb0b7b223",
-                "rule_type": enums.POLICY_RULE_TYPES["count"].name,
+                "rule_type": enums.POLICY_RULE_TYPES.count.name,
                 "geographies": ["e0e4a085-7a50-43e0-afa4-6792ca897c5a"],
                 "statuses": {"available": [], "reserved": [], "trip": []},
                 "vehicle_types": ["bicycle", "scooter"],

@@ -4,7 +4,7 @@ Changelog
 0.6.12 (unreleased)
 -------------------
 
-- Nothing changed yet.
+- Change item access of Enum POLICY_RULE_TYPES in factories
 
 
 0.6.11 (2019-10-10)
