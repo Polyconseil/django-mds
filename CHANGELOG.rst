@@ -4,7 +4,7 @@ Changelog
 0.6.11 (unreleased)
 -------------------
 
-- Nothing changed yet.
+- Add Enum POLICY_RULE_TYPES with corresponding translations
 
 
 0.6.10 (2019-10-07)

@@ -168,3 +168,34 @@ EVENT_TYPE_TO_DEVICE_STATUS = {
     OLD_EVENT_TYPE.rebalance_pick_up.name: DEVICE_STATUS.removed.name,
     OLD_EVENT_TYPE.maintenance_pick_up.name: DEVICE_STATUS.removed.name,
 }
+
+POLICY_RULE_TYPES = enum.Enum(
+    "Policy types",
+    [
+        ("count", pgettext_lazy("Policy type", "Fleet size")),
+        (
+            "time",
+            pgettext_lazy(
+                "Policy type",
+                "Individual limitations on time spent in one or more vehicle-states. "
+                "Rule max/min refers to number of minutes.",
+            ),
+        ),
+        (
+            "speed",
+            pgettext_lazy(
+                "Policy type",
+                "Global or local speed limits. "
+                "Rule max/min refers to miles per hour.",
+            ),
+        ),
+        (
+            "user",
+            pgettext_lazy(
+                "Policy type",
+                "Information for users, e.g. about helmet laws. "
+                "Generally can't be enforced via events and telemetry.",
+            ),
+        ),
+    ],
+)

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-04-26 08:05+0000\n"
+"POT-Creation-Date: 2019-10-10 11:03+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: fr_FR\n"
@@ -16,183 +16,374 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+#: access_control/authenticate.py:63
 msgid "Signature has expired."
 msgstr "La signature a expiré"
 
+#: access_control/authenticate.py:66
 msgid "Error decoding signature."
 msgstr "Erreur de décodage de la signature"
 
+#: access_control/authenticate.py:73
 msgid "Expired or revoked token"
 msgstr "Jeton expiré ou révoqué"
 
+#: access_control/authenticate.py:98
 #, python-format
 msgid "Invalid payload, missing fields: %(fields)s"
 msgstr "Contenu invalide, champs manquants: %(fields)s"
 
-#, python-format
-msgid "No application known for owner %s"
-msgstr "Pas d'application connue pour %s"
+#: admin.py:87
+msgid "published"
+msgstr "publiée"
 
-#, python-format
-msgid "No access token known for %s"
-msgstr "Pas de jeton d'accès pour %s"
+#: admin.py:91
+msgid "No"
+msgstr "Non"
 
+#: admin.py:91
+msgid "Yes"
+msgstr "Oui"
+
+#: apis/utils.py:23
 msgctxt "API Error"
 msgid "Already registered"
 msgstr "Déjà enregistré"
 
+#: enums.py:15
 msgctxt "Device status"
 msgid "Available"
 msgstr "Disponible"
 
+#: enums.py:16
 msgctxt "Device status"
 msgid "Reserved"
 msgstr "Réservé"
 
+#: enums.py:17
 msgctxt "Device status"
 msgid "Unavailable"
 msgstr "Indisponible"
 
+#: enums.py:18
 msgctxt "Device status"
 msgid "Removed"
 msgstr "Supprimé"
 
+#: enums.py:19
 msgctxt "Device status"
 msgid "Trip"
 msgstr "Parcours"
 
+#: enums.py:20
 msgctxt "Device status"
 msgid "Elsewhere"
 msgstr "Ailleurs"
 
+#: enums.py:21
 msgctxt "Device status"
 msgid "Inactive"
 msgstr "Inactif"
 
+#: enums.py:22
 msgctxt "Device status"
 msgid "Unknown"
 msgstr "Inconnu"
 
+#: enums.py:29
 msgctxt "Device category"
 msgid "Bicycle"
 msgstr "Vélo"
 
+#: enums.py:30
 msgctxt "Device category"
 msgid "Scooter"
 msgstr "Trottinette"
 
+#: enums.py:31
 msgctxt "Device category"
 msgid "Car"
 msgstr "Voiture"
 
+#: enums.py:37
 msgctxt "Device propulsion"
 msgid "Human"
 msgstr "Manuelle"
 
+#: enums.py:38
 msgctxt "Device propulsion"
 msgid "Electric Assist"
 msgstr "Assistance électrique"
 
+#: enums.py:39
 msgctxt "Device propulsion"
 msgid "Electric"
 msgstr "Électrique"
 
+#: enums.py:40
 msgctxt "Device propulsion"
 msgid "Combustion"
 msgstr "Combustion"
 
-msgctxt "Event type"
-msgid "Service start"
-msgstr "Début de service"
-
-msgctxt "Event type"
-msgid "Trip end"
-msgstr "Fin de parcours"
-
-msgctxt "Event type"
-msgid "Rebalance drop off"
-msgstr "Dépôt pour rééquilibrage"
-
-msgctxt "Event type"
-msgid "Maintenance drop off"
-msgstr "Dépôt pour maintenance"
-
-msgctxt "Event type"
-msgid "Cancel reservation"
-msgstr "Annulation de réservation"
-
-msgctxt "Event type"
-msgid "Reserve"
-msgstr "Réservation"
-
-msgctxt "Event type"
-msgid "Trip start"
-msgstr "Début de parcours"
-
-msgctxt "Event type"
-msgid "Trip enter"
-msgstr "Entrée en parcours"
-
-msgctxt "Event type"
-msgid "Trip leave"
-msgstr "Sortie de parcours"
-
+#: enums.py:49
 msgctxt "Event type"
 msgid "Register"
 msgstr "Enregistrement"
 
+#: enums.py:50 enums.py:91
 msgctxt "Event type"
-msgid "Low battery"
-msgstr "Batterie faible"
+msgid "Service start"
+msgstr "Début de service"
 
-msgctxt "Event type"
-msgid "Maintenance"
-msgstr "Maintenance"
-
+#: enums.py:51 enums.py:102
 msgctxt "Event type"
 msgid "Service end"
 msgstr "Fin de service"
 
+#: enums.py:52
+#, fuzzy
+#| msgctxt "Area type"
+#| msgid "Preferred drop off"
 msgctxt "Event type"
-msgid "Rebalance pick up"
-msgstr "Retrait pour rééquilibrage"
+msgid "Provider drop off"
+msgstr "Préféré pour dépôt"
 
+#: enums.py:53
+#, fuzzy
+#| msgctxt "Area type"
+#| msgid "Preferred pick up"
 msgctxt "Event type"
-msgid "Maintenance pick up"
+msgid "Provider pick up"
+msgstr "Préféré pour retrait"
+
+#: enums.py:54
+#, fuzzy
+#| msgctxt "Event type"
+#| msgid "Maintenance pick up"
+msgctxt "Event type"
+msgid "City pick up"
 msgstr "Retrait pour maintenance"
 
+#: enums.py:55
+msgctxt "Event type"
+msgid "Reserve"
+msgstr "Réservation"
+
+#: enums.py:56
+msgctxt "Event type"
+msgid "Cancel reservation"
+msgstr "Annulation de réservation"
+
+#: enums.py:57
+msgctxt "Event type"
+msgid "Trip start"
+msgstr "Début de parcours"
+
+#: enums.py:58
+msgctxt "Event type"
+msgid "Trip enter"
+msgstr "Entrée en parcours"
+
+#: enums.py:59
+msgctxt "Event type"
+msgid "Trip leave"
+msgstr "Sortie de parcours"
+
+#: enums.py:60
+msgctxt "Event type"
+msgid "Trip end"
+msgstr "Fin de parcours"
+
+#: enums.py:61
 msgctxt "Event type"
 msgid "Deregister"
 msgstr "Désinscription"
 
+#: enums.py:63 enums.py:107
 msgctxt "Event type"
 msgid "Received telemetry"
 msgstr "Télémétrie reçue"
 
+#: enums.py:65 enums.py:109
+#, fuzzy
+#| msgctxt "Event type"
+#| msgid "Battery OK"
 msgctxt "Event type"
-msgid "Battery OK"
+msgid "Battery charged"
 msgstr "Batterie OK"
 
+#: enums.py:75 enums.py:93
+msgctxt "Event type"
+msgid "Rebalance drop off"
+msgstr "Dépôt pour rééquilibrage"
+
+#: enums.py:76 enums.py:94
+msgctxt "Event type"
+msgid "Maintenance drop off"
+msgstr "Dépôt pour maintenance"
+
+#: enums.py:77 enums.py:100
+msgctxt "Event type"
+msgid "Low battery"
+msgstr "Batterie faible"
+
+#: enums.py:78 enums.py:99
+msgctxt "Event type"
+msgid "Maintenance"
+msgstr "Maintenance"
+
+#: enums.py:79 enums.py:103
+msgctxt "Event type"
+msgid "Rebalance pick up"
+msgstr "Retrait pour rééquilibrage"
+
+#: enums.py:80 enums.py:104
+msgctxt "Event type"
+msgid "Maintenance pick up"
+msgstr "Retrait pour maintenance"
+
+#: enums.py:92
+#, fuzzy
+#| msgctxt "Area type"
+#| msgid "Preferred drop off"
+msgctxt "Event type"
+msgid "User drop off"
+msgstr "Préféré pour dépôt"
+
+#: enums.py:95
+#, fuzzy
+#| msgctxt "Event type"
+#| msgid "Rebalance drop off"
+msgctxt "Event type"
+msgid "Agency drop off"
+msgstr "Dépôt pour rééquilibrage"
+
+#: enums.py:97
+#, fuzzy
+#| msgctxt "Area type"
+#| msgid "Preferred pick up"
+msgctxt "Event type"
+msgid "User pick up"
+msgstr "Préféré pour retrait"
+
+#: enums.py:105
+#, fuzzy
+#| msgctxt "Event type"
+#| msgid "Rebalance pick up"
+msgctxt "Event type"
+msgid "Agency pick up"
+msgstr "Retrait pour rééquilibrage"
+
+#: enums.py:117
+#, fuzzy
+#| msgctxt "Event type"
+#| msgid "Low battery"
+msgctxt "Event type reason"
+msgid "Low battery"
+msgstr "Batterie faible"
+
+#: enums.py:118
+#, fuzzy
+#| msgctxt "Event type"
+#| msgid "Maintenance"
+msgctxt "Event type reason"
+msgid "Maintenance"
+msgstr "Maintenance"
+
+#: enums.py:119
+msgctxt "Event type reason"
+msgid "Compliance"
+msgstr "Conformité"
+
+#: enums.py:120
+msgctxt "Event type reason"
+msgid "Off hours"
+msgstr "En dehors des heures"
+
+#: enums.py:121
+#, fuzzy
+#| msgctxt "Event type"
+#| msgid "Rebalance pick up"
+msgctxt "Event type reason"
+msgid "Rebalance"
+msgstr "Retrait pour rééquilibrage"
+
+#: enums.py:122
+msgctxt "Event type reason"
+msgid "Charge"
+msgstr "Charge"
+
+#: enums.py:123
+msgctxt "Event type reason"
+msgid "Missing"
+msgstr "Manquant"
+
+#: enums.py:124
+msgctxt "Event type reason"
+msgid "Decommissioned"
+msgstr "Déclassé"
+
+#: enums.py:131
 msgctxt "Event source"
 msgid "Agency API"
 msgstr "Agency API"
 
+#: enums.py:132
 msgctxt "Event source"
 msgid "Provider API"
 msgstr "Provider API"
 
+#: enums.py:139
 msgctxt "Area type"
 msgid "Unrestricted"
 msgstr "Non restreint"
 
+#: enums.py:140
 msgctxt "Area type"
 msgid "Restricted"
 msgstr "Restreint"
 
+#: enums.py:141
 msgctxt "Area type"
 msgid "Preferred pick up"
 msgstr "Préféré pour retrait"
 
+#: enums.py:142
 msgctxt "Area type"
 msgid "Preferred drop off"
 msgstr "Préféré pour dépôt"
+
+#: enums.py:175
+msgctxt "Policy type"
+msgid "Fleet size"
+msgstr "Taille de flotte"
+
+#: enums.py:180
+msgctxt "Policy type"
+msgid ""
+"Individual limitations on time spent in one or more vehicle-states. Rule max/"
+"min refers to number of minutes."
+msgstr ""
+"Limites individuelles concernant le temps écoulé dans un ou plusieurs états-véhicule. "
+"La règle max/min fait référence au nombre de minutes."
+
+#: enums.py:188
+msgctxt "Policy type"
+msgid "Global or local speed limits. Rule max/min refers to miles per hour."
+msgstr ""
+"Limites de vitesse globales ou locales. La règle max/min fait références à miles par heure."
+
+#: enums.py:196
+msgctxt "Policy type"
+msgid ""
+"Information for users, e.g. about helmet laws. Generally can't be enforced "
+"via events and telemetry."
+msgstr ""
+"Information pour les utlisateurs, ex: sur les lois de port du casque. "
+"En général cela ne peut être imposé via des événements et la télémétrie."
+
+#~ msgid "No application known for owner %s"
+#~ msgstr "Pas d'application connue pour %s"
+
+#~ msgid "No access token known for %s"
+#~ msgstr "Pas de jeton d'accès pour %s"
