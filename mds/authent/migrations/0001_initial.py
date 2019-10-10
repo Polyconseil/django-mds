@@ -94,7 +94,7 @@ class Migration(migrations.Migration):
                     "scopes",
                     django.contrib.postgres.fields.ArrayField(
                         base_field=models.CharField(max_length=32),
-                        help_text="Application allowed scopes.",
+                        help_text="Application allowed scopes (separated with commas)",
                         size=None,
                     ),
                 ),
