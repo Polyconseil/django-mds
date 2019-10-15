@@ -7,8 +7,7 @@ import pytest
 import pytz
 
 from mds import factories
-
-from tests.auth_helpers import BASE_NUM_QUERIES
+from mds import utils
 
 
 @pytest.mark.django_db
@@ -36,7 +35,7 @@ def test_compliance_list_basic(client, django_assert_num_queries):
         end_date=datetime.datetime(2007, 12, 7, 16, 29, 43, 79043, tzinfo=pytz.UTC),
     )
 
-    compliance_null = factories.ComplianceFactory(
+    compliance_ongoing = factories.ComplianceFactory(
         rule=uuid.UUID("89b5bbb5-ba98-4498-9649-787eb8ddbb8e"),
         geography=uuid.UUID("2cfbdd7f-8ba2-4b48-9826-951fe3249981"),
         policy_id=factories.Policy().id,
@@ -46,39 +45,41 @@ def test_compliance_list_basic(client, django_assert_num_queries):
     )
 
     # Test without auth
-    n = BASE_NUM_QUERIES
+    n = 2  # Savepoint and release
+    n += 1  # query on policy
+    n += 1  # query on related compliances
     n += 1  # query on device
-    n += 1  # query on policy  # query on Compliance
-    n += 1  # query on second compliance
+    n += 1  # query on other device
     # query Last compliance
-    with django_assert_num_queries(n):  # No token check
+    with django_assert_num_queries(n):
         response = client.get(reverse("agency:compliance-list"))
     assert response.status_code == 200
 
-    # Check why there is policy more
-    assert str(compliance.policy.id) == response.data[0]["id"]
+    # Check why there is policy more (??? what does it mean?)
+    assert response.data[0]["id"] == str(compliance.policy.id)
+
+    # Now test with a provider ID
 
     response = client.get(
         reverse("agency:compliance-list"), {"provider_id": str(device.provider.id)}
     )
 
+    # The provider can fetch a policy that applies to them
+    # (to all providers in this case)
     assert response.status_code == 200
-    assert str(compliance.policy_id) == response.data[0]["id"]
-    # provider is OK
+    assert response.data[0]["id"] == str(compliance.policy_id)
 
     response = client.get(
         reverse("agency:compliance-list"),
         {
             "provider_id": str(device.provider.id),
-            "end_date": int(
-                datetime.datetime(
-                    2009, 12, 7, 16, 29, 43, 79043, tzinfo=pytz.UTC
-                ).timestamp()
+            "end_date": utils.to_mds_timestamp(
+                datetime.datetime(2009, 12, 7, 16, 29, 43, 79043, tzinfo=pytz.UTC)
             ),
         },
     )
 
-    # provider is OK but timestamp is to high
+    # provider is OK but timestamp is too high
     assert response.status_code == 200
     assert response.data == []
 
@@ -86,12 +87,10 @@ def test_compliance_list_basic(client, django_assert_num_queries):
         reverse("agency:compliance-list"),
         {
             "provider_id": str(device.provider.id),
-            "end_date": int(
-                datetime.datetime(
-                    2007, 12, 7, 16, 29, 43, 79043, tzinfo=pytz.UTC
-                ).timestamp()
+            "end_date": utils.to_mds_timestamp(
+                datetime.datetime(2007, 12, 7, 16, 29, 43, 79043, tzinfo=pytz.UTC)
             )
-            - 60000,
+            - 60000,  # XXX ?!
         },
     )
 
@@ -100,17 +99,33 @@ def test_compliance_list_basic(client, django_assert_num_queries):
     assert response.data[0]["id"] == str(compliance.policy_id)
 
     response = client.get(
-        reverse("agency:compliance-list"), {"end_date": 1126023900}
-    )  # to low
+        reverse("agency:compliance-list"),
+        {
+            "end_date": utils.to_mds_timestamp(
+                datetime.datetime(
+                    1970, 1, 14, 0, 47, 3, 900000, tzinfo=datetime.timezone.utc
+                )
+            )
+        },
+    )
 
+    # too low
     assert response.status_code == 200 and response.data == []
 
     response = client.get(
-        reverse("agency:compliance-list"), {"end_date": 1741556700}
-    )  # to high but compliance_null is not finish
+        reverse("agency:compliance-list"),
+        {
+            "end_date": utils.to_mds_timestamp(
+                datetime.datetime(
+                    2070, 1, 21, 3, 45, 56, 700000, tzinfo=datetime.timezone.utc
+                )
+            )
+        },
+    )
 
+    # too high but compliance_ongoing is not finished
     assert response.status_code == 200
-    assert response.data[0]["id"] == str(compliance_null.policy_id)
+    assert response.data[0]["id"] == str(compliance_ongoing.policy_id)
 
     response = client.get(
         reverse("agency:compliance-list"),

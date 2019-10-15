@@ -4,9 +4,7 @@ from rest_framework import viewsets
 from django.db.models import Prefetch
 
 from mds import models
-
-from datetime import datetime
-import pytz
+from mds import utils
 
 
 class ComplianceSerializer(serializers.ModelSerializer):
@@ -60,9 +58,11 @@ class ComplianceViewSet(viewsets.ModelViewSet):
         queryset = super().get_queryset()
         provider_id = self.request.GET.get("provider_id")
         end_date = self.request.GET.get("end_date")
+        if end_date:
+            end_date = utils.from_mds_timestamp(int(end_date))
+
         filters = {}
         if provider_id and end_date:
-            end_date = datetime.fromtimestamp(int(end_date), tz=pytz.UTC)
             filters["compliances__vehicle__provider__id"] = provider_id
             filters["compliances__start_date__lte"] = end_date
             filter_prefetch = Prefetch(
@@ -73,7 +73,6 @@ class ComplianceViewSet(viewsets.ModelViewSet):
                 to_attr="compliances_pref",
             )
         elif end_date:
-            end_date = datetime.fromtimestamp(int(end_date), tz=pytz.UTC)
             filter_prefetch = Prefetch(
                 "compliances",
                 queryset=models.Compliance.objects.exclude(
