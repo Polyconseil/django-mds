@@ -197,5 +197,6 @@ POLICY_RULE_TYPES = enum.Enum(
                 "Generally can't be enforced via events and telemetry.",
             ),
         ),
+        ("geofence", pgettext_lazy("Policy type", "Geofencing")),
     ],
 )

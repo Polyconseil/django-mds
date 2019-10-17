@@ -5,6 +5,7 @@ Changelog
 -------------------
 
 - Change item access of Enum POLICY_RULE_TYPES in factories
+- Add Geofence to POLICY_RULE_TYPES
 
 
 0.6.11 (2019-10-10)
