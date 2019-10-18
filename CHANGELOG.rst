@@ -1,7 +1,7 @@
 Changelog
 =========
 
-0.6.14 (unreleased)
+0.6.14 (2019-10-18)
 -------------------
 
 - Fix migraitons dependencies
