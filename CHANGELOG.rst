@@ -1,7 +1,7 @@
 Changelog
 =========
 
-0.6.13 (unreleased)
+0.6.13 (2019-10-18)
 -------------------
 
 - Add saved_at field on Compliance
