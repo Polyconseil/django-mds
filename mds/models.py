@@ -375,6 +375,8 @@ class Compliance(models.Model):
     end_date = models.DateTimeField(blank=True, null=True)
     # Delay considered before computing the compliance
     lag = models.DurationField()
+    # Remember to update this field within raw queries!
+    saved_at = models.DateTimeField(db_index=True, auto_now=True)
 
     class Meta:
         unique_together = (

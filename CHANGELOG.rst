@@ -10,6 +10,7 @@ Changelog
 0.6.12 (2019-10-17)
 -------------------
 
+- Add saved_at field on Compliance
 - Change item access of Enum POLICY_RULE_TYPES in factories
 - Add Geofence to POLICY_RULE_TYPES
 
