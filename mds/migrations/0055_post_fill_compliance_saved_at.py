@@ -11,7 +11,7 @@ def fill_compliance_saved_at(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('mds', '0054_compliance_saved_at_nullable'),
+        ('mds', '0054_pre_compliance_saved_at_nullable'),
     ]
 
     operations = [

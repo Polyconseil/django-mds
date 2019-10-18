@@ -4,7 +4,7 @@ Changelog
 0.6.14 (unreleased)
 -------------------
 
-- Nothing changed yet.
+- Fix migraitons dependencies
 
 
 0.6.13 (2019-10-18)

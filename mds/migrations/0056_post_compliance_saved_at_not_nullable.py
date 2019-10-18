@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('mds', '0055_fill_compliance_saved_at'),
+        ('mds', '0055_post_fill_compliance_saved_at'),
     ]
 
     operations = [
