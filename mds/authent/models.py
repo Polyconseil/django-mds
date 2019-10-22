@@ -17,7 +17,9 @@ class Application(AbstractApplication):
         help_text="Unique identifier for the owner of the application",
     )
     aggregator_for = models.ManyToManyField(
-        Provider, help_text="Provider the application is allowed to write for"
+        Provider,
+        blank=True,
+        help_text="Provider the application is allowed to write for",
     )
     scopes = pg_fields.ArrayField(
         models.CharField(max_length=32),

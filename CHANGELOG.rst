@@ -4,7 +4,7 @@ Changelog
 0.6.15 (unreleased)
 -------------------
 
-- Nothing changed yet.
+- Aggregator field on the Application admin was wrongly required.
 
 
 0.6.14 (2019-10-18)
