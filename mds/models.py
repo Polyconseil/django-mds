@@ -7,7 +7,6 @@ import uuid
 from django import forms
 from django.contrib.gis.db import models as gis_models
 from django.contrib.postgres import fields as pg_fields
-from django.contrib.postgres import functions as pg_functions
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import Count, Prefetch, Q
@@ -248,8 +247,7 @@ class Device(models.Model):
 class EventRecord(models.Model):
     timestamp = models.DateTimeField(db_index=True)
     point = gis_models.PointField(blank=True, null=True)
-    # For synchronisation purposes (polling on this field)
-    saved_at = models.DateTimeField(default=pg_functions.TransactionNow, db_index=True)
+    saved_at = models.DateTimeField(auto_now=True, db_index=True)
     # For KPIs, know when the event was seen by an aggregator the first time
     first_saved_at = models.DateTimeField(blank=True, null=True)
     source = UnboundedCharField(

@@ -5,6 +5,7 @@ Changelog
 -------------------
 
 - Aggregator field on the Application admin was wrongly required.
+- Fix default `saved_at` for event records
 
 
 0.6.14 (2019-10-18)
