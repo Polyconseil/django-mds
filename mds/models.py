@@ -338,7 +338,7 @@ class Policy(models.Model):
     published_date = models.DateTimeField(blank=True, null=True)
     prev_policies = models.ManyToManyField("self", blank=True)
     rules = pg_fields.JSONField(default=list, encoder=DjangoJSONEncoder)
-    config = pg_fields.JSONField(default=dict)
+    config = pg_fields.JSONField(default=dict, encoder=DjangoJSONEncoder)
     # Copy of the geographies referenced when the policy is published
     # Only these geographies are admissible when computing the policies
     # So that the originals can be modified without affecting the ongoing policies
