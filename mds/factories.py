@@ -1,4 +1,5 @@
 import datetime
+import json
 import random
 import zlib
 
@@ -711,7 +712,33 @@ class Policy(factory.django.DjangoModelFactory):
         django_get_or_create = ["name"]
 
     class Params:
-        published = factory.Trait(published_date=factory.SelfAttribute("start_date"))
+        published = factory.Trait(
+            published_date=factory.SelfAttribute("start_date"),
+            geographies={
+                "e0e4a085-7a50-43e0-afa4-6792ca897c5a": {
+                    "type": "Feature",
+                    "geometry": {
+                        "type": "GeometryCollection",
+                        "geometries": [
+                            json.loads(
+                                geos.MultiPolygon(
+                                    geos.Polygon(
+                                        (
+                                            (0.0, 0.0),
+                                            (0.0, 50.0),
+                                            (50.0, 50.0),
+                                            (50.0, 0.0),
+                                            (0.0, 0.0),
+                                        )
+                                    )
+                                ).geojson
+                            )
+                        ],
+                    },
+                    "properties": {"id": "e0e4a085-7a50-43e0-afa4-6792ca897c5a"},
+                }
+            },
+        )
 
     name = factory.Sequence("Policy #{}".format)
     start_date = factory.LazyFunction(timezone.now)

@@ -7,7 +7,7 @@ from rest_framework import routers
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 
-# from . import geography
+from . import geographies
 from . import policies
 from . import service_areas
 from . import vehicles
@@ -21,7 +21,9 @@ agency_router.register(
     r"compliance/snapshot", compliances.ComplianceViewSet, basename="compliance"
 )
 
-# agency_router.register(r"geography", geography.GeographyViewSet, basename="geography")
+agency_router.register(
+    r"geographies", geographies.GeographyViewSet, basename="geography"
+)
 # Deprecation pending for "geography"
 agency_router.register(r"service_areas", service_areas.AreaViewSet)
 

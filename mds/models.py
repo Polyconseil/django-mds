@@ -337,10 +337,14 @@ class Policy(models.Model):
     end_date = models.DateTimeField(blank=True, null=True)
     published_date = models.DateTimeField(blank=True, null=True)
     prev_policies = models.ManyToManyField("self", blank=True)
-    # FIXME Integrity check when deleting referenced geographies
-    # Denormalize the list of geographies as ManyToManyField to Area?
     rules = pg_fields.JSONField(default=list, encoder=DjangoJSONEncoder)
     config = pg_fields.JSONField(default=dict)
+    # Copy of the geographies referenced when the policy is published
+    # Only these geographies are admissible when computing the policies
+    # So that the originals can be modified without affecting the ongoing policies
+    geographies = pg_fields.JSONField(
+        default=dict, encoder=DjangoJSONEncoder, blank=True, null=True
+    )
 
     objects = PolicyQueryset.as_manager()
 
@@ -359,6 +363,68 @@ class Policy(models.Model):
     @property
     def kind(self):
         return self.config["rule_type"]
+
+    def publish(self, at=None):
+        """Do the operations required for the policy to be published."""
+        if not self.rules:
+            raise ValidationError(f"Rules are required on published policies.")
+
+        # "Freeze" the areas' geography in the policy
+        # Before publication, rules use the UID of actual areas
+        # Dumped geographies use a different UID as a fork of the area
+        area_id_to_geo_id = {}
+
+        for rule in self.rules:
+            # Geographies are required in the spec
+            if not rule["geographies"]:
+                raise ValidationError(f"Rule {rule.rule_id} has no geographies.")
+
+            for area_id in rule["geographies"]:
+                geo_id = area_id_to_geo_id.get(area_id)
+                if not geo_id:
+                    geo_id = area_id_to_geo_id[area_id] = uuid.uuid4()
+
+                if geo_id not in self.geographies:
+                    try:
+                        area = Area.objects.get(pk=area_id)
+                    except Area.DoesNotExist:
+                        raise ValidationError(
+                            f"Geography {geo_id} referenced by "
+                            f"rule {rule['rule_id']} is unknown."
+                        )
+                    # This is trigger a database query,
+                    # just as a prefetch_related on a single area would anyway
+                    if not len(area.polygons.all()):
+                        raise ValidationError(f"Geography {geo_id} has no geometry.")
+
+                    self.geographies[str(geo_id)] = {
+                        "type": "Feature",
+                        "geometry": {
+                            "type": "GeometryCollection",
+                            "geometries": [
+                                json.loads(polygon.geom.geojson)  # Serialized
+                                for polygon in area.polygons.all()
+                            ],
+                        },
+                        "id": geo_id,  # In the GeoJSON spec
+                        # Save as much as necessary from the original Area
+                        "properties": {
+                            # Not in the spec but a convention we already use
+                            "name": area.label,
+                            "label": area.label,
+                            # Also keep a reference to the original area ID
+                            "area": area_id,
+                        },
+                    }
+
+            # Now swap the area IDs for geography IDs
+            rule["geographies"] = list(map(area_id_to_geo_id.get, rule["geographies"]))
+
+        if at is None:
+            at = timezone.now()
+        self.published_date = at
+
+        self.save()
 
 
 class Compliance(models.Model):
