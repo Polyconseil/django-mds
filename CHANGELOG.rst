@@ -1,7 +1,7 @@
 Changelog
 =========
 
-0.6.16 (unreleased)
+0.6.16 (2019-10-24)
 -------------------
 
 - Existing published policies actually keep their geography UID.
