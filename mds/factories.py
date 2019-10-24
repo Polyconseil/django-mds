@@ -1,6 +1,6 @@
 import datetime
-import zlib
 import random
+import zlib
 
 import factory
 

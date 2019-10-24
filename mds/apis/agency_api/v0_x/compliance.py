@@ -51,7 +51,7 @@ class ComplianceSerializer(serializers.ModelSerializer):
 
 
 class ComplianceViewSet(viewsets.ModelViewSet):
-    queryset = models.Policy.objects
+    queryset = models.Policy.objects.order_by("start_date")
     serializer_class = ComplianceSerializer
 
     def get_queryset(self):
