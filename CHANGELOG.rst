@@ -5,6 +5,7 @@ Changelog
 -------------------
 
 - Aggregator field on the Application admin was wrongly required.
+- Published policies now embed and serve their own geographies.
 
 
 0.6.14 (2019-10-18)
