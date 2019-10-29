@@ -24,6 +24,10 @@ ALLOWED_HOSTS = CONFIG.getlist(
     "django.allowed_hosts", [], doc="Comma-separated list of allowed hosts"
 )
 
+
+ENABLE_TELEMETRY_FUNCTION = "mds.utils.telemetry_is_enabled"
+
+
 INSTALLED_APPS = [
     "mds.authent.apps.Config",
     "mds.authent.oauth2_provider_apps.Config",

@@ -2,6 +2,7 @@ import datetime
 import uuid
 
 from django.urls import reverse
+from django.test import override_settings
 
 import pytest
 
@@ -10,6 +11,9 @@ from mds import factories
 from mds import models
 from mds.access_control.scopes import SCOPE_AGENCY_API
 from tests.auth_helpers import auth_header, BASE_NUM_QUERIES
+
+
+import mds.apis.agency_api.v0_x.vehicles
 
 
 @pytest.mark.django_db
@@ -383,6 +387,75 @@ def test_device_telemetry(client, django_assert_num_queries):
             source=enums.EVENT_SOURCE.agency_api.name,
         ).count()
         == 2
+    )
+
+
+def return_false():
+    return False
+
+
+@pytest.mark.django_db
+@override_settings(
+    ENABLE_TELEMETRY_FUNCTION="tests.apis.agency_api.v0_x.test_devices.return_false"
+)
+def test_device_telemetry_when_disabled(client, django_assert_num_queries):
+    mds.apis.agency_api.v0_x.vehicles.is_telemetry_enabled = lambda: False
+
+    provider = factories.Provider(id=uuid.UUID("aaaa0000-61fd-4cce-8113-81af1de90942"))
+    device_id_pattern = "bbbb0000-61fd-4cce-8113-81af1de9094%s"
+    factories.Device(id=uuid.UUID(device_id_pattern % 1), provider=provider)
+    factories.Device(id=uuid.UUID(device_id_pattern % 2), provider=provider)
+
+    data = {
+        "data": [
+            {
+                "device_id": device_id_pattern % 1,
+                "timestamp": 1_325_376_000_000,
+                "gps": {
+                    "lat": 0.0,
+                    "lng": 3.0,
+                    "altitude": 30.0,
+                    "heading": 245.2,
+                    "speed": 32.3,
+                    "hdop": 2.0,
+                    "satellites": 6,
+                },
+            },
+            {
+                "device_id": device_id_pattern % 2,
+                "timestamp": 1_325_376_001_000,
+                "gps": {
+                    "lat": 0.0,
+                    "lng": 3.2,
+                    "altitude": 30.1,
+                    "heading": 245.2,
+                    "speed": 32.4,
+                    "hdop": 2.0,
+                    "satellites": 6,
+                },
+                "charge": 0.58,
+            },
+        ]
+    }
+
+    n = BASE_NUM_QUERIES
+    n += 1  # select devices
+    with django_assert_num_queries(n):
+        response = client.post(
+            reverse("agency:device-telemetry"),
+            data=data,
+            content_type="application/json",
+            **auth_header(SCOPE_AGENCY_API, provider_id=provider.id),
+        )
+    assert response.status_code == 201
+    assert response.data == {}
+    assert (
+        models.EventRecord.objects.filter(
+            event_type="telemetry",
+            device_id__in=[device_id_pattern % i for i in range(1, 4)],
+            source=enums.EVENT_SOURCE.agency_api.name,
+        ).count()
+        == 0
     )
 
 
