@@ -756,7 +756,7 @@ class Policy(factory.django.DjangoModelFactory):
             factory.Dict(
                 {
                     "name": "Venice Beach Special Operations Zone Global Cap",
-                    "rule_id": "81b1bc92-65b7-4434-8ada-2feeb0b7b223",
+                    "rule_id": factory.Faker("uuid4"),
                     "rule_type": factory.SelfAttribute("...rule_type"),
                     "geographies": ["e0e4a085-7a50-43e0-afa4-6792ca897c5a"],
                     "statuses": {"available": [], "reserved": [], "trip": []},
