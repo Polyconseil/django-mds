@@ -4,7 +4,7 @@ Changelog
 0.6.18 (unreleased)
 -------------------
 
-- Nothing changed yet.
+- Smarter Policy factory to change the rule type.
 
 
 0.6.17 (2019-10-30)

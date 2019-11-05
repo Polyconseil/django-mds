@@ -712,6 +712,7 @@ class Policy(factory.django.DjangoModelFactory):
         django_get_or_create = ["name"]
 
     class Params:
+        rule_type = enums.POLICY_RULE_TYPES.count.name
         published = factory.Trait(
             published_date=factory.SelfAttribute("start_date"),
             geographies={
@@ -744,7 +745,7 @@ class Policy(factory.django.DjangoModelFactory):
     start_date = factory.LazyFunction(timezone.now)
     config = factory.Dict(
         {
-            "rule_type": enums.POLICY_RULE_TYPES.count.name,
+            "rule_type": factory.SelfAttribute("..rule_type"),
             "daily_penalty": factory.LazyFunction(lambda: random.randint(0, 200)),
             "fixed_price": factory.LazyFunction(lambda: random.randint(0, 20000)),
             "grace_period_days": factory.LazyFunction(lambda: random.randint(0, 10)),
@@ -752,20 +753,22 @@ class Policy(factory.django.DjangoModelFactory):
     )
     rules = factory.List(
         [
-            {
-                "name": "Venice Beach Special Operations Zone Global Cap",
-                "rule_id": "81b1bc92-65b7-4434-8ada-2feeb0b7b223",
-                "rule_type": enums.POLICY_RULE_TYPES.count.name,
-                "geographies": ["e0e4a085-7a50-43e0-afa4-6792ca897c5a"],
-                "statuses": {"available": [], "reserved": [], "trip": []},
-                "vehicle_types": ["bicycle", "scooter"],
-                "maximum": 750,
-                "variable_price": 20,
-                "value_url": (
-                    "https://api.ladot.io/compliance/count/"
-                    "81b1bc92-65b7-4434-8ada-2feeb0b7b223"
-                ),
-            }
+            factory.Dict(
+                {
+                    "name": "Venice Beach Special Operations Zone Global Cap",
+                    "rule_id": "81b1bc92-65b7-4434-8ada-2feeb0b7b223",
+                    "rule_type": factory.SelfAttribute("...rule_type"),
+                    "geographies": ["e0e4a085-7a50-43e0-afa4-6792ca897c5a"],
+                    "statuses": {"available": [], "reserved": [], "trip": []},
+                    "vehicle_types": ["bicycle", "scooter"],
+                    "maximum": 750,
+                    "variable_price": 20,
+                    "value_url": (
+                        "https://api.ladot.io/compliance/count/"
+                        "81b1bc92-65b7-4434-8ada-2feeb0b7b223"
+                    ),
+                }
+            )
         ]
     )
 
