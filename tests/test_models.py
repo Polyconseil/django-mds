@@ -63,7 +63,9 @@ def test_policy_publish():
     else:
         assert False, "Policy not prevented from being published."
 
-    policy = factories.Policy(published_date=None)  # Rebuild with a rule
+    # Rebuild with a rule
+    # but the fake area ID in the factory doesn't exist
+    policy = factories.Policy(published_date=None)
 
     try:
         policy.publish()
@@ -112,3 +114,6 @@ def test_policy_publish():
             },
         }
     }
+    assert policy.rules[0]["geographies"] == [
+        uuid.UUID("fe363c54-011b-4840-a909-0fd4ef6d168e")
+    ]

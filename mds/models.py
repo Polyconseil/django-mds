@@ -418,7 +418,9 @@ class Policy(models.Model):
                     }
 
             # Now swap the area IDs for geography IDs
-            rule["geographies"] = list(map(area_id_to_geo_id.get, rule["geographies"]))
+            rule["geographies"] = list(
+                map(area_id_to_geo_id.__getitem__, rule["geographies"])
+            )
 
         if at is None:
             at = timezone.now()
