@@ -1,7 +1,7 @@
 Changelog
 =========
 
-0.6.19 (unreleased)
+0.6.19 (2019-11-19)
 -------------------
 
 - Also clean up the policy factories
