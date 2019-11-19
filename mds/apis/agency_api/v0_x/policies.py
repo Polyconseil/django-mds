@@ -4,9 +4,89 @@ from rest_framework import viewsets
 from django.db.models import Q
 from django.db.models.functions import Now
 
+from mds import enums
 from mds import models
 from mds import utils
 from mds.apis import utils as apis_utils
+
+
+class RuleSerializer(serializers.Serializer):
+    name = serializers.CharField(help_text="Name of rule")
+    rule_type = serializers.CharField(help_text="Type of policy (see Rule Types)")
+    geographies = serializers.ListField(
+        child=serializers.UUIDField(),
+        help_text=(
+            "List of Geography UUIDs (non-overlapping) "
+            "specifying the covered geography"
+        ),
+    )
+    statuses = serializers.DictField(
+        help_text=(
+            "Vehicle statuses to which this rule applies. "
+            "Optionally, you may provide specific event_type's for the rule "
+            "to apply to as a subset of a given status. "
+            'An empty list or null/absent defaults to "all".'
+        )
+    )
+    rule_units = serializers.CharField(
+        required=False, help_text="Measured units of policy (see Rule Units)"
+    )
+    vehicle_types = serializers.ListField(
+        child=serializers.CharField(),
+        required=False,
+        help_text='Applicable vehicle types, default "all".',
+    )
+    propulsion_types = serializers.ListField(
+        child=serializers.CharField(),
+        required=False,
+        help_text='Applicable vehicle propulsion types, default "all".',
+    )
+    minimum = serializers.IntegerField(
+        required=False, help_text="Minimum value, if applicable (default 0)"
+    )
+    maximum = serializers.IntegerField(
+        required=False, help_text="Maximum value, if applicable (default unlimited)"
+    )
+    start_time = serializers.TimeField(
+        required=False,
+        help_text=(
+            "Beginning time-of-day when the rule is in effect (default 00:00:00)."
+        ),
+    )
+    end_time = serializers.TimeField(
+        required=False,
+        help_text="Ending time-of-day when the rule is in effect (default 23:59:59).",
+    )
+    days = serializers.ListField(
+        child=serializers.CharField(),
+        required=False,
+        help_text=(
+            'Days ["sun", "mon", "tue", "wed", "thu", "fri", "sat"] '
+            "when the rule is in effect (default all)"
+        ),
+    )
+    messages = serializers.DictField(
+        required=False,
+        help_text=(
+            "Message to rider user, if desired, in various languages, "
+            "keyed by language tag (see Messages)"
+        ),
+    )
+    value_url = serializers.URLField(
+        required=False,
+        help_text=(
+            "URL to an API endpoint that can provide dynamic information "
+            "for the measured value (see Value URL)"
+        ),
+    )
+
+    def to_representation(self, rule):
+        # Some rule types are for internal use only
+        # "permit" is an alias for "count" (fleet size)
+        if rule["rule_type"] == "permit":
+            rule = rule.copy()
+            rule["rule_type"] = enums.POLICY_RULE_TYPES.count.name
+        return rule
 
 
 class PolicySerializer(serializers.Serializer):
@@ -31,7 +111,7 @@ class PolicySerializer(serializers.Serializer):
     prev_policies = serializers.SerializerMethodField(
         help_text="Unique IDs of prior policies replaced by this one"
     )
-    rules = serializers.JSONField(help_text="List of applicable rule elements")
+    rules = RuleSerializer(many=True, help_text="List of applicable rule elements")
 
     def get_provider_ids(self, policy):
         # Why we need a prefetch_related()!
