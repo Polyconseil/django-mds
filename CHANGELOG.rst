@@ -4,7 +4,7 @@ Changelog
 0.6.19 (unreleased)
 -------------------
 
-- Nothing changed yet.
+- Also clean up the policy factories
 
 
 0.6.18 (2019-11-19)
