@@ -1,7 +1,7 @@
 Changelog
 =========
 
-0.6.18 (unreleased)
+0.6.18 (2019-11-19)
 -------------------
 
 - Only expose policy and rule fields known to the specification.
