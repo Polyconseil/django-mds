@@ -26,6 +26,12 @@ class Application(AbstractApplication):
         help_text="Application allowed scopes (separated with commas)",
     )
 
+    users_allowed_scopes = pg_fields.ArrayField(
+        models.CharField(max_length=32),
+        help_text="User's allowed scopes (separated with commas)",
+        default=list,
+    )
+
     def natural_key(self):
         return (self.client_id,)
 
