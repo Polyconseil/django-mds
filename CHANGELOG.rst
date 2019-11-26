@@ -1,7 +1,7 @@
 Changelog
 =========
 
-0.6.20 (unreleased)
+0.6.20 (2019-11-26)
 -------------------
 
 - Add field `allowed_users_scopes` in Application's model to control scopes
