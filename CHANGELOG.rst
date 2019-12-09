@@ -4,7 +4,7 @@ Changelog
 0.6.21 (unreleased)
 -------------------
 
-- Nothing changed yet.
+- Allow field `Application.allowed_users_scopes` to be blank
 
 
 0.6.20 (2019-11-26)

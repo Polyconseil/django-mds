@@ -30,6 +30,7 @@ class Application(AbstractApplication):
         models.CharField(max_length=32),
         help_text="User's allowed scopes (separated with commas)",
         default=list,
+        blank=True,
     )
 
     def natural_key(self):
