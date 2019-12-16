@@ -78,7 +78,7 @@ msgstr "Parcours"
 #: enums.py:20
 msgctxt "Device status"
 msgid "Elsewhere"
-msgstr "Ailleurs"
+msgstr "Hors périmètre"
 
 #: enums.py:21
 msgctxt "Device status"

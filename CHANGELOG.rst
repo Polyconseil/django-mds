@@ -4,7 +4,7 @@ Changelog
 0.6.22 (unreleased)
 -------------------
 
-- Nothing changed yet.
+- Changing the French translation for "Elsewhere".
 
 
 0.6.21 (2019-12-09)
