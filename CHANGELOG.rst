@@ -1,7 +1,7 @@
 Changelog
 =========
 
-0.6.22 (unreleased)
+0.6.22 (2019-12-17)
 -------------------
 
 - Changing the French translation for "Elsewhere".
