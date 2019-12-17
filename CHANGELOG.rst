@@ -1,7 +1,7 @@
 Changelog
 =========
 
-0.6.23 (unreleased)
+0.6.23 (2019-12-17)
 -------------------
 
 - Simpler enumeration of policy types.
