@@ -4,7 +4,7 @@ Changelog
 0.6.24 (unreleased)
 -------------------
 
-- Nothing changed yet.
+- Move enums to class syntax.
 
 
 0.6.23 (2019-12-17)
