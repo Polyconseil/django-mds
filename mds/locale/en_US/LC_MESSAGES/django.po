@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-10-15 13:43+0200\n"
+"POT-Creation-Date: 2019-12-17 15:45+0100\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: en_US\n"
@@ -325,26 +325,22 @@ msgctxt "Policy type"
 msgid "Fleet size"
 msgstr ""
 
-#: enums.py:180
+#: enums.py:176
 msgctxt "Policy type"
-msgid ""
-"Individual limitations on time spent in one or more vehicle-states. Rule max/"
-"min refers to number of minutes."
+msgid "Time limit"
 msgstr ""
 
-#: enums.py:188
+#: enums.py:177
 msgctxt "Policy type"
-msgid "Global or local speed limits. Rule max/min refers to miles per hour."
+msgid "Speed limit"
 msgstr ""
 
-#: enums.py:196
+#: enums.py:178
 msgctxt "Policy type"
-msgid ""
-"Information for users, e.g. about helmet laws. Generally can't be enforced "
-"via events and telemetry."
+msgid "Information for users"
 msgstr ""
 
-#: enums.py:200
+#: enums.py:179
 msgctxt "Policy type"
 msgid "Geofencing"
 msgstr ""

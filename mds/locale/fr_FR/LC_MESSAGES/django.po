@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-10-15 13:43+0200\n"
+"POT-Creation-Date: 2019-12-17 15:45+0100\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: fr_FR\n"
@@ -358,38 +358,24 @@ msgctxt "Policy type"
 msgid "Fleet size"
 msgstr "Taille de flotte"
 
-#: enums.py:180
+#: enums.py:176
+#| msgctxt "Policy type"
+#| msgid "Speed limit"
 msgctxt "Policy type"
-msgid ""
-"Individual limitations on time spent in one or more vehicle-states. Rule max/"
-"min refers to number of minutes."
-msgstr ""
-"Limites individuelles concernant le temps écoulé dans un ou plusieurs états-"
-"véhicule. La règle max/min fait référence au nombre de minutes."
+msgid "Time limit"
+msgstr "Limite de temps"
 
-#: enums.py:188
+#: enums.py:177
 msgctxt "Policy type"
-msgid "Global or local speed limits. Rule max/min refers to miles per hour."
-msgstr ""
-"Limites de vitesse globales ou locales. La règle max/min fait références à "
-"miles par heure."
+msgid "Speed limit"
+msgstr "Limite de vitesse"
 
-#: enums.py:196
+#: enums.py:178
 msgctxt "Policy type"
-msgid ""
-"Information for users, e.g. about helmet laws. Generally can't be enforced "
-"via events and telemetry."
-msgstr ""
-"Information pour les utlisateurs, ex: sur les lois de port du casque. En "
-"général cela ne peut être imposé via des événements et la télémétrie."
+msgid "Information for users"
+msgstr "Information aux utilisateurs"
 
-#: enums.py:200
+#: enums.py:179
 msgctxt "Policy type"
 msgid "Geofencing"
 msgstr "Zone interdite"
-
-#~ msgid "No application known for owner %s"
-#~ msgstr "Pas d'application connue pour %s"
-
-#~ msgid "No access token known for %s"
-#~ msgstr "Pas de jeton d'accès pour %s"
