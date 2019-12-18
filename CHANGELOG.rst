@@ -5,6 +5,9 @@ Changelog
 -------------------
 
 - Move enums to class syntax.
+- Dropped obsolete frontend.
+- Downgrade MDS server to a test project.
+- Squashed migrations into a single initial one.
 
 
 0.6.23 (2019-12-17)
