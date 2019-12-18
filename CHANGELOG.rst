@@ -1,8 +1,8 @@
 Changelog
 =========
 
-0.6.24 (unreleased)
--------------------
+0.7.0 (2019-12-18)
+------------------
 
 - Move enums to class syntax.
 - Dropped obsolete frontend.
