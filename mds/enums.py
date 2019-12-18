@@ -49,9 +49,9 @@ class EVENT_TYPE(enum.Enum):
     trip_leave = pgettext_lazy("Event type", "Trip leave")
     trip_end = pgettext_lazy("Event type", "Trip end")
     deregister = pgettext_lazy("Event type", "Deregister")
-    # this =ast event is in neither of the MDS sp
+    # this last event is in neither of the MDS spec
     telemetry = pgettext_lazy("Event type", "Received telemetry")
-    # This =ay be added in a revision of the agency API spe
+    # This may be added in a revision of the agency API spec
     battery_charged = pgettext_lazy("Event type", "Battery charged")
 
 
@@ -87,7 +87,7 @@ class PROVIDER_EVENT_TYPE_REASON(enum.Enum):
     agency_pick_up = pgettext_lazy("Event type", "Agency pick up")
     # this last event is in neither of the MDS spec
     telemetry = pgettext_lazy("Event type", "Received telemetry")
-    # This may be added in a revision of the agency API specs
+    # This may be added in a revision of the agency API spec
     battery_charged = pgettext_lazy("Event type", "Battery charged")
 
 
