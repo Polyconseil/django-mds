@@ -445,6 +445,7 @@ class Compliance(models.Model):
     lag = models.DurationField()
     # Remember to update this field within raw queries!
     saved_at = models.DateTimeField(db_index=True, auto_now=True)
+    extra = pg_fields.JSONField(blank=True, null=True)
 
     class Meta:
         unique_together = (
