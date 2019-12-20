@@ -1,7 +1,7 @@
 Changelog
 =========
 
-0.7.1 (unreleased)
+0.7.1 (2019-12-20)
 ------------------
 
 - Add field 'extra' to compliance model
