@@ -1,7 +1,7 @@
 Changelog
 =========
 
-0.7.2 (unreleased)
+0.7.2 (2019-12-20)
 ------------------
 
 - Don't create register events on the fly in the poller.
