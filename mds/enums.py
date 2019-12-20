@@ -35,7 +35,7 @@ class DEVICE_PROPULSION(enum.Enum):
 
 class EVENT_TYPE(enum.Enum):
     # The first events are the one listed in the MDS agency API, in order:
-    # https://github.com/CityOfLosAngeles/mobility-data-specification/tree/dev/agency
+    # https://github.com/openmobilityfoundation/mobility-data-specification/tree/dev/agency#vehicle-events
     register = pgettext_lazy("Event type", "Register")
     service_start = pgettext_lazy("Event type", "Service start")
     service_end = pgettext_lazy("Event type", "Service end")
