@@ -10,7 +10,7 @@ from django.contrib.postgres import fields as pg_fields
 from django.contrib.postgres import functions as pg_functions
 from django.core.exceptions import ValidationError
 from django.db import models
-from django.db.models import Count, Prefetch, Q
+from django.db.models import Count, Prefetch, Q, Index
 from django.utils import timezone
 from django.core.serializers.json import DjangoJSONEncoder
 
@@ -274,6 +274,15 @@ class EventRecord(models.Model):
 
     class Meta:
         unique_together = [("device", "timestamp")]
+        # TODO(hcauwelier) only ~2% of the events are useful to display
+        # Speed up searching among them for a given device
+        indexes = [
+            Index(
+                fields=["device"],
+                name="device_mds_events_partial",
+                condition=~Q(event_type="telemetry"),
+            )
+        ]
 
     @property
     def point_as_geojson(self):

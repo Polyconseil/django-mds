@@ -4,7 +4,7 @@ Changelog
 0.7.3 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Index events conforming to the spec per device.
 
 
 0.7.2 (2019-12-20)
