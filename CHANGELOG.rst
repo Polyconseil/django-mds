@@ -5,6 +5,7 @@ Changelog
 ------------------
 
 - Index events conforming to the spec per device.
+- Translation change in french for Event Type
 
 
 0.7.2 (2019-12-20)

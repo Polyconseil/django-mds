@@ -141,28 +141,19 @@ msgid "Service end"
 msgstr "Fin de service"
 
 #: enums.py:52
-#, fuzzy
-#| msgctxt "Area type"
-#| msgid "Preferred drop off"
 msgctxt "Event type"
 msgid "Provider drop off"
-msgstr "Préféré pour dépôt"
+msgstr "Déposé par l'opérateur"
 
 #: enums.py:53
-#, fuzzy
-#| msgctxt "Area type"
-#| msgid "Preferred pick up"
 msgctxt "Event type"
 msgid "Provider pick up"
-msgstr "Préféré pour retrait"
+msgstr "Collecté par l'opérateur"
 
 #: enums.py:54
-#, fuzzy
-#| msgctxt "Event type"
-#| msgid "Maintenance pick up"
 msgctxt "Event type"
 msgid "City pick up"
-msgstr "Retrait pour maintenance"
+msgstr "Collecté par la ville"
 
 #: enums.py:55
 msgctxt "Event type"
@@ -177,27 +168,27 @@ msgstr "Annulation de réservation"
 #: enums.py:57
 msgctxt "Event type"
 msgid "Trip start"
-msgstr "Début de parcours"
+msgstr "Début de trajet"
 
 #: enums.py:58
 msgctxt "Event type"
 msgid "Trip enter"
-msgstr "Entrée en parcours"
+msgstr "Entrée en trajet"
 
 #: enums.py:59
 msgctxt "Event type"
 msgid "Trip leave"
-msgstr "Sortie de parcours"
+msgstr "Sortie de trajet"
 
 #: enums.py:60
 msgctxt "Event type"
 msgid "Trip end"
-msgstr "Fin de parcours"
+msgstr "Fin de trajet"
 
 #: enums.py:61
 msgctxt "Event type"
 msgid "Deregister"
-msgstr "Désinscription"
+msgstr "Décommissionnement"
 
 #: enums.py:63 enums.py:107
 msgctxt "Event type"
@@ -205,22 +196,19 @@ msgid "Received telemetry"
 msgstr "Télémétrie reçue"
 
 #: enums.py:65 enums.py:109
-#, fuzzy
-#| msgctxt "Event type"
-#| msgid "Battery OK"
 msgctxt "Event type"
 msgid "Battery charged"
-msgstr "Batterie OK"
+msgstr "Batterie chargée"
 
 #: enums.py:75 enums.py:93
 msgctxt "Event type"
 msgid "Rebalance drop off"
-msgstr "Dépôt pour rééquilibrage"
+msgstr "Remise en service après équilibrage"
 
 #: enums.py:76 enums.py:94
 msgctxt "Event type"
 msgid "Maintenance drop off"
-msgstr "Dépôt pour maintenance"
+msgstr "Remise en service après maintenance"
 
 #: enums.py:77 enums.py:100
 msgctxt "Event type"
@@ -235,7 +223,7 @@ msgstr "Maintenance"
 #: enums.py:79 enums.py:103
 msgctxt "Event type"
 msgid "Rebalance pick up"
-msgstr "Retrait pour rééquilibrage"
+msgstr "Retrait pour équilibrage"
 
 #: enums.py:80 enums.py:104
 msgctxt "Event type"
@@ -243,41 +231,26 @@ msgid "Maintenance pick up"
 msgstr "Retrait pour maintenance"
 
 #: enums.py:92
-#, fuzzy
-#| msgctxt "Area type"
-#| msgid "Preferred drop off"
 msgctxt "Event type"
 msgid "User drop off"
-msgstr "Préféré pour dépôt"
+msgstr "Dépôt d'utilisateur"
 
 #: enums.py:95
-#, fuzzy
-#| msgctxt "Event type"
-#| msgid "Rebalance drop off"
 msgctxt "Event type"
 msgid "Agency drop off"
 msgstr "Dépôt pour rééquilibrage"
 
 #: enums.py:97
-#, fuzzy
-#| msgctxt "Area type"
-#| msgid "Preferred pick up"
 msgctxt "Event type"
 msgid "User pick up"
-msgstr "Préféré pour retrait"
+msgstr "Récupération d'utilisateur"
 
 #: enums.py:105
-#, fuzzy
-#| msgctxt "Event type"
-#| msgid "Rebalance pick up"
 msgctxt "Event type"
 msgid "Agency pick up"
 msgstr "Retrait pour rééquilibrage"
 
 #: enums.py:117
-#, fuzzy
-#| msgctxt "Event type"
-#| msgid "Low battery"
 msgctxt "Event type reason"
 msgid "Low battery"
 msgstr "Batterie faible"
