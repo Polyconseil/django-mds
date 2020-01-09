@@ -1,7 +1,7 @@
 Changelog
 =========
 
-0.7.3 (unreleased)
+0.7.3 (2020-01-09)
 ------------------
 
 - Index events conforming to the spec per device.
