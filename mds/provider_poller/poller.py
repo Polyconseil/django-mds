@@ -24,6 +24,7 @@ from mds.provider_mapping import PROVIDER_REASON_TO_AGENCY_EVENT
 from .oauth2_store import OAuth2Store
 from .translation import translate_data
 from .settings import PROVIDER_POLLER_LIMIT_DAYS
+from .settings import POLLER_CREATE_REGISTER_EVENTS
 
 
 ACCEPTED_MDS_VERSIONS = ["0.2", "0.3"]
@@ -383,14 +384,15 @@ class StatusChangesPoller:
                     for status_change in with_missing_devices
                 )
             )
-            # Create fake register events to simulate device registration
-            db_helpers.upsert_event_records(
-                (
-                    _create_register_event_record(status_change)
-                    for status_change in with_missing_devices
-                ),
-                source=enums.EVENT_SOURCE.provider_api.name,
-            )
+            if POLLER_CREATE_REGISTER_EVENTS:
+                # Create fake register events to simulate device registration
+                db_helpers.upsert_event_records(
+                    (
+                        _create_register_event_record(status_change)
+                        for status_change in with_missing_devices
+                    ),
+                    source=enums.EVENT_SOURCE.provider_api.name,
+                )
 
             devices_added = [
                 status_change["device_id"] for status_change in with_missing_devices

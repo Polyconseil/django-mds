@@ -6,7 +6,6 @@ exclude .env.example
 exclude prerelease_script.py
 
 graft mds
-prune front
 prune tests
 
 global-exclude *.py[cod] __pycache__ .dockerignore
