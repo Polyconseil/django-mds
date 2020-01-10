@@ -31,6 +31,8 @@ PROVIDER_REASON_TO_AGENCY_EVENT = {
         EVENT_TYPE.provider_drop_off.name,
         EVENT_TYPE_REASON.maintenance.name,
     ),
+    # agency_drop_off is only in the provider specs. So as to not lose information,
+    # we create an agency event (agency_drop_off,)
     PROVIDER_EVENT_TYPE_REASON.agency_drop_off.name: (
         PROVIDER_EVENT_TYPE_REASON.agency_drop_off.name,
     ),
