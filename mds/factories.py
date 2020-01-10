@@ -563,7 +563,7 @@ class Provider(factory.DjangoModelFactory):
     name = factory.Iterator(
         ["Lime", "BlueLA", "Metro Bike", "LongProviderNameCompanyLtdSarlGmoLgbtq"]
     )
-    base_api_url = "http://provider"
+    base_api_url = ""
     api_configuration = {"trailing_slash": False}
     api_authentication = {"type": "none"}
     agency_api_authentication = {"type": "none"}

@@ -22,7 +22,7 @@ from mds.provider_mapping import (
 def test_poll_provider_batch(client, settings):
     """A single provider with two pages of status changes."""
     settings.POLLER_CREATE_REGISTER_EVENTS = True
-    provider = factories.Provider()
+    provider = factories.Provider(base_api_url="http://provider")
     # The first device received already exists
     device1 = factories.Device(provider=provider)
     expected_event1 = factories.EventRecord.build(
@@ -142,7 +142,7 @@ def test_several_providers(client, django_assert_num_queries, settings):
 def test_follow_up(client, settings):
     """Catching up new telemetries from the last one we got."""
     settings.POLLER_CREATE_REGISTER_EVENTS = True
-    event = factories.EventRecord()
+    event = factories.EventRecord(device__provider__base_api_url="http://provider")
     device = event.device
     provider = device.provider
     provider.last_event_time_polled = event.timestamp
