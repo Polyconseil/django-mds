@@ -27,17 +27,17 @@ from .settings import PROVIDER_POLLER_LIMIT_DAYS
 from .settings import POLLER_CREATE_REGISTER_EVENTS
 
 
-ACCEPTED_MDS_VERSIONS = ["0.2", "0.3"]
-POLLING_CURSOR_TO_QUERY_PARAM = enum.Enum(
-    "polling_cursor field to the query parameter",
-    [
-        ("start_recorded", "start_recorded"),
-        ("start_time", "start_time"),
-        ("total_events", "skip"),
-    ],
-)
+MDS_CONTENT_TYPE = "application/vnd.mds.provider+json"
+
 
 logger = logging.getLogger(__name__)
+
+
+# polling_cursor configuration field translated to query parameter
+class POLLING_CURSORS(enum.Enum):
+    start_time = "start_time"  # from the MDS specification
+    start_recorded = "start_recorded"  # vendor only, 0.3 only
+    total_events = "skip"  # vendor only, 0.3 only
 
 
 def get_date_param(last_event):
@@ -50,15 +50,30 @@ def get_date_param(last_event):
 
 
 class StatusChangesPoller:
-    """Poll all providers to fetch their latest telemetry data."""
+    """Poll the given provider to fetch its latest data.
+
+    Polling is automatically resumed from what was last saved in the provider config,
+    unless cursor parameters are given.
+
+    The from and to cursor values depend on the cursor type:
+    - integer timestamp in milliseconds for "start_recorded" and "start_time"
+    - integer count of lines for "total_events" (think LIMIT in SQL)
+
+    Args:
+        provider: Provider, the provider to poll
+        cursor: POLLING_CURSORS, cursor type
+        from_cursor: timestamp or int, lower limit
+        to_cursor: timestamp or int, upper limit
+    """
 
     def __init__(self, provider, cursor=None, from_cursor=None, to_cursor=None):
         self.provider = provider
-        self.overriden_cursor = cursor
+        self.cursor = cursor
         self.from_cursor = from_cursor
         self.to_cursor = to_cursor
         self.oauth2_store = OAuth2Store(provider)
-        # While we poll a given provider, it may aggegrate data from several providers
+        # While we poll a given provider, it may aggregate data from several providers
+        # There's no difference yet between a service provider and a pure data provider
         # (these are sets of UUIDs, not str)
         self.provider_uids = set(models.Provider.objects.values_list("pk", flat=True))
         self.device_uids = set(models.Device.objects.values_list("pk", flat=True))
@@ -76,11 +91,12 @@ class StatusChangesPoller:
             next_url += "/"
 
         params = {}
+
         # Start where we left, it's all based on providers sorting by start_time
         # (but we would miss telemetries older than start_time saved after we polled).
         # For those that support it, use the recorded time field or equivalent.
-        polling_cursor = self.overriden_cursor or self.provider.api_configuration.get(
-            "polling_cursor", POLLING_CURSOR_TO_QUERY_PARAM.start_time.name
+        polling_cursor = self.cursor or self.provider.api_configuration.get(
+            "polling_cursor", POLLING_CURSORS.start_time.name
         )
         logger.info(
             f"Starting polling using the field: {polling_cursor}. Current state:\n"
@@ -90,24 +106,24 @@ class StatusChangesPoller:
                     + f"\tLast recorded: {str(self.provider.last_recorded_polled)}\n"
                     + f"\tLast skip: {self.provider.last_skip_polled}."
                 )
-                if not self.overriden_cursor
+                if not self.cursor
                 else f"\tCursor value: {self.from_cursor}."
             )
         )
 
-        # skip
-        if polling_cursor == POLLING_CURSOR_TO_QUERY_PARAM.total_events.name:
-            params[POLLING_CURSOR_TO_QUERY_PARAM.total_events.value] = (
-                self.from_cursor or self.provider.last_skip_polled
-            )
-        # start_recorded
-        elif polling_cursor == POLLING_CURSOR_TO_QUERY_PARAM.start_recorded.name:
-            params[POLLING_CURSOR_TO_QUERY_PARAM.start_recorded.value] = get_date_param(
+        # Cursor param (raise if typo)
+        param_name = {enum.name: enum.value for enum in POLLING_CURSORS}[polling_cursor]
+        if polling_cursor == POLLING_CURSORS.total_events.name:
+            # Resume from the last line fetched
+            params[param_name] = self.from_cursor or self.provider.last_skip_polled
+        elif polling_cursor == POLLING_CURSORS.start_recorded.name:
+            # Resume from the last "recorded" value
+            params[param_name] = get_date_param(
                 self.from_cursor or self.provider.last_recorded_polled
             )
-        # start_time
-        elif polling_cursor == POLLING_CURSOR_TO_QUERY_PARAM.start_time.name:
-            params[POLLING_CURSOR_TO_QUERY_PARAM.start_time.value] = get_date_param(
+        elif polling_cursor == POLLING_CURSORS.start_time.name:
+            # Resume from the last "event_time" value
+            params[param_name] = get_date_param(
                 self.from_cursor or self.provider.last_event_time_polled
             )
 
@@ -122,8 +138,7 @@ class StatusChangesPoller:
 
         skip_polled = (
             self.from_cursor
-            if self.from_cursor
-            and self.overriden_cursor == POLLING_CURSOR_TO_QUERY_PARAM.total_events.name
+            if self.from_cursor and self.cursor == POLLING_CURSORS.total_events.name
             else None
         )
 
@@ -145,23 +160,15 @@ class StatusChangesPoller:
                 event_time_polled, recorded_polled = self._process_status_changes(
                     status_changes
                 )
-                if self.overriden_cursor:
-                    if (
-                        polling_cursor
-                        == POLLING_CURSOR_TO_QUERY_PARAM.total_events.name
-                    ):
+                if self.cursor:
+                    if polling_cursor == POLLING_CURSORS.total_events.name:
                         skip_polled += len(status_changes)
                         if skip_polled >= self.to_cursor:
                             break
-                    elif (
-                        polling_cursor
-                        == POLLING_CURSOR_TO_QUERY_PARAM.start_recorded.name
-                    ):
+                    elif polling_cursor == POLLING_CURSORS.start_recorded.name:
                         if recorded_polled >= self.to_cursor:
                             break
-                    elif (
-                        polling_cursor == POLLING_CURSOR_TO_QUERY_PARAM.start_time.name
-                    ):
+                    elif polling_cursor == POLLING_CURSORS.start_time.name:
                         if event_time_polled >= self.to_cursor:
                             break
                 else:
@@ -199,14 +206,20 @@ class StatusChangesPoller:
         else:
             raise NotImplementedError
 
-        headers = {}
-        accepted_content_types = ["application/json"]
-        # Add versioning header (some providers may choke on this)
-        for version in ACCEPTED_MDS_VERSIONS:
-            accepted_content_types.append(
-                "application/vnd.mds.provider+json;version=%s" % version
-            )
-        headers["Accept"] = ", ".join(accepted_content_types)
+        # TODO(hcauwelier) make it mandatory, see SMP-1673
+        api_version = self.provider.api_configuration.get(
+            "api_version", enums.DEFAULT_PROVIDER_API_VERSION
+        )
+        # We store the enum key, which cannot be a numeric identifier
+        # It doubles as a validity check
+        api_version = enums.MDS_VERSIONS[api_version].value
+
+        headers = {
+            # We only accept the version we expect from that provider
+            # And it should reject it when it bumps to the new version
+            "Accept": "%s;version=%s"
+            % (MDS_CONTENT_TYPE, api_version)
+        }
 
         logger.debug("Polling provider on URL %s", url)
         response = client.get(url, timeout=30, headers=headers)
@@ -221,14 +234,21 @@ class StatusChangesPoller:
             "Content-Type", "application/json; charset=UTF-8"
         )
         if content_type.startswith("application/json"):
-            version = "unspecified"
+            received = "unspecified"
         else:
             # Let it raise if malformed
-            content_type, version = content_type.split(";")
-            _, version = version.split("=")
-        logger.debug(
-            "Provider %s pretends to accept version %s", self.provider.name, version
-        )
+            params = content_type.split(";")
+            content_type = params.pop(0)
+            assert content_type == MDS_CONTENT_TYPE
+            params = dict(param.split("=") for param in params)
+            received = params.get("version", "unspecified")
+        if received != api_version:
+            logger.warning(
+                "Provider %s didn't respond in version %s but %s",
+                self.provider.name,
+                api_version,
+                received,
+            )
 
         body = response.json()
         return body

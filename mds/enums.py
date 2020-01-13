@@ -9,6 +9,19 @@ def choices(enum):
     return [(member.name, member.value) for member in enum]
 
 
+# Supported versions in this release
+# Even if we used the functional API to be able to use a version number as the key,
+# it would generate an invalid Enum type in auto-generated TypeScript APIs.
+class MDS_VERSIONS(enum.Enum):
+    v0_2 = "0.2"
+    v0_3 = "0.3"
+
+
+# TODO(hcauwelier) remove fallback, see SMP-1673
+DEFAULT_PROVIDER_API_VERSION = MDS_VERSIONS.v0_3.name
+DEFAULT_AGENCY_API_VERSION = MDS_VERSIONS.v0_3.name
+
+
 class DEVICE_STATUS(enum.Enum):
     available = pgettext_lazy("Device status", "Available")
     reserved = pgettext_lazy("Device status", "Reserved")
