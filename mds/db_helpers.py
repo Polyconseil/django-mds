@@ -137,7 +137,8 @@ def upsert_event_records(
             # The same encoder as in the model
             "properties": json.dumps(event_record.properties, cls=encoders.JSONEncoder),
             "source": source,
-            "first_saved_at": event_record.first_saved_at,
+            # The model field was renamed, not the table field
+            "first_saved_at": event_record.publication_time,
         }
 
     query = """

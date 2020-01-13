@@ -250,8 +250,11 @@ class EventRecord(models.Model):
     point = gis_models.PointField(blank=True, null=True)
     # For synchronisation purposes (polling on this field)
     saved_at = models.DateTimeField(default=pg_functions.TransactionNow, db_index=True)
-    # For KPIs, know when the event was seen by an aggregator the first time
-    first_saved_at = models.DateTimeField(blank=True, null=True)
+    # Date/time that event became available through the status changes endpoint
+    # (used to be named "first_saved_at", but we won't want the cost of a migration)
+    publication_time = models.DateTimeField(
+        blank=True, null=True, db_column="first_saved_at"
+    )
     source = UnboundedCharField(
         choices=enums.choices(enums.EVENT_SOURCE),
         default=enums.EVENT_SOURCE.agency_api.name,
@@ -296,6 +299,11 @@ class EventRecord(models.Model):
         return enums.EVENT_TYPE_TO_DEVICE_STATUS.get(
             self.event_type, enums.DEVICE_STATUS.unknown.name
         )
+
+    # TODO(hcauwelier) backwards compat, to remove
+    @property
+    def first_saved_at(self):
+        return self.publication_time
 
 
 class Polygon(models.Model):

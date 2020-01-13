@@ -9,9 +9,11 @@ import logging
 import urllib.parse
 import uuid
 
+from django.conf import settings
 from django.contrib.gis import geos
 from django.db import transaction
 from django.utils import timezone
+from django.utils.dateparse import parse_duration
 
 import requests
 from retrying import retry
@@ -22,9 +24,7 @@ from mds import models
 from mds import utils
 from mds.provider_mapping import PROVIDER_REASON_TO_AGENCY_EVENT
 from .oauth2_store import OAuth2Store
-from .translation import translate_data
-from .settings import PROVIDER_POLLER_LIMIT_DAYS
-from .settings import POLLER_CREATE_REGISTER_EVENTS
+from .translation import translate_v0_2_to_v0_4
 
 
 MDS_CONTENT_TYPE = "application/vnd.mds.provider+json"
@@ -38,15 +38,6 @@ class POLLING_CURSORS(enum.Enum):
     start_time = "start_time"  # from the MDS specification
     start_recorded = "start_recorded"  # vendor only, 0.3 only
     total_events = "skip"  # vendor only, 0.3 only
-
-
-def get_date_param(last_event):
-    if last_event:
-        return utils.to_mds_timestamp(last_event)
-    elif PROVIDER_POLLER_LIMIT_DAYS:
-        delta = timezone.now() - datetime.timedelta(PROVIDER_POLLER_LIMIT_DAYS)
-        logger.debug(f"No last_event on provider, starting from: {str(delta)}")
-        return utils.to_mds_timestamp(delta)
 
 
 class StatusChangesPoller:
@@ -82,16 +73,22 @@ class StatusChangesPoller:
         if not self.provider.base_api_url:
             logger.debug("Provider %s has no URL, skipping.", self.provider.name)
             return
-        logger.debug(f"Polling {self.provider.name}")
-        self._poll_status_changes()
 
-    def _poll_status_changes(self):
-        next_url = urllib.parse.urljoin(self.provider.base_api_url, "status_changes")
-        if self.provider.api_configuration.get("trailing_slash"):
-            next_url += "/"
+        # We request a specific version of the Provider API
+        # TODO(hcauwelier) make it mandatory, see SMP-1673
+        api_version_raw = self.provider.api_configuration.get(
+            "api_version", enums.DEFAULT_PROVIDER_API_VERSION
+        )
+        # We store the enum key, which cannot be a numeric identifier
+        # It doubles as a validity check
+        api_version = enums.MDS_VERSIONS[api_version_raw].value
 
-        params = {}
+        logger.debug("Polling %s using version %s", self.provider.name, api_version)
 
+        getattr(self, "_poll_status_changes_%s" % api_version_raw)(api_version)
+
+    # TODO(hcauwelier) Should be deleted ASAP
+    def _poll_status_changes_v0_2(self, api_version):
         # Start where we left, it's all based on providers sorting by start_time
         # (but we would miss telemetries older than start_time saved after we polled).
         # For those that support it, use the recorded time field or equivalent.
@@ -111,20 +108,38 @@ class StatusChangesPoller:
             )
         )
 
+        params = {}
+
         # Cursor param (raise if typo)
         param_name = {enum.name: enum.value for enum in POLLING_CURSORS}[polling_cursor]
+
         if polling_cursor == POLLING_CURSORS.total_events.name:
             # Resume from the last line fetched
             params[param_name] = self.from_cursor or self.provider.last_skip_polled
         elif polling_cursor == POLLING_CURSORS.start_recorded.name:
             # Resume from the last "recorded" value
-            params[param_name] = get_date_param(
+            params[param_name] = utils.to_mds_timestamp(
                 self.from_cursor or self.provider.last_recorded_polled
             )
         elif polling_cursor == POLLING_CURSORS.start_time.name:
             # Resume from the last "event_time" value
-            params[param_name] = get_date_param(
-                self.from_cursor or self.provider.last_event_time_polled
+            last_event_time_polled = self.provider.last_event_time_polled
+            if not last_event_time_polled:
+                last_event_time_polled = timezone.now() - datetime.timedelta(
+                    getattr(settings, "PROVIDER_POLLER_LIMIT", 90)
+                )
+
+            # But we now apply a "lag" before actually polling,
+            # leaving time for the provider to collect data from its devices
+            polling_lag = self.provider.api_configuration.get("provider_polling_lag")
+            if polling_lag:
+                polling_lag = parse_duration(polling_lag)
+                if (timezone.now() - last_event_time_polled) < polling_lag:
+                    logger.debug("Still under the polling lag, back to sleep.")
+                    return
+
+            params[param_name] = utils.to_mds_timestamp(
+                self.from_cursor or last_event_time_polled
             )
 
         # Provider-specific params to optimise polling
@@ -132,6 +147,10 @@ class StatusChangesPoller:
             params.update(self.provider.api_configuration["status_changes_params"])
         except KeyError:
             pass
+
+        next_url = urllib.parse.urljoin(self.provider.base_api_url, "status_changes")
+        if self.provider.api_configuration.get("trailing_slash"):
+            next_url += "/"
 
         if params:
             next_url = "%s?%s" % (next_url, urllib.parse.urlencode(params))
@@ -144,9 +163,9 @@ class StatusChangesPoller:
 
         # Pagination
         while next_url:
-            body = self._get_body(next_url)
+            body = self._get_body(next_url, api_version)
             # Translate older versions of data
-            translated_data = translate_data(body["data"], body["version"])
+            translated_data = translate_v0_2_to_v0_4(body["data"])
             status_changes = translated_data["status_changes"]
             if not status_changes:
                 break
@@ -160,15 +179,16 @@ class StatusChangesPoller:
                 event_time_polled, recorded_polled = self._process_status_changes(
                     status_changes
                 )
+
                 if self.cursor:
-                    if polling_cursor == POLLING_CURSORS.total_events.name:
+                    if self.cursor == POLLING_CURSORS.total_events.name:
                         skip_polled += len(status_changes)
                         if skip_polled >= self.to_cursor:
                             break
-                    elif polling_cursor == POLLING_CURSORS.start_recorded.name:
+                    elif self.cursor == POLLING_CURSORS.start_recorded.name:
                         if recorded_polled >= self.to_cursor:
                             break
-                    elif polling_cursor == POLLING_CURSORS.start_time.name:
+                    elif self.cursor == POLLING_CURSORS.start_time.name:
                         if event_time_polled >= self.to_cursor:
                             break
                 else:
@@ -196,8 +216,242 @@ class StatusChangesPoller:
                     + f"\tLast skip: {skip_polled}."
                 )
 
+    def _poll_status_changes_v0_3(self, api_version):
+        # Start where we left, it's all based on providers sorting by start_time
+        # (but we would miss telemetries older than start_time saved after we polled).
+        # For those that support it, use the recorded time field or equivalent.
+        polling_cursor = self.cursor or self.provider.api_configuration.get(
+            "polling_cursor", POLLING_CURSORS.start_time.name
+        )
+        logger.info(
+            f"Starting polling using the field: {polling_cursor}. Current state:\n"
+            + (
+                (
+                    f"\tLast event_time: {str(self.provider.last_event_time_polled)},\n"
+                    + f"\tLast recorded: {str(self.provider.last_recorded_polled)}\n"
+                    + f"\tLast skip: {self.provider.last_skip_polled}."
+                )
+                if not self.cursor
+                else f"\tCursor value: {self.from_cursor}."
+            )
+        )
+
+        params = {}
+
+        # Cursor param (raise if typo)
+        param_name = {enum.name: enum.value for enum in POLLING_CURSORS}[polling_cursor]
+
+        if polling_cursor == POLLING_CURSORS.total_events.name:
+            # Resume from the last line fetched
+            params[param_name] = self.from_cursor or self.provider.last_skip_polled
+        elif polling_cursor == POLLING_CURSORS.start_recorded.name:
+            # Resume from the last "recorded" value
+            params[param_name] = utils.to_mds_timestamp(
+                self.from_cursor or self.provider.last_recorded_polled
+            )
+        elif polling_cursor == POLLING_CURSORS.start_time.name:
+            # Resume from the last "event_time" value
+            last_event_time_polled = self.provider.last_event_time_polled
+            if not last_event_time_polled:
+                last_event_time_polled = timezone.now() - datetime.timedelta(
+                    getattr(settings, "PROVIDER_POLLER_LIMIT", 90)
+                )
+
+            # But we now apply a "lag" before actually polling,
+            # leaving time for the provider to collect data from its devices
+            polling_lag = self.provider.api_configuration.get("provider_polling_lag")
+            if polling_lag:
+                polling_lag = parse_duration(polling_lag)
+                if (timezone.now() - last_event_time_polled) < polling_lag:
+                    logger.debug("Still under the polling lag, back to sleep.")
+                    return
+
+            params[param_name] = utils.to_mds_timestamp(
+                self.from_cursor or last_event_time_polled
+            )
+
+        # Provider-specific params to optimise polling
+        try:
+            params.update(self.provider.api_configuration["status_changes_params"])
+        except KeyError:
+            pass
+
+        next_url = urllib.parse.urljoin(self.provider.base_api_url, "status_changes")
+        if self.provider.api_configuration.get("trailing_slash"):
+            next_url += "/"
+
+        if params:
+            next_url = "%s?%s" % (next_url, urllib.parse.urlencode(params))
+
+        skip_polled = (
+            self.from_cursor
+            if self.from_cursor and self.cursor == POLLING_CURSORS.total_events.name
+            else None
+        )
+
+        # Pagination
+        while next_url:
+            body = self._get_body(next_url, api_version)
+            # MDS 0.3 is backwards compatible with 0.4
+            status_changes = body["data"]["status_changes"]
+            if not status_changes:
+                break
+
+            next_url = body.get("links", {}).get("next")
+
+            # A transaction for each "page" of data
+            with transaction.atomic():
+                # We get the maximum of the recorded and event_types
+                # from the status changes
+                event_time_polled, recorded_polled = self._process_status_changes(
+                    status_changes
+                )
+
+                if self.cursor:
+                    if self.cursor == POLLING_CURSORS.total_events.name:
+                        skip_polled += len(status_changes)
+                        if skip_polled >= self.to_cursor:
+                            break
+                    elif self.cursor == POLLING_CURSORS.start_recorded.name:
+                        if recorded_polled >= self.to_cursor:
+                            break
+                    elif self.cursor == POLLING_CURSORS.start_time.name:
+                        if event_time_polled >= self.to_cursor:
+                            break
+                else:
+                    # We get the new skip from the number of status changes
+                    skip_polled = (
+                        self.provider.last_skip_polled + len(status_changes)
+                        if self.provider.last_skip_polled
+                        else len(status_changes)
+                    )
+                    self.provider.last_event_time_polled = event_time_polled
+                    self.provider.last_recorded_polled = recorded_polled
+                    self.provider.last_skip_polled = skip_polled
+                    self.provider.save(
+                        update_fields=[
+                            "last_event_time_polled",
+                            "last_recorded_polled",
+                            "last_skip_polled",
+                        ]
+                    )
+
+                logger.info(
+                    f"Polled page using cursor: {polling_cursor}. New state:\n"
+                    + f"\tLast event_time: {str(event_time_polled)},\n"
+                    + f"\tLast recorded: {str(recorded_polled)}\n"
+                    + f"\tLast skip: {skip_polled}."
+                )
+
+    def _poll_status_changes_v0_4(self, api_version):
+        # Start where we left, it's all based on providers sorting by start_time
+        # (but we would miss telemetries older than start_time saved after we polled).
+        # For those that support it, use the recorded time field or equivalent.
+        polling_cursor = self.cursor or self.provider.api_configuration.get(
+            "polling_cursor", POLLING_CURSORS.start_time.name
+        )
+        if polling_cursor != POLLING_CURSORS.start_time.name:
+            raise ValueError('Only "start_time" cursor is supported in MDS 0.4+')
+        logger.info(
+            f"Starting polling using the field: {polling_cursor}. Current state:\n"
+            + (
+                (f"\tLast event_time: {str(self.provider.last_event_time_polled)}.")
+                if not self.cursor
+                else f"\tCursor value: {self.from_cursor}."
+            )
+        )
+
+        params = {}
+
+        # Resume from the last "event_time" value
+        last_event_time_polled = self.provider.last_event_time_polled
+        if not last_event_time_polled:
+            last_event_time_polled = timezone.now() - datetime.timedelta(
+                getattr(settings, "PROVIDER_POLLER_LIMIT", 90)
+            )
+
+        # But we now apply a "lag" before actually polling,
+        # leaving time for the provider to collect data from its devices
+        polling_lag = self.provider.api_configuration.get("provider_polling_lag")
+        if polling_lag:
+            polling_lag = parse_duration(polling_lag)
+            if (timezone.now() - last_event_time_polled) < polling_lag:
+                logger.info("Still under the polling lag, back to sleep.")
+                return
+
+        # The MDS 0.4 Provider API got two endpoints:
+        # - /events for the real-time or so data (formerly /status_changes)
+        #   but limited to two weeks of history
+        # - /status_changes for all the data except the current hour
+        # If we're catching up far in time, begin by polling /status_changes
+        realtime_threshold = parse_duration(  # Default is 9 days
+            self.provider.api_configuration.get("realtime_threshold", "P9D")
+        )
+        if (timezone.now() - last_event_time_polled) > realtime_threshold:
+            # We have to query the archived status changes with another format
+            logger.info("last_event_time_polled is too old, asking archives")
+            params["event_time"] = last_event_time_polled.isoformat()[
+                : len("YYYY-MM-DDTHH")
+            ]
+        else:
+            # Query the real-time endpoint as usual
+            params["start_time"] = utils.to_mds_timestamp(
+                self.from_cursor or last_event_time_polled
+            )
+
+        # Provider-specific params to optimise polling
+        try:
+            params.update(self.provider.api_configuration["status_changes_params"])
+        except KeyError:
+            pass
+
+        endpoint = "events"  # The new name for the real-time events endpoint
+        if "event_time" in params:
+            # We asked the archived status changes instead
+            endpoint = "status_changes"
+        next_url = urllib.parse.urljoin(self.provider.base_api_url, endpoint)
+        if self.provider.api_configuration.get("trailing_slash"):
+            next_url += "/"
+
+        if params:
+            next_url = "%s?%s" % (next_url, urllib.parse.urlencode(params))
+
+        # Pagination
+        while next_url:
+            body = self._get_body(next_url, api_version)
+            # No translation needed as long as 0.4 is the latest version
+            status_changes = body["data"]["status_changes"]
+            next_url = body.get("links", {}).get("next")
+
+            # A transaction for each "page" of data
+            with transaction.atomic():
+                if status_changes:
+                    # We get the maximum values from the status changes
+                    event_time_polled, _ = self._process_status_changes(status_changes)
+                else:
+                    if endpoint == "status_changes":
+                        # this hour frame of archives didn't contain results
+                        event_time_polled = last_event_time_polled + datetime.timedelta(
+                            hours=1
+                        )
+                    else:
+                        break
+
+                if self.cursor:
+                    if self.cursor == POLLING_CURSORS.start_time.name:
+                        if event_time_polled >= self.to_cursor:
+                            break
+                else:
+                    self.provider.last_event_time_polled = event_time_polled
+                    self.provider.save(update_fields=["last_event_time_polled"])
+
+                logger.info(
+                    f"Polled page using cursor: {polling_cursor}. New state:\n"
+                    + f"\tLast event_time: {str(event_time_polled)}."
+                )
+
     @retry(stop_max_attempt_number=2)
-    def _get_body(self, url):
+    def _get_body(self, url, api_version):
         authentication_type = self.provider.api_authentication.get("type")
         if authentication_type in (None, "", "none"):
             client = requests
@@ -206,14 +460,6 @@ class StatusChangesPoller:
         else:
             raise NotImplementedError
 
-        # TODO(hcauwelier) make it mandatory, see SMP-1673
-        api_version = self.provider.api_configuration.get(
-            "api_version", enums.DEFAULT_PROVIDER_API_VERSION
-        )
-        # We store the enum key, which cannot be a numeric identifier
-        # It doubles as a validity check
-        api_version = enums.MDS_VERSIONS[api_version].value
-
         headers = {
             # We only accept the version we expect from that provider
             # And it should reject it when it bumps to the new version
@@ -221,7 +467,7 @@ class StatusChangesPoller:
             % (MDS_CONTENT_TYPE, api_version)
         }
 
-        logger.debug("Polling provider on URL %s", url)
+        logger.debug("Polling provider on URL %s with headers %s", url, headers)
         response = client.get(url, timeout=30, headers=headers)
         # Token may be expired sooner than expected, retry in one minute
         if response.status_code in (401, 403):
@@ -404,7 +650,7 @@ class StatusChangesPoller:
                     for status_change in with_missing_devices
                 )
             )
-            if POLLER_CREATE_REGISTER_EVENTS:
+            if getattr(settings, "POLLER_CREATE_REGISTER_EVENTS", False):
                 # Create fake register events to simulate device registration
                 db_helpers.upsert_event_records(
                     (
@@ -486,10 +732,19 @@ def _create_event_record(status_change):
     else:  # Spec violation!
         point = None
 
-    first_saved_at = None
-    # "Aggregation" layers store a recorded field, and we want to keep the same value
-    if "recorded" in status_change and status_change["recorded"]:
-        first_saved_at = utils.from_mds_timestamp(status_change["recorded"])
+    publication_time = None
+    if status_change.get("publication_time"):
+        publication_time = utils.from_mds_timestamp(status_change["publication_time"])
+    # "Aggregation" providers store a recorded field, and we want to keep the same value
+    # until we get the publication_time everywhere
+    # Vendor only, 0.3 only, will disappear
+    recorded = None
+    if status_change.get("recorded"):
+        recorded = utils.from_mds_timestamp(status_change["recorded"])
+    if publication_time and recorded:
+        difference = abs(publication_time - recorded)
+        if difference > datetime.timedelta(minutes=10):
+            logger.warning("publication_time and recorded differ by %s", difference)
 
     return models.EventRecord(
         device_id=status_change["device_id"],
@@ -498,7 +753,7 @@ def _create_event_record(status_change):
         event_type=status_change["agency_event_type"],
         event_type_reason=status_change["agency_event_type_reason"],
         properties=properties,
-        first_saved_at=first_saved_at,
+        publication_time=publication_time or recorded,
     )
 
 

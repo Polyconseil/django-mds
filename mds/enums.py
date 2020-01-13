@@ -9,12 +9,13 @@ def choices(enum):
     return [(member.name, member.value) for member in enum]
 
 
-# Supported versions in this release
+# Supported versions in this release (Accept header format)
 # Even if we used the functional API to be able to use a version number as the key,
-# it would generate an invalid Enum type in auto-generated TypeScript APIs.
+# it would generate an invalid name for a variable in auto-generated APIs.
 class MDS_VERSIONS(enum.Enum):
     v0_2 = "0.2"
     v0_3 = "0.3"
+    v0_4 = "0.4"
 
 
 # TODO(hcauwelier) remove fallback, see SMP-1673
@@ -87,7 +88,7 @@ class PROVIDER_EVENT_TYPE_REASON(enum.Enum):
     user_drop_off = pgettext_lazy("Event type", "User drop off")
     rebalance_drop_off = pgettext_lazy("Event type", "Rebalance drop off")
     maintenance_drop_off = pgettext_lazy("Event type", "Maintenance drop off")
-    agency_drop_off = pgettext_lazy("Event type", "Agency drop off")
+    agency_drop_off = pgettext_lazy("Event type", "Agency drop off")  # New in 0.4
     # reserved
     user_pick_up = pgettext_lazy("Event type", "User pick up")
     # unavailable
@@ -95,9 +96,9 @@ class PROVIDER_EVENT_TYPE_REASON(enum.Enum):
     low_battery = pgettext_lazy("Event type", "Low battery")
     # removed
     service_end = pgettext_lazy("Event type", "Service end")
-    rebalance_pick_up = pgettext_lazy("Event type", "Rebalance pick up")
-    maintenance_pick_up = pgettext_lazy("Event type", "Maintenance pick up")
-    agency_pick_up = pgettext_lazy("Event type", "Agency pick up")
+    rebalance_pick_up = pgettext_lazy("Event type", "Rebalance pick up")  # New 0.4
+    maintenance_pick_up = pgettext_lazy("Event type", "Maintenance pick up")  # 0.4
+    agency_pick_up = pgettext_lazy("Event type", "Agency pick up")  # 0.4
     # this last event is in neither of the MDS spec
     telemetry = pgettext_lazy("Event type", "Received telemetry")
     # This may be added in a revision of the agency API spec
