@@ -1,7 +1,7 @@
 Changelog
 =========
 
-0.7.4 (unreleased)
+0.7.4 (2020-01-13)
 ------------------
 
 - Add support for polling v0.4 Provider APIs.
