@@ -5,8 +5,8 @@ import uuid
 from django.utils import timezone
 import jwt
 
+from mds.authent.conf import settings
 from . import models
-from . import settings
 
 
 AuthMean = namedtuple("AuthMean", ("key", "algorithm"))
@@ -40,6 +40,10 @@ def _generate_jwt(payload):
 
 
 def _get_auth_mean():
+    assert not all([settings.AUTHENT_SECRET_KEY, settings.AUTHENT_RSA_PRIVATE_KEY]), (
+        "You must define either settings.AUTHENT_RSA_PRIVATE_KEY "
+        "or settings.AUTHENT_SECRET_KEY and not both."
+    )
     if settings.AUTHENT_RSA_PRIVATE_KEY:
         return AuthMean(settings.AUTHENT_RSA_PRIVATE_KEY, "RS256")
     return AuthMean(settings.AUTHENT_SECRET_KEY, "HS256")

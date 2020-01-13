@@ -20,11 +20,10 @@ from mds import db_helpers
 from mds import enums
 from mds import models
 from mds import utils
+from mds.conf import settings
 from mds.provider_mapping import PROVIDER_REASON_TO_AGENCY_EVENT
 from .oauth2_store import OAuth2Store
 from .translation import translate_data
-from .settings import PROVIDER_POLLER_LIMIT_DAYS
-from .settings import POLLER_CREATE_REGISTER_EVENTS
 
 
 ACCEPTED_MDS_VERSIONS = ["0.2", "0.3"]
@@ -43,8 +42,8 @@ logger = logging.getLogger(__name__)
 def get_date_param(last_event):
     if last_event:
         return utils.to_mds_timestamp(last_event)
-    elif PROVIDER_POLLER_LIMIT_DAYS:
-        delta = timezone.now() - datetime.timedelta(PROVIDER_POLLER_LIMIT_DAYS)
+    elif settings.PROVIDER_POLLER_LIMIT_DAYS:
+        delta = timezone.now() - datetime.timedelta(settings.PROVIDER_POLLER_LIMIT_DAYS)
         logger.debug(f"No last_event on provider, starting from: {str(delta)}")
         return utils.to_mds_timestamp(delta)
 
@@ -384,7 +383,7 @@ class StatusChangesPoller:
                     for status_change in with_missing_devices
                 )
             )
-            if POLLER_CREATE_REGISTER_EVENTS:
+            if settings.POLLER_CREATE_REGISTER_EVENTS:
                 # Create fake register events to simulate device registration
                 db_helpers.upsert_event_records(
                     (
