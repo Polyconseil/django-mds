@@ -1,7 +1,7 @@
 Changelog
 =========
 
-0.7.7 (unreleased)
+0.7.7 (2020-01-14)
 ------------------
 
 - Fix polling the next hour in the status_changes endpoint.
