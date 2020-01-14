@@ -1,7 +1,7 @@
 Changelog
 =========
 
-0.7.5 (unreleased)
+0.7.5 (2020-01-14)
 ------------------
 
 - Restore compatibility with 0.2 and flawed 0.3 providers.
