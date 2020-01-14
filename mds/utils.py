@@ -1,36 +1,26 @@
 import datetime
-import importlib
 import random
 
 from django.conf import settings
 from django.contrib.gis.geos.point import Point
+from django.utils.module_loading import import_string
 
 from functools import lru_cache
 
 
-@lru_cache()
-def get_object_from_settings(setting):
-    """Return an object.
-
-    ``setting`` should be a full Python path,
-    e.g. ``mds.utils.telemetry_is_enabled``.
-    """
-    module_name, obj_name = setting.rsplit(".", 1)
-    module = importlib.import_module(module_name)
-    return getattr(module, obj_name)
-
-
 def telemetry_is_enabled():
-    """
-    This function is imported with `get_object_from_cache`
-    from ENABLE_TELEMETRY_FUNCTION in the settings.
-    It may easily be overriden to enable/disable the telemetries
-    saving through a dynamic setting.
-    """
+    """Default implementation for the ENABLE_TELEMETRY_FUNCTION setting."""
     return True
 
 
-is_telemetry_enabled = get_object_from_settings(settings.ENABLE_TELEMETRY_FUNCTION)
+def is_telemetry_enabled():
+    # Cache using the setting value as a key,
+    # to get a different value from a setting override (tests)
+    @lru_cache()
+    def get_function_from_settings(setting):
+        return import_string(setting)
+
+    return get_function_from_settings(settings.ENABLE_TELEMETRY_FUNCTION)()
 
 
 def to_mds_timestamp(dt: datetime.datetime) -> int:

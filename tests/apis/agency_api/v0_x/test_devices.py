@@ -13,9 +13,6 @@ from mds.access_control.scopes import SCOPE_AGENCY_API
 from tests.auth_helpers import auth_header, BASE_NUM_QUERIES
 
 
-import mds.apis.agency_api.v0_x.vehicles
-
-
 @pytest.mark.django_db
 def test_devices_metadata(client):
     provider = factories.Provider(name="Test provider")
@@ -399,8 +396,6 @@ def return_false():
     ENABLE_TELEMETRY_FUNCTION="tests.apis.agency_api.v0_x.test_devices.return_false"
 )
 def test_device_telemetry_when_disabled(client, django_assert_num_queries):
-    mds.apis.agency_api.v0_x.vehicles.is_telemetry_enabled = lambda: False
-
     provider = factories.Provider(id=uuid.UUID("aaaa0000-61fd-4cce-8113-81af1de90942"))
     device_id_pattern = "bbbb0000-61fd-4cce-8113-81af1de9094%s"
     factories.Device(id=uuid.UUID(device_id_pattern % 1), provider=provider)
