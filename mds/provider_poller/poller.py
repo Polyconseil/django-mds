@@ -463,7 +463,9 @@ class StatusChangesPoller:
         headers = {
             # We only accept the version we expect from that provider
             # And it should reject it when it bumps to the new version
-            "Accept": "%s;version=%s"
+            # TODO(hcauwelier) some server implementations are flawed
+            # leave the standard content type for now
+            "Accept": "application/json,%s;version=%s"
             % (MDS_CONTENT_TYPE, api_version)
         }
 

@@ -4,7 +4,7 @@ Changelog
 0.7.5 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Restore compatibility with 0.2 and flawed 0.3 providers.
 
 
 0.7.4 (2020-01-13)
