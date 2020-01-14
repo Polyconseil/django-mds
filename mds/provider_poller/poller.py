@@ -460,14 +460,20 @@ class StatusChangesPoller:
         else:
             raise NotImplementedError
 
-        headers = {
+        headers = {}
+
+        # TODO(hcauwelier) just fork the code for MDS 0.4
+        if api_version == "0.4":
             # We only accept the version we expect from that provider
             # And it should reject it when it bumps to the new version
+            headers["Accept"] = "%s;version=%s" % (MDS_CONTENT_TYPE, api_version)
+        else:
             # TODO(hcauwelier) some server implementations are flawed
             # leave the standard content type for now
-            "Accept": "application/json,%s;version=%s"
-            % (MDS_CONTENT_TYPE, api_version)
-        }
+            headers["Accept"] = "application/json,%s;version=%s" % (
+                MDS_CONTENT_TYPE,
+                api_version,
+            )
 
         logger.debug("Polling provider on URL %s with headers %s", url, headers)
         response = client.get(url, timeout=30, headers=headers)
