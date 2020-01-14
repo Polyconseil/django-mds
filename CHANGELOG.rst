@@ -1,7 +1,7 @@
 Changelog
 =========
 
-0.7.6 (unreleased)
+0.7.6 (2020-01-14)
 ------------------
 
 - Hotfix: we broke 0.4 servers too strict on the MDS spec.
