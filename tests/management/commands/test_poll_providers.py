@@ -218,6 +218,88 @@ def test_poll_provider_v0_4_archives(client, requests_mock):
 
 
 @pytest.mark.django_db
+def test_poll_provider_v0_4_archives_resume(client, requests_mock):
+    # Note: testing with the default "POLLER_CREATE_REGISTER_EVENTS = False"
+    last_event_time_polled = datetime.datetime(
+        2019, 10, 16, 14, 40, 35, tzinfo=timezone.utc
+    )
+    provider = factories.Provider(
+        base_api_url="http://provider",
+        api_configuration__api_version=enums.MDS_VERSIONS.v0_4.name,
+        last_event_time_polled=last_event_time_polled,
+    )
+    # We're polling from zero, nothing already exists in the DB
+    expected_device = factories.Device.build()
+    expected_event = factories.EventRecord.build(
+        event_type=enums.EVENT_TYPE.service_start.name,
+    )
+    stdout, stderr = io.StringIO(), io.StringIO()
+
+    # As we're starting before the threshold, we'll poll the archives endpoint
+    status_changes = urllib.parse.urljoin(provider.base_api_url, "/status_changes")
+    requests_mock.get(
+        status_changes,
+        json=make_response(
+            provider,
+            expected_device,
+            expected_event,
+            event_type_reason="service_start",
+            version="0.4.0",
+        ),
+    )
+    # Mocking must fail if we query the real time endpoint instead
+    requests_mock.get(
+        urllib.parse.urljoin(provider.base_api_url, "/events"), status_code=400,
+    )
+    call_command("poll_providers", "--raise-on-error", stdout=stdout, stderr=stderr)
+
+    assert_command_success(stdout, stderr)
+    # The last poller cursor is updated
+    provider = models.Provider.objects.get(pk=provider.pk)
+    assert provider.last_event_time_polled > last_event_time_polled
+    # The device was created on the fly
+    device = models.Device.objects.get(pk=expected_device.pk)
+    assert device.saved_at is not None
+    # The actual event
+    event = device.event_records.get()
+    assert event.event_type == enums.EVENT_TYPE.service_start.name
+    assert_event_equal(event, expected_event)
+    assert_device_equal(device, expected_device)
+
+
+@pytest.mark.django_db
+def test_poll_provider_v0_4_archives_no_result(client, requests_mock):
+    # Note: testing with the default "POLLER_CREATE_REGISTER_EVENTS = False"
+    provider = factories.Provider(
+        base_api_url="http://provider",
+        api_configuration__api_version=enums.MDS_VERSIONS.v0_4.name,
+        last_event_time_polled=None,
+    )
+    stdout, stderr = io.StringIO(), io.StringIO()
+
+    # As we're starting before the threshold, we'll poll the archives endpoint
+    status_changes = urllib.parse.urljoin(provider.base_api_url, "/status_changes")
+    requests_mock.get(
+        status_changes,
+        json={
+            "version": "0.4.0",
+            "data": {"status_changes": []},
+        },  # No status changes in this hour
+    )
+    # Mocking must fail if we query the real time endpoint instead
+    requests_mock.get(
+        urllib.parse.urljoin(provider.base_api_url, "/events"), status_code=400,
+    )
+    call_command("poll_providers", "--raise-on-error", stdout=stdout, stderr=stderr)
+
+    assert_command_success(stdout, stderr)
+    # The last poller cursor is updated
+    provider = models.Provider.objects.get(pk=provider.pk)
+    # No event but we won't ask this hour again
+    assert provider.last_event_time_polled is not None
+
+
+@pytest.mark.django_db
 def test_poll_provider_v0_4_realtime(client, requests_mock):
     # Note: testing with the default "POLLER_CREATE_REGISTER_EVENTS = False"
     # This time we didn't poll long ago

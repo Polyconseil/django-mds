@@ -387,12 +387,12 @@ class StatusChangesPoller:
         realtime_threshold = parse_duration(  # Default is 9 days
             self.provider.api_configuration.get("realtime_threshold", "P9D")
         )
-        if (timezone.now() - last_event_time_polled) > realtime_threshold:
+        next_event_time = last_event_time_polled + datetime.timedelta(hours=1)
+        if (timezone.now() - next_event_time) > realtime_threshold:
             # We have to query the archived status changes with another format
             logger.info("last_event_time_polled is too old, asking archives")
-            params["event_time"] = last_event_time_polled.isoformat()[
-                : len("YYYY-MM-DDTHH")
-            ]
+            # We're done with the events of the last hour, ask the next hour
+            params["event_time"] = next_event_time.isoformat()[: len("YYYY-MM-DDTHH")]
         else:
             # Query the real-time endpoint as usual
             params["start_time"] = utils.to_mds_timestamp(
@@ -428,14 +428,12 @@ class StatusChangesPoller:
                 if status_changes:
                     # We get the maximum values from the status changes
                     event_time_polled, _ = self._process_status_changes(status_changes)
+                elif endpoint == "status_changes":
+                    # This hour frame of archives didn't contain results
+                    event_time_polled = next_event_time
                 else:
-                    if endpoint == "status_changes":
-                        # this hour frame of archives didn't contain results
-                        event_time_polled = last_event_time_polled + datetime.timedelta(
-                            hours=1
-                        )
-                    else:
-                        break
+                    # Try again from this point later
+                    break
 
                 if self.cursor:
                     if self.cursor == POLLING_CURSORS.start_time.name:
