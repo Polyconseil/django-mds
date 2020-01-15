@@ -4,6 +4,7 @@ from django.contrib.auth import views as auth_views
 from django.urls import path
 
 import mds.apis.agency_api.v0_3.urls
+import mds.apis.agency_api.v0_4.urls
 import mds.authent.urls
 
 urlpatterns = [
@@ -24,6 +25,16 @@ urlpatterns = [
             (
                 mds.apis.agency_api.v0_3.urls.get_url_patterns(prefix="mds/v0.3"),
                 "agency-0.3",
+            )
+        ),
+    ),
+    # MDS 0.4
+    path(
+        "mds/v0.4/",
+        include(
+            (
+                mds.apis.agency_api.v0_4.urls.get_url_patterns(prefix="mds/v0.4"),
+                "agency-0.4",
             )
         ),
     ),
