@@ -12,7 +12,7 @@ from mds import utils
 
 @pytest.mark.django_db
 def test_compliances_metadata(client):
-    response = client.options(reverse("agency:compliance-list"))
+    response = client.options(reverse("agency-0.3:compliance-list"))
     assert response.status_code == 200
     assert len(response.data) == 5  # FIXME
     assert response._headers["allow"][1] == "GET, POST, HEAD, OPTIONS"
@@ -52,7 +52,7 @@ def test_compliance_list_basic(client, django_assert_num_queries):
     n += 1  # query on other device
     # query Last compliance
     with django_assert_num_queries(n):
-        response = client.get(reverse("agency:compliance-list"))
+        response = client.get(reverse("agency-0.3:compliance-list"))
     assert response.status_code == 200
 
     # Check why there is policy more (??? what does it mean?)
@@ -61,7 +61,7 @@ def test_compliance_list_basic(client, django_assert_num_queries):
     # Now test with a provider ID
 
     response = client.get(
-        reverse("agency:compliance-list"), {"provider_id": str(device.provider.id)}
+        reverse("agency-0.3:compliance-list"), {"provider_id": str(device.provider.id)}
     )
 
     # The provider can fetch a policy that applies to them
@@ -70,7 +70,7 @@ def test_compliance_list_basic(client, django_assert_num_queries):
     assert response.data[0]["id"] == str(compliance.policy_id)
 
     response = client.get(
-        reverse("agency:compliance-list"),
+        reverse("agency-0.3:compliance-list"),
         {
             "provider_id": str(device.provider.id),
             "end_date": utils.to_mds_timestamp(
@@ -84,7 +84,7 @@ def test_compliance_list_basic(client, django_assert_num_queries):
     assert response.data == []
 
     response = client.get(
-        reverse("agency:compliance-list"),
+        reverse("agency-0.3:compliance-list"),
         {
             "provider_id": str(device.provider.id),
             "end_date": utils.to_mds_timestamp(
@@ -99,7 +99,7 @@ def test_compliance_list_basic(client, django_assert_num_queries):
     assert response.data[0]["id"] == str(compliance.policy_id)
 
     response = client.get(
-        reverse("agency:compliance-list"),
+        reverse("agency-0.3:compliance-list"),
         {
             "end_date": utils.to_mds_timestamp(
                 datetime.datetime(
@@ -113,7 +113,7 @@ def test_compliance_list_basic(client, django_assert_num_queries):
     assert response.status_code == 200 and response.data == []
 
     response = client.get(
-        reverse("agency:compliance-list"),
+        reverse("agency-0.3:compliance-list"),
         {
             "end_date": utils.to_mds_timestamp(
                 datetime.datetime(
@@ -128,7 +128,7 @@ def test_compliance_list_basic(client, django_assert_num_queries):
     assert response.data[0]["id"] == str(compliance_ongoing.policy_id)
 
     response = client.get(
-        reverse("agency:compliance-list"),
+        reverse("agency-0.3:compliance-list"),
         {"provider_id": "89b5bbb5-ba98-4498-9649-787eb8ddbb8e"},
     )  # this provider don't exist
 

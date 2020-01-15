@@ -11,7 +11,7 @@ from tests.auth_helpers import auth_header, BASE_NUM_QUERIES
 def test_areas_metadata(client):
     provider = factories.Provider(name="Test provider")
     response = client.options(
-        reverse("agency:area-list"),
+        reverse("agency-0.3:area-list"),
         **auth_header(SCOPE_AGENCY_API, provider_id=provider.id),
     )
     assert response.status_code == 200
@@ -24,17 +24,17 @@ def test_areas_detail(client, django_assert_num_queries):
     area = factories.Area(providers=[provider])
     other_provider = factories.Provider(name="Test other provider")
 
-    response = client.get(reverse("agency:area-detail", args=[area.pk]))
+    response = client.get(reverse("agency-0.3:area-detail", args=[area.pk]))
     assert response.status_code == 401
 
     response = client.get(
-        reverse("agency:area-detail", args=["foobar"]),
+        reverse("agency-0.3:area-detail", args=["foobar"]),
         **auth_header(SCOPE_AGENCY_API, provider_id=provider.id),
     )
     assert response.status_code == 404  # Testing DRF?!
 
     response = client.get(
-        reverse("agency:area-detail", args=[area.pk]),
+        reverse("agency-0.3:area-detail", args=[area.pk]),
         **auth_header(SCOPE_AGENCY_API, provider_id=other_provider.id),
     )
     assert response.status_code == 404
@@ -44,7 +44,7 @@ def test_areas_detail(client, django_assert_num_queries):
     n += 1  # query on polygons
     with django_assert_num_queries(n):
         response = client.get(
-            reverse("agency:area-detail", args=[area.pk]),
+            reverse("agency-0.3:area-detail", args=[area.pk]),
             **auth_header(SCOPE_AGENCY_API, provider_id=provider.id),
         )
     assert response.status_code == 200
@@ -65,7 +65,7 @@ def test_areas_list(client, django_assert_num_queries):
     provider = factories.Provider(name="Test provider")
     factories.Area.create_batch(5, providers=[provider])
 
-    response = client.get(reverse("agency:area-list"))
+    response = client.get(reverse("agency-0.3:area-list"))
     assert response.status_code == 401
 
     n = BASE_NUM_QUERIES
@@ -73,7 +73,7 @@ def test_areas_list(client, django_assert_num_queries):
     n += 1  # query on polygons
     with django_assert_num_queries(n):
         response = client.get(
-            reverse("agency:area-list"),
+            reverse("agency-0.3:area-list"),
             **auth_header(SCOPE_AGENCY_API, provider_id=provider.id),
         )
     assert response.status_code == 200

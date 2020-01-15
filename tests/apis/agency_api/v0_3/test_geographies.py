@@ -7,14 +7,14 @@ from mds import factories
 
 @pytest.mark.django_db
 def test_geography_list(client):
-    response = client.get(reverse("agency:geography-list"))
+    response = client.get(reverse("agency-0.3:geography-list"))
     assert response.status_code == 404
 
 
 @pytest.mark.django_db
 def test_geography_detail(client):
     policy = factories.Policy(published=True)
-    response = client.get(reverse("agency:geography-detail", args=[policy.id]))
+    response = client.get(reverse("agency-0.3:geography-detail", args=[policy.id]))
     assert response.status_code == 200
     # The whole structure is tested in test_models
     assert response.json()["type"] == "FeatureCollection"

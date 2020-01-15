@@ -1,11 +1,10 @@
 import datetime
+from functools import lru_cache
 import random
 
 from django.conf import settings
 from django.contrib.gis.geos.point import Point
 from django.utils.module_loading import import_string
-
-from functools import lru_cache
 
 
 def telemetry_is_enabled():

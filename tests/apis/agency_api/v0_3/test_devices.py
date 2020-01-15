@@ -17,7 +17,7 @@ from tests.auth_helpers import auth_header, BASE_NUM_QUERIES
 def test_devices_metadata(client):
     provider = factories.Provider(name="Test provider")
     response = client.options(
-        reverse("agency:device-list"),
+        reverse("agency-0.3:device-list"),
         **auth_header(SCOPE_AGENCY_API, provider_id=provider.id),
     )
     assert response.status_code == 200
@@ -105,7 +105,7 @@ def test_device_list_basic(client, django_assert_num_queries):
     }
 
     # test auth
-    response = client.get(reverse("agency:device-list"))
+    response = client.get(reverse("agency-0.3:device-list"))
     assert response.status_code == 401
 
     n = BASE_NUM_QUERIES
@@ -113,7 +113,7 @@ def test_device_list_basic(client, django_assert_num_queries):
     n += 1  # query on last telemetry
     with django_assert_num_queries(n):
         response = client.get(
-            reverse("agency:device-list"),
+            reverse("agency-0.3:device-list"),
             **auth_header(SCOPE_AGENCY_API, provider_id=provider.id),
         )
     assert response.status_code == 200
@@ -123,7 +123,7 @@ def test_device_list_basic(client, django_assert_num_queries):
     assert expected_device2 in response.data
 
     # test auth
-    response = client.get(reverse("agency:device-detail", args=[device.id]))
+    response = client.get(reverse("agency-0.3:device-detail", args=[device.id]))
     assert response.status_code == 401
 
     n = BASE_NUM_QUERIES
@@ -131,7 +131,7 @@ def test_device_list_basic(client, django_assert_num_queries):
     n += 1  # query on last telemetry
     with django_assert_num_queries(n):
         response = client.get(
-            reverse("agency:device-detail", args=[device.id]),
+            reverse("agency-0.3:device-detail", args=[device.id]),
             **auth_header(SCOPE_AGENCY_API, provider_id=provider.id),
         )
     assert response.status_code == 200
@@ -139,7 +139,7 @@ def test_device_list_basic(client, django_assert_num_queries):
 
     # cannot access other providers data
     response = client.get(
-        reverse("agency:device-detail", args=[other_device.id]),
+        reverse("agency-0.3:device-detail", args=[other_device.id]),
         **auth_header(SCOPE_AGENCY_API, provider_id=provider.id),
     )
     assert response.status_code == 404
@@ -164,12 +164,12 @@ def test_device_register(client):
 
     # Test auth
     response = client.post(
-        reverse("agency:device-list"), data=data, content_type="application/json"
+        reverse("agency-0.3:device-list"), data=data, content_type="application/json"
     )
     assert response.status_code == 401
 
     response = client.post(
-        reverse("agency:device-list"),
+        reverse("agency-0.3:device-list"),
         data=data,
         content_type="application/json",
         **auth_header(SCOPE_AGENCY_API, provider_id=provider.id),
@@ -213,7 +213,7 @@ def test_device_event(client):
     # test auth
     assert device.event_records.all().count() == 0
     response = client.post(
-        reverse("agency:device-event", args=[device_id]),
+        reverse("agency-0.3:device-event", args=[device_id]),
         data=data,
         content_type="application/json",
     )
@@ -221,7 +221,7 @@ def test_device_event(client):
 
     # test nominal
     response = client.post(
-        reverse("agency:device-event", args=[device_id]),
+        reverse("agency-0.3:device-event", args=[device_id]),
         data=data,
         content_type="application/json",
         **auth_header(SCOPE_AGENCY_API, provider_id=provider.id),
@@ -263,7 +263,7 @@ def test_device_event_inverted_coordinates(client):
     # test auth
     assert device.event_records.all().count() == 0
     response = client.post(
-        reverse("agency:device-event", args=[device_id]),
+        reverse("agency-0.3:device-event", args=[device_id]),
         data=data,
         content_type="application/json",
         **auth_header(SCOPE_AGENCY_API, provider_id=provider.id),
@@ -276,7 +276,7 @@ def test_device_event_inverted_coordinates(client):
     provider.save()
 
     response = client.post(
-        reverse("agency:device-event", args=[device_id]),
+        reverse("agency-0.3:device-event", args=[device_id]),
         data=data,
         content_type="application/json",
         **auth_header(SCOPE_AGENCY_API, provider_id=provider.id),
@@ -351,13 +351,15 @@ def test_device_telemetry(client, django_assert_num_queries):
         == 0
     )
     response = client.post(
-        reverse("agency:device-telemetry"), data=data, content_type="application/json"
+        reverse("agency-0.3:device-telemetry"),
+        data=data,
+        content_type="application/json",
     )
     assert response.status_code == 401
 
     # make sure providers can only update their telemetries
     response = client.post(
-        reverse("agency:device-telemetry"),
+        reverse("agency-0.3:device-telemetry"),
         data={"data": data["data"] + [other_device_data]},
         content_type="application/json",
         **auth_header(SCOPE_AGENCY_API, provider_id=provider.id),
@@ -370,7 +372,7 @@ def test_device_telemetry(client, django_assert_num_queries):
     n += 1  # check provider configuration
     with django_assert_num_queries(n):
         response = client.post(
-            reverse("agency:device-telemetry"),
+            reverse("agency-0.3:device-telemetry"),
             data=data,
             content_type="application/json",
             **auth_header(SCOPE_AGENCY_API, provider_id=provider.id),
@@ -393,7 +395,7 @@ def return_false():
 
 @pytest.mark.django_db
 @override_settings(
-    ENABLE_TELEMETRY_FUNCTION="tests.apis.agency_api.v0_x.test_devices.return_false"
+    ENABLE_TELEMETRY_FUNCTION="tests.apis.agency_api.v0_3.test_devices.return_false"
 )
 def test_device_telemetry_when_disabled(client, django_assert_num_queries):
     provider = factories.Provider(id=uuid.UUID("aaaa0000-61fd-4cce-8113-81af1de90942"))
@@ -437,7 +439,7 @@ def test_device_telemetry_when_disabled(client, django_assert_num_queries):
     n += 1  # select devices
     with django_assert_num_queries(n):
         response = client.post(
-            reverse("agency:device-telemetry"),
+            reverse("agency-0.3:device-telemetry"),
             data=data,
             content_type="application/json",
             **auth_header(SCOPE_AGENCY_API, provider_id=provider.id),
@@ -476,7 +478,7 @@ def test_device_new_api_agency(client):
     # test auth
     assert device.event_records.all().count() == 0
     response = client.post(
-        reverse("agency:device-event", args=[device_id]),
+        reverse("agency-0.3:device-event", args=[device_id]),
         data=data,
         content_type="application/json",
         **auth_header(SCOPE_AGENCY_API, provider_id=provider.id),
@@ -500,7 +502,7 @@ def test_device_new_api_agency(client):
     }
 
     response2 = client.post(
-        reverse("agency:device-event", args=[device_id]),
+        reverse("agency-0.3:device-event", args=[device_id]),
         data=data2,
         content_type="application/json",
         **auth_header(SCOPE_AGENCY_API, provider_id=provider.id),
@@ -533,7 +535,7 @@ def test_device_new_api_agency_invalid(client):
     # test auth
     assert device.event_records.all().count() == 0
     response = client.post(
-        reverse("agency:device-event", args=[device_id]),
+        reverse("agency-0.3:device-event", args=[device_id]),
         data=data,
         content_type="application/json",
         **auth_header(SCOPE_AGENCY_API, provider_id=provider.id),
@@ -563,7 +565,7 @@ def test_validation_error_new_api_allowed(client):
 
     assert device.event_records.all().count() == 0
     response = client.post(
-        reverse("agency:device-event", args=[device_id]),
+        reverse("agency-0.3:device-event", args=[device_id]),
         data=data,
         content_type="application/json",
         **auth_header(SCOPE_AGENCY_API, provider_id=provider.id),
@@ -592,7 +594,7 @@ def test_validation_error_new_api_not_in_mapping(client):
 
     assert device.event_records.all().count() == 0
     response = client.post(
-        reverse("agency:device-event", args=[device_id]),
+        reverse("agency-0.3:device-event", args=[device_id]),
         data=data,
         content_type="application/json",
         **auth_header(SCOPE_AGENCY_API, provider_id=provider.id),
@@ -619,7 +621,7 @@ def test_create_device_missing_device(client):
     }
 
     response = client.post(
-        reverse("agency:device-event", args=[device_id]),
+        reverse("agency-0.3:device-event", args=[device_id]),
         data=data,
         content_type="application/json",
         **auth_header(SCOPE_AGENCY_API, provider_id=provider.id),
@@ -650,7 +652,7 @@ def test_create_device_with_poller_id(client):
     }
 
     response = client.post(
-        reverse("agency:device-event", args=[device_id]),
+        reverse("agency-0.3:device-event", args=[device_id]),
         data=data,
         content_type="application/json",
         **auth_header(SCOPE_AGENCY_API, provider_id=poller.id),

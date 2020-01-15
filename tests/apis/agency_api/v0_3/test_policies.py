@@ -14,7 +14,7 @@ from tests.auth_helpers import auth_header, BASE_NUM_QUERIES
 
 @pytest.mark.django_db
 def test_policies_metadata(client):
-    response = client.options(reverse("agency:policy-list"))
+    response = client.options(reverse("agency-0.3:policy-list"))
     assert response.status_code == 200
     assert len(response.data) == 4  # FIXME
     assert response._headers["allow"][1] == "GET, HEAD, OPTIONS"
@@ -36,14 +36,14 @@ def test_policy_list_basic(client, django_assert_num_queries):
     n += 1  # query on related providers
     n += 1  # query on related previous policies
     with django_assert_num_queries(n - 1):  # No token check
-        response = client.get(reverse("agency:policy-list"))
+        response = client.get(reverse("agency-0.3:policy-list"))
     assert response.status_code == 200
     assert [p["policy_id"] for p in response.data] == [str(general_policy.id)]
 
     # Test with provider auth
     with django_assert_num_queries(n):
         response = client.get(
-            reverse("agency:policy-list"),
+            reverse("agency-0.3:policy-list"),
             **auth_header(SCOPE_AGENCY_API, provider_id=provider.id),
         )
     assert response.status_code == 200
@@ -57,7 +57,7 @@ def test_policy_list_basic(client, django_assert_num_queries):
     # Test with other provider auth
     with django_assert_num_queries(n):
         response = client.get(
-            reverse("agency:policy-list"),
+            reverse("agency-0.3:policy-list"),
             **auth_header(SCOPE_AGENCY_API, provider_id=other_provider.id),
         )
     assert response.status_code == 200
@@ -94,12 +94,12 @@ def test_policy_list_range(client):
     )
 
     # Current and future policies by default
-    response = client.get(reverse("agency:policy-list"))
+    response = client.get(reverse("agency-0.3:policy-list"))
     assert [p["name"] for p in response.data] == ["bound", "ongoing", "future"]
 
     # Current only
     response = client.get(
-        reverse("agency:policy-list"),
+        reverse("agency-0.3:policy-list"),
         {
             "start_time": utils.to_mds_timestamp(timezone.now()),
             "end_time": utils.to_mds_timestamp(timezone.now()),
@@ -109,7 +109,7 @@ def test_policy_list_range(client):
 
     # Ongoing is still.. ongoing, and future
     response = client.get(
-        reverse("agency:policy-list"),
+        reverse("agency-0.3:policy-list"),
         {
             "start_time": utils.to_mds_timestamp(
                 timezone.now() + datetime.timedelta(days=30)
@@ -120,7 +120,7 @@ def test_policy_list_range(client):
 
     # Past only
     response = client.get(
-        reverse("agency:policy-list"),
+        reverse("agency-0.3:policy-list"),
         {
             "start_time": utils.to_mds_timestamp(
                 timezone.now() - datetime.timedelta(days=365)
@@ -134,7 +134,7 @@ def test_policy_list_range(client):
 
     # All
     response = client.get(
-        reverse("agency:policy-list"),
+        reverse("agency-0.3:policy-list"),
         {
             "start_time": utils.to_mds_timestamp(
                 timezone.now() - datetime.timedelta(days=365)

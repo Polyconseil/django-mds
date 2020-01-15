@@ -3,16 +3,27 @@ from django.contrib import admin
 from django.contrib.auth import views as auth_views
 from django.urls import path
 
-import mds.apis.agency_api.v0_x.urls
+import mds.apis.agency_api.v0_3.urls
 import mds.authent.urls
 
 urlpatterns = [
+    # Backwards compat, to remove with MDS 0.3
     path(
         "mds/v0.x/",
         include(
             (
-                mds.apis.agency_api.v0_x.urls.get_url_patterns(prefix="mds/v0.x"),
+                mds.apis.agency_api.v0_3.urls.get_url_patterns(prefix="mds/v0.x"),
                 "agency",
+            )
+        ),
+    ),
+    # MDS 0.3
+    path(
+        "mds/v0.3/",
+        include(
+            (
+                mds.apis.agency_api.v0_3.urls.get_url_patterns(prefix="mds/v0.3"),
+                "agency-0.3",
             )
         ),
     ),
