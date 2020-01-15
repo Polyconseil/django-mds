@@ -111,7 +111,7 @@ class StatusChangesPoller:
         params = {}
 
         # Cursor param (raise if typo)
-        param_name = {enum.name: enum.value for enum in POLLING_CURSORS}[polling_cursor]
+        param_name = POLLING_CURSORS[polling_cursor].value
 
         if polling_cursor == POLLING_CURSORS.total_events.name:
             # Resume from the last line fetched
@@ -239,7 +239,7 @@ class StatusChangesPoller:
         params = {}
 
         # Cursor param (raise if typo)
-        param_name = {enum.name: enum.value for enum in POLLING_CURSORS}[polling_cursor]
+        param_name = POLLING_CURSORS[polling_cursor].value
 
         if polling_cursor == POLLING_CURSORS.total_events.name:
             # Resume from the last line fetched
