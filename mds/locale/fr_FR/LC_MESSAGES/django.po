@@ -256,9 +256,6 @@ msgid "Low battery"
 msgstr "Batterie faible"
 
 #: enums.py:118
-#, fuzzy
-#| msgctxt "Event type"
-#| msgid "Maintenance"
 msgctxt "Event type reason"
 msgid "Maintenance"
 msgstr "Maintenance"
@@ -271,12 +268,9 @@ msgstr "Conformité"
 #: enums.py:120
 msgctxt "Event type reason"
 msgid "Off hours"
-msgstr "En dehors des heures"
+msgstr "En dehors des heures d'activité"
 
 #: enums.py:121
-#, fuzzy
-#| msgctxt "Event type"
-#| msgid "Rebalance pick up"
 msgctxt "Event type reason"
 msgid "Rebalance"
 msgstr "Retrait pour rééquilibrage"
@@ -284,7 +278,7 @@ msgstr "Retrait pour rééquilibrage"
 #: enums.py:122
 msgctxt "Event type reason"
 msgid "Charge"
-msgstr "Charge"
+msgstr "Recharge"
 
 #: enums.py:123
 msgctxt "Event type reason"

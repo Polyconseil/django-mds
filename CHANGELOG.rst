@@ -5,7 +5,7 @@ Changelog
 ------------------
 
 - Fix trailing slash in Agency api v0.3
-
+- Change French translation for Event Type Reason
 
 
 0.7.7 (2020-01-14)
