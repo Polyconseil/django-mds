@@ -4,7 +4,8 @@ Changelog
 0.7.8 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Fix trailing slash in Agency api v0.3
+
 
 
 0.7.7 (2020-01-14)

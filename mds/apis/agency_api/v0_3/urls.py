@@ -15,6 +15,8 @@ from . import compliances
 
 
 agency_router = routers.DefaultRouter()
+agency_router.trailing_slash = "/?"  # Make trailing slash optional
+
 agency_router.register(r"vehicles", vehicles.DeviceViewSet, basename="device")
 agency_router.register(r"policies", policies.PolicyViewSet, basename="policy")
 agency_router.register(

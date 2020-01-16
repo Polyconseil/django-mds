@@ -147,6 +147,10 @@ def test_device_list_basic(client, django_assert_num_queries):
 
 @pytest.mark.django_db
 def test_device_register(client):
+    # assert that the following test post on an url without trailing slash
+    # as specified by specs
+    assert reverse("agency-0.3:device-list")[-1:] != "/"
+
     provider = factories.Provider(id=uuid.UUID("aaaa0000-61fd-4cce-8113-81af1de90942"))
     device_id = uuid.UUID("bbbb0000-61fd-4cce-8113-81af1de90942")
 
@@ -183,6 +187,10 @@ def test_device_register(client):
 
 @pytest.mark.django_db
 def test_device_event(client):
+    # assert that the following test post on an url without trailing slash
+    # as specified by specs
+    assert reverse("agency-0.3:device-event", args=[1])[-1:] != "/"
+
     provider = factories.Provider(
         id=uuid.UUID("aaaa0000-61fd-4cce-8113-81af1de90942"),
         api_configuration={"agency_api_version": "draft"},
@@ -289,6 +297,10 @@ def test_device_event_inverted_coordinates(client):
 
 @pytest.mark.django_db
 def test_device_telemetry(client, django_assert_num_queries):
+    # assert that the following test post on an url without trailing slash
+    # as specified by specs
+    assert reverse("agency-0.3:device-telemetry")[-1:] != "/"
+
     provider = factories.Provider(id=uuid.UUID("aaaa0000-61fd-4cce-8113-81af1de90942"))
     provider2 = factories.Provider(id=uuid.UUID("aaaa0000-61fd-4cce-8113-81af1de90943"))
     device_id_pattern = "bbbb0000-61fd-4cce-8113-81af1de9094%s"
