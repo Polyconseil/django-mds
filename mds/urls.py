@@ -7,7 +7,7 @@ import mds.apis.agency_api.v0_3.urls
 import mds.authent.urls
 
 urlpatterns = [
-    # Backwards compat, to remove with MDS 0.3
+    # TODO(hcauwelier) Backwards compat, to remove with MDS 0.3
     path(
         "mds/v0.x/",
         include(
