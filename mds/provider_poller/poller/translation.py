@@ -4,7 +4,7 @@ by translating them to the latest supported version.
 """
 
 
-def translate_v0_2_to_v0_4(data):
+def translate_v0_2(data):
     # The only two noticeable changes from our point of view are:
     # - timestamps converted from floating-point seconds to milliseconds;
     # - "trip_ids" now is a single "trip_id"
