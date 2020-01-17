@@ -38,9 +38,9 @@ def get_url_patterns(prefix):
     schema_view = get_schema_view(
         openapi.Info(
             title="LADOT agency API",
-            default_version="v0.2",
-            description="see "
-            "https://github.com/CityOfLosAngeles/mobility-data-specification",
+            default_version="v0.3",
+            description="See "
+            "https://github.com/openmobilityfoundation/mobility-data-specification",
         ),
         patterns=[path(prefix, include(agency_router.urls))],
         public=True,
