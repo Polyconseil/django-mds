@@ -564,9 +564,10 @@ class Provider(factory.DjangoModelFactory):
         ["Lime", "BlueLA", "Metro Bike", "LongProviderNameCompanyLtdSarlGmoLgbtq"]
     )
     base_api_url = ""
-    api_configuration = factory.Dict({"trailing_slash": False})
+    api_configuration = factory.Dict({"trailing_slash": False, "api_version": "v0_3"})
     api_authentication = factory.Dict({"type": "none"})
     agency_api_authentication = factory.Dict({"type": "none"})
+    agency_api_configuration = factory.Dict({"api_version": "v0_3"})
     colors = {}
 
 

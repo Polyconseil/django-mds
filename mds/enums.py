@@ -18,11 +18,6 @@ class MDS_VERSIONS(enum.Enum):
     v0_4 = "0.4"
 
 
-# TODO(hcauwelier) remove fallback, see SMP-1673
-DEFAULT_PROVIDER_API_VERSION = MDS_VERSIONS.v0_3.name
-DEFAULT_AGENCY_API_VERSION = MDS_VERSIONS.v0_3.name
-
-
 class DEVICE_STATUS(enum.Enum):
     available = pgettext_lazy("Device status", "Available")
     reserved = pgettext_lazy("Device status", "Reserved")

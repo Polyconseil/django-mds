@@ -217,20 +217,16 @@ class DeviceEventSerializer(serializers.Serializer):
         # api_configuration.
         provider_id = self.context["request"].user.provider_id
         provider = models.Provider.objects.get(id=provider_id)
-        # TODO(hcauwelier) make it mandatory, see SMP-1673
-        api_version = provider.agency_api_configuration.get("api_version")
+        # TODO(hcauwelier) clean up, "api_configuration" was for the provider API
+        api_version = provider.api_configuration.get("agency_api_version")
         if not api_version:
-            # TODO(hcauwelier) clean up, "api_configuration" was for the provider API
-            api_version = provider.api_configuration.get("agency_api_version")
-            if not api_version:
-                api_version = enums.MDS_VERSIONS[enums.DEFAULT_AGENCY_API_VERSION].value
-        else:
+            api_version_raw = provider.agency_api_configuration["api_version"]
             # We store the enum key, which cannot be a numeric identifier
             # It doubles as a validity check
-            api_version = enums.MDS_VERSIONS[api_version].value
+            api_version = enums.MDS_VERSIONS[api_version_raw].value
         event_type = validated_data.get("event_type")
         event_type_reason = validated_data.get("event_type_reason")
-        # TODO(hcauwelier) remove "draft" (pre 0.2) support
+        # TODO(hcauwelier) remove "draft" support
         if api_version == "draft":
             return (event_type, None)
         else:

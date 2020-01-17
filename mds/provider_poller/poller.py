@@ -75,10 +75,7 @@ class StatusChangesPoller:
             return
 
         # We request a specific version of the Provider API
-        # TODO(hcauwelier) make it mandatory, see SMP-1673
-        api_version_raw = self.provider.api_configuration.get(
-            "api_version", enums.DEFAULT_PROVIDER_API_VERSION
-        )
+        api_version_raw = self.provider.api_configuration["api_version"]
         # We store the enum key, which cannot be a numeric identifier
         # It doubles as a validity check
         api_version = enums.MDS_VERSIONS[api_version_raw].value
