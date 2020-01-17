@@ -96,7 +96,8 @@ class StatusChangesPoller:
             "polling_cursor", POLLING_CURSORS.start_time.name
         )
         logger.info(
-            f"Starting polling using the field: {polling_cursor}. Current state:\n"
+            f"Starting polling {self.provider} using the field: {polling_cursor}.\n"
+            "Current state:\n"
             + (
                 (
                     f"\tLast event_time: {str(self.provider.last_event_time_polled)},\n"
@@ -224,7 +225,8 @@ class StatusChangesPoller:
             "polling_cursor", POLLING_CURSORS.start_time.name
         )
         logger.info(
-            f"Starting polling using the field: {polling_cursor}. Current state:\n"
+            f"Starting polling {self.provider} using the field: {polling_cursor}.\n"
+            "Current state:\n"
             + (
                 (
                     f"\tLast event_time: {str(self.provider.last_event_time_polled)},\n"
@@ -353,7 +355,8 @@ class StatusChangesPoller:
         if polling_cursor != POLLING_CURSORS.start_time.name:
             raise ValueError('Only "start_time" cursor is supported in MDS 0.4+')
         logger.info(
-            f"Starting polling using the field: {polling_cursor}. Current state:\n"
+            f"Starting polling {self.provider} using the field: {polling_cursor}.\n"
+            "Current state:\n"
             + (
                 (f"\tLast event_time: {str(self.provider.last_event_time_polled)}.")
                 if not self.cursor
