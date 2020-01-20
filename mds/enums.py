@@ -38,6 +38,7 @@ class DEVICE_CATEGORY(enum.Enum):
     bicycle = pgettext_lazy("Device category", "Bicycle")
     scooter = pgettext_lazy("Device category", "Scooter")
     car = pgettext_lazy("Device category", "Car")
+    moped = pgettext_lazy("Device category", "Moped")
 
 
 class DEVICE_PROPULSION(enum.Enum):

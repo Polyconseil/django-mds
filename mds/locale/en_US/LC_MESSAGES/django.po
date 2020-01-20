@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-12-17 15:45+0100\n"
+"POT-Creation-Date: 2020-01-20 11:23+0100\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: en_US\n"
@@ -50,297 +50,302 @@ msgctxt "API Error"
 msgid "Already registered"
 msgstr ""
 
-#: enums.py:15
+#: enums.py:27
 msgctxt "Device status"
 msgid "Available"
 msgstr ""
 
-#: enums.py:16
+#: enums.py:28
 msgctxt "Device status"
 msgid "Reserved"
 msgstr ""
 
-#: enums.py:17
+#: enums.py:29
 msgctxt "Device status"
 msgid "Unavailable"
 msgstr ""
 
-#: enums.py:18
+#: enums.py:30
 msgctxt "Device status"
 msgid "Removed"
 msgstr ""
 
-#: enums.py:19
+#: enums.py:31
 msgctxt "Device status"
 msgid "Trip"
 msgstr ""
 
-#: enums.py:20
+#: enums.py:32
 msgctxt "Device status"
 msgid "Elsewhere"
 msgstr ""
 
-#: enums.py:21
+#: enums.py:33
 msgctxt "Device status"
 msgid "Inactive"
 msgstr ""
 
-#: enums.py:22
+#: enums.py:34
 msgctxt "Device status"
 msgid "Unknown"
 msgstr ""
 
-#: enums.py:29
+#: enums.py:38
 msgctxt "Device category"
 msgid "Bicycle"
 msgstr ""
 
-#: enums.py:30
+#: enums.py:39
 msgctxt "Device category"
 msgid "Scooter"
 msgstr ""
 
-#: enums.py:31
+#: enums.py:40
 msgctxt "Device category"
 msgid "Car"
 msgstr ""
 
-#: enums.py:37
+#: enums.py:41
+msgctxt "Device category"
+msgid "Moped"
+msgstr "Moped"
+
+#: enums.py:45
 msgctxt "Device propulsion"
 msgid "Human"
 msgstr ""
 
-#: enums.py:38
+#: enums.py:46
 msgctxt "Device propulsion"
 msgid "Electric Assist"
 msgstr ""
 
-#: enums.py:39
+#: enums.py:47
 msgctxt "Device propulsion"
 msgid "Electric"
 msgstr ""
 
-#: enums.py:40
+#: enums.py:48
 msgctxt "Device propulsion"
 msgid "Combustion"
 msgstr ""
 
-#: enums.py:49
+#: enums.py:54
 msgctxt "Event type"
 msgid "Register"
 msgstr ""
 
-#: enums.py:50 enums.py:91
+#: enums.py:55 enums.py:88
 msgctxt "Event type"
 msgid "Service start"
 msgstr ""
 
-#: enums.py:51 enums.py:102
+#: enums.py:56 enums.py:99
 msgctxt "Event type"
 msgid "Service end"
 msgstr ""
 
-#: enums.py:52
+#: enums.py:57
 msgctxt "Event type"
 msgid "Provider drop off"
 msgstr ""
 
-#: enums.py:53
+#: enums.py:58
 msgctxt "Event type"
 msgid "Provider pick up"
 msgstr ""
 
-#: enums.py:54
+#: enums.py:59
 msgctxt "Event type"
 msgid "City pick up"
 msgstr ""
 
-#: enums.py:55
+#: enums.py:60
 msgctxt "Event type"
 msgid "Reserve"
 msgstr ""
 
-#: enums.py:56
+#: enums.py:61
 msgctxt "Event type"
 msgid "Cancel reservation"
 msgstr ""
 
-#: enums.py:57
+#: enums.py:62
 msgctxt "Event type"
 msgid "Trip start"
 msgstr ""
 
-#: enums.py:58
+#: enums.py:63
 msgctxt "Event type"
 msgid "Trip enter"
 msgstr ""
 
-#: enums.py:59
+#: enums.py:64
 msgctxt "Event type"
 msgid "Trip leave"
 msgstr ""
 
-#: enums.py:60
+#: enums.py:65
 msgctxt "Event type"
 msgid "Trip end"
 msgstr ""
 
-#: enums.py:61
+#: enums.py:66
 msgctxt "Event type"
 msgid "Deregister"
 msgstr ""
 
-#: enums.py:63 enums.py:107
+#: enums.py:68 enums.py:104
 msgctxt "Event type"
 msgid "Received telemetry"
 msgstr ""
 
-#: enums.py:65 enums.py:109
+#: enums.py:70 enums.py:106
 msgctxt "Event type"
 msgid "Battery charged"
 msgstr ""
 
-#: enums.py:75 enums.py:93
+#: enums.py:76 enums.py:90
 msgctxt "Event type"
 msgid "Rebalance drop off"
 msgstr ""
 
-#: enums.py:76 enums.py:94
+#: enums.py:77 enums.py:91
 msgctxt "Event type"
 msgid "Maintenance drop off"
 msgstr ""
 
-#: enums.py:77 enums.py:100
+#: enums.py:78 enums.py:97
 msgctxt "Event type"
 msgid "Low battery"
 msgstr ""
 
-#: enums.py:78 enums.py:99
+#: enums.py:79 enums.py:96
 msgctxt "Event type"
 msgid "Maintenance"
 msgstr ""
 
-#: enums.py:79 enums.py:103
+#: enums.py:80 enums.py:100
 msgctxt "Event type"
 msgid "Rebalance pick up"
 msgstr ""
 
-#: enums.py:80 enums.py:104
+#: enums.py:81 enums.py:101
 msgctxt "Event type"
 msgid "Maintenance pick up"
 msgstr ""
 
-#: enums.py:92
+#: enums.py:89
 msgctxt "Event type"
 msgid "User drop off"
 msgstr ""
 
-#: enums.py:95
+#: enums.py:92
 msgctxt "Event type"
 msgid "Agency drop off"
 msgstr ""
 
-#: enums.py:97
+#: enums.py:94
 msgctxt "Event type"
 msgid "User pick up"
 msgstr ""
 
-#: enums.py:105
+#: enums.py:102
 msgctxt "Event type"
 msgid "Agency pick up"
 msgstr ""
 
-#: enums.py:117
+#: enums.py:111
 msgctxt "Event type reason"
 msgid "Low battery"
 msgstr ""
 
-#: enums.py:118
+#: enums.py:112
 msgctxt "Event type reason"
 msgid "Maintenance"
 msgstr ""
 
-#: enums.py:119
+#: enums.py:113
 msgctxt "Event type reason"
 msgid "Compliance"
 msgstr ""
 
-#: enums.py:120
+#: enums.py:114
 msgctxt "Event type reason"
 msgid "Off hours"
 msgstr ""
 
-#: enums.py:121
+#: enums.py:115
 msgctxt "Event type reason"
 msgid "Rebalance"
 msgstr ""
 
-#: enums.py:122
+#: enums.py:116
 msgctxt "Event type reason"
 msgid "Charge"
 msgstr ""
 
-#: enums.py:123
+#: enums.py:117
 msgctxt "Event type reason"
 msgid "Missing"
 msgstr ""
 
-#: enums.py:124
+#: enums.py:118
 msgctxt "Event type reason"
 msgid "Decommissioned"
 msgstr ""
 
-#: enums.py:131
+#: enums.py:122
 msgctxt "Event source"
 msgid "Agency API"
 msgstr ""
 
-#: enums.py:132
+#: enums.py:123
 msgctxt "Event source"
 msgid "Provider API"
 msgstr ""
 
-#: enums.py:139
+#: enums.py:127
 msgctxt "Area type"
 msgid "Unrestricted"
 msgstr ""
 
-#: enums.py:140
+#: enums.py:128
 msgctxt "Area type"
 msgid "Restricted"
 msgstr ""
 
-#: enums.py:141
+#: enums.py:129
 msgctxt "Area type"
 msgid "Preferred pick up"
 msgstr ""
 
-#: enums.py:142
+#: enums.py:130
 msgctxt "Area type"
 msgid "Preferred drop off"
 msgstr ""
 
-#: enums.py:175
+#: enums.py:161
 msgctxt "Policy type"
 msgid "Fleet size"
 msgstr ""
 
-#: enums.py:176
+#: enums.py:162
 msgctxt "Policy type"
 msgid "Time limit"
 msgstr ""
 
-#: enums.py:177
+#: enums.py:163
 msgctxt "Policy type"
 msgid "Speed limit"
 msgstr ""
 
-#: enums.py:178
+#: enums.py:164
 msgctxt "Policy type"
 msgid "Information for users"
 msgstr ""
 
-#: enums.py:179
+#: enums.py:165
 msgctxt "Policy type"
 msgid "Geofencing"
 msgstr ""
