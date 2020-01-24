@@ -367,7 +367,9 @@ class StatusChangesPoller:
         params = {}
 
         # Resume from the last "event_time" value
-        last_event_time_polled = self.provider.last_event_time_polled
+        last_event_time_polled = (
+            self.from_cursor or self.provider.last_event_time_polled
+        )
         if not last_event_time_polled:
             last_event_time_polled = timezone.now() - datetime.timedelta(
                 getattr(settings, "PROVIDER_POLLER_LIMIT", 90)
@@ -398,9 +400,14 @@ class StatusChangesPoller:
             params["event_time"] = next_event_time.isoformat()[: len("YYYY-MM-DDTHH")]
         else:
             # Query the real-time endpoint as usual
-            params["start_time"] = utils.to_mds_timestamp(
-                self.from_cursor or last_event_time_polled
-            )
+            params["start_time"] = utils.to_mds_timestamp(last_event_time_polled)
+            # Both bounds are mandatory now, use the lag as the event horizon
+            # The provider will slice big results using pagination
+            end_time = timezone.now()
+            if polling_lag:
+                # We tested the lag above, so end_time can't be older than start_time
+                end_time -= polling_lag
+            params["end_time"] = utils.to_mds_timestamp(end_time)
 
         # Provider-specific params to optimise polling
         try:
