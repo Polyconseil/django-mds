@@ -1,7 +1,7 @@
 Changelog
 =========
 
-0.7.9 (unreleased)
+0.7.9 (2020-01-27)
 ------------------
 
 - Fix status_changes endpoint polling in 0.4.
